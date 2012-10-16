@@ -7,13 +7,15 @@ var MemoryStore = require('connect').session.MemoryStore;
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
-var FACEBOOK_APP_ID = '372872592790204', FACEBOOK_APP_SECRET = '391221d701fb8ba952a112aab208a923';
+var config = require('./config');
+
+//var FACEBOOK_APP_ID = '372872592790204', FACEBOOK_APP_SECRET = '391221d701fb8ba952a112aab208a923';
 
 var BSON = mongo.BSONPure; 
 
 passport.use(new FacebookStrategy({
-    clientID: FACEBOOK_APP_ID,
-    clientSecret: FACEBOOK_APP_SECRET,
+    clientID: config.FACEBOOK_APP_ID,
+    clientSecret: config.FACEBOOK_APP_SECRET,
     callbackURL: "http://localhost:8081/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {

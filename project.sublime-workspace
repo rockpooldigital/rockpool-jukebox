@@ -27,54 +27,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "server.js",
-			"settings":
-			{
-				"buffer_size": 2813,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "controllers/streams.js",
-			"settings":
-			{
-				"buffer_size": 1753,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "public/js/app.js",
-			"settings":
-			{
-				"buffer_size": 1105,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "public/js/services.js",
-			"settings":
-			{
-				"buffer_size": 213,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "public/stream.html",
-			"settings":
-			{
-				"buffer_size": 470,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "package.json",
-			"settings":
-			{
-				"buffer_size": 297,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -100,6 +52,12 @@
 	},
 	"file_history":
 	[
+		"/C/GitHub/rockpool-jukebox/package.json",
+		"/C/GitHub/rockpool-jukebox/public/stream.html",
+		"/C/GitHub/rockpool-jukebox/public/js/services.js",
+		"/C/GitHub/rockpool-jukebox/public/js/app.js",
+		"/C/GitHub/rockpool-jukebox/controllers/streams.js",
+		"/C/GitHub/rockpool-jukebox/server.js",
 		"/C/development/jukebox/views/app.html",
 		"/C/development/jukebox/public/listStreams.html",
 		"/C/development/jukebox/server.js",
@@ -145,168 +103,8 @@
 	"groups":
 	[
 		{
-			"selected": 1,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "server.js",
-					"settings":
-					{
-						"buffer_size": 2813,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2751,
-								2751
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 720.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "controllers/streams.js",
-					"settings":
-					{
-						"buffer_size": 1753,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								863,
-								863
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 90.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "public/js/app.js",
-					"settings":
-					{
-						"buffer_size": 1105,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								866,
-								866
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "public/js/services.js",
-					"settings":
-					{
-						"buffer_size": 213,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								158,
-								169
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "public/stream.html",
-					"settings":
-					{
-						"buffer_size": 470,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								161,
-								170
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "package.json",
-					"settings":
-					{
-						"buffer_size": 297,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								289,
-								289
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
