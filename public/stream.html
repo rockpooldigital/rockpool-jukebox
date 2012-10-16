@@ -1,0 +1,60 @@
+<h2>{{ stream.name }}</h2>
+<a href="#/">back to streams</a>
+
+<div class="module">
+	<h3>Now</h3>
+</div>
+
+
+<div id="queue" class="module">
+
+<h3>Queue</h3>
+
+
+	<form name="addItemForm" id="stream-add">
+		<div ng-class="{error: addItemForm.name.$invalid}" >
+			<label>URL <input type="url" name="url" ng-model="entry.url" required size="100" ng-change="lookupItem()"></label>
+			<span ng-show="addItemForm.url.$error.required" class="help-inline">
+		        Required
+		    </span>
+		</div>
+
+	    <div style="border:1px solid blue;" ng-show="newItemLookup">
+	    	<h6>{{newItemLookup.title}}</h6>
+	    	<p>{{newItemLookup.description}}</p>
+	    	<img ng-src="{{newItemLookup.image}}" width="200" >
+	    </div>
+
+	    <div style="border:1px solid blue;" ng-show="newItemLoading">
+	    	Please wait...
+	    </div>
+
+		<button ng-click="addItem()" ng-disabled="!newItemLookup"
+	          class="btn btn-primary">Add Item</button>
+	</form>
+
+
+
+
+	<ul id="stream-items">
+		<li ng-repeat="item in items">
+			<img ng-src="{{item.image}}" class="thumb" >
+			<h5>{{item.title}}</h5>
+			<p>{{item.description}}</p>
+		</li>
+	</ul>
+
+
+</div>
+
+<div class="module">
+	<h3>Host</h3>
+	<button ng-click="startPlaying()">&#9656; Start</button>
+	<button ng-click="stopPlaying()">&#9726; Stop</button>
+
+	<div player="current"></div>
+
+</div>
+
+
+

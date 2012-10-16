@@ -1,0 +1,36 @@
+#stream-items {
+	list-style: none;
+	margin:0;padding:0 ;
+}
+
+#stream-items li {
+	margin:4px 0 0 0; 
+	padding:4px ;
+	border: 1px solid #004A84;
+	background-color: #9BD2FF;
+}
+
+#stream-items p, #stream-items h5 {
+	margin:1px 0 0 0; 
+	padding:0 ;
+}
+
+#stream-items img.thumb {
+	height: 40px;
+	float:left;
+}
+
+/*#stream-add {
+	border:1px solid orange;
+	padding: 5px;
+}*/
+
+.module {
+	border:1px solid blue;
+	margin:4px 0 0 0;
+	padding: 4px;
+}
+.module h3 {
+	margin:0;padding: 0;
+
+}
