@@ -3,6 +3,12 @@
 
 <div class="module">
 	<h3>Now</h3>
+	<div ng-show="current">
+		<h4>{{current.title}}</h4>
+		<p>
+			<img ng-src="{{current.image}}" width="100">
+		{{current.description}}</p>
+	</div>
 </div>
 
 
