@@ -32,7 +32,7 @@ MegaPlayer = function($) {
 	    return text;
 	}
 
-	var createYoutubeWrapper = function(container) {
+	var createYoutubeWrapper = function(container, options) {
 		var youtubePlayer = null, notificationEventHandler;
 		
 		return {
@@ -54,8 +54,8 @@ MegaPlayer = function($) {
 					var wrapper = $('<div />');
 					container.append(wrapper);
 					YouTubeFactory.create(wrapper.get(0),  {
-						width: 320,
-						height: 200,
+						width: options.width,
+						height: options.height,
 						playerVars: {
 		          start: 0,
 		          controls: '0'
@@ -84,7 +84,7 @@ MegaPlayer = function($) {
 		};
 	};
 
-	var createSoundCloudWrapper = function(container) {
+	var createSoundCloudWrapper = function(container, options) {
 		var widget;
 		return {
 			hide : function() { $(container).hide(); },
@@ -93,22 +93,31 @@ MegaPlayer = function($) {
 			play: function(url, notifier) { 
 				console.log('play SoundCloud', url); 
 				container.empty();
-				SC.oEmbed(url, { auto_play: true }, function(oEmbed) {
-				  console.log( oEmbed);
-					container.html(oEmbed.html);
-					widget = SC.Widget(container.find('iframe').get(0));
-					widget.bind(SC.Widget.Events.FINISH , function() {
-						if(notifier) { 
-							notifier({ status : 'finished' }); 
-						}
-					});
-					console.log(widget);
+				container.attr({
+					width: options.width, 
+					height: options.height 
+				});
+				SC.oEmbed(url, { 
+						auto_play: true,
+						width: options.width, 
+						height: options.height 
+					},
+					function(oEmbed) {
+					  console.log( oEmbed);
+						container.html(oEmbed.html);
+						widget = SC.Widget(container.find('iframe').get(0));
+						widget.bind(SC.Widget.Events.FINISH , function() {
+							if(notifier) { 
+								notifier({ status : 'finished' }); 
+							}
+						});
+						console.log(widget);
 				});
 			}
 		};
 	};
 
-	var createVimeoWrapper = function(container) {
+	var createVimeoWrapper = function(container, options) {
 		var videoApi = null, id = makeId();
 		return {
 			hide : function() { $(container).hide(); },
@@ -123,8 +132,8 @@ MegaPlayer = function($) {
 				var iframe = $('<iframe/>')
 						.attr({ 
 							id : id, 
-							width:540,
-							height:304,
+							width: options.width,
+							height: options.height,
 							frameborder: '0',
 							src: 'http://player.vimeo.com/video/'+ videoId +'?api=1&player_id=' + id
 						});
@@ -146,7 +155,11 @@ MegaPlayer = function($) {
 	};
 
 	return {
-		create : function(element) {
+		create : function(element, opts) {
+			opts = opts || {};
+			opts.width = opts.width || 540;
+			opts.height = opts.height || 304;
+
 			var self = this;
 							var players = { 
 			  youtube : null,
@@ -157,8 +170,14 @@ MegaPlayer = function($) {
 
 			var fireEvent = function(eventName, arg) {
 				for (var i = 0; i < eventListeners[eventName].length; i++) {
-					eventListeners[eventName][i].call(arg);
+					eventListeners[eventName][i].call(this, arg);
 				}
+			};
+
+			var factories = {
+				youtube : createYoutubeWrapper,
+				soundcloud : createSoundCloudWrapper,
+				vimeo : createVimeoWrapper
 			};
 
 			var getPlayer = function(type) {
@@ -166,19 +185,14 @@ MegaPlayer = function($) {
 					return players[type];
 				}
 				else {
-					var id = makeId();
-					var elem = $('<div id="' + type +  id + '"></div>');
+					if (typeof(factories[type]) === "undefined") {
+						throw new Error("unsupported type");
+					}
+
+					var elem = $('<div id="' + type +  makeId() + '"></div>');
 					$(element).append(elem);
 
-					if (type === "youtube") {
-						players[type] = createYoutubeWrapper(elem);
-					} else if (type === "soundcloud") {
-						players[type] = createSoundCloudWrapper(elem);
-					} else if (type === "vimeo") {
-						players[type] = createVimeoWrapper(elem);
-					} else {
-						alert("bad type");
-					}
+					players[type] = factories[type].call(this, elem, opts);
 
 					return players[type];
 				}
