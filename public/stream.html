@@ -1,28 +1,28 @@
 <h2>{{ stream.name }}</h2>
-<a href="#/">back to streams</a>
+<a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
 <div class="module">
 	<h3>Now</h3>
 	<div ng-show="current">
+		<img ng-src="{{current.image}}" class="" />
 		<h4>{{current.title}}</h4>
-		<p>
-			<img ng-src="{{current.image}}" width="100">
-		{{current.description}}</p>
+		<p>{{current.description}}</p>
 	</div>
 </div>
 
+<div class="module">
+	<h3>Admin</h3>
+	<button ng-click="skipCurrent()" class="btn">Skip</button>
+</div>
 
 <div id="queue" class="module">
 
-<h3>Queue</h3>
-
+	<h3>Queue</h3>
 
 	<form name="addItemForm">
 		<div ng-class="{error: addItemForm.name.$invalid}" >
-			<label>URL <input type="url" name="url" ng-model="entry.url" required size="100" ng-change="lookupItem()"></label>
-			<span ng-show="addItemForm.url.$error.required" class="help-inline">
-		        Required
-		    </span>
+			<label>URL <input type="url" name="url" ng-model="entry.url" required ng-change="lookupItem()"></label>
+			<span ng-show="addItemForm.url.$error.required" class="help-inline">Required</span>
 		</div>
 
 	    <div style="border:1px solid blue;" ng-show="newItemLookup">
@@ -39,17 +39,13 @@
 	          class="btn btn-primary">Add Item</button>
 	</form>
 
-
-
-
 	<ul id="stream-items">
-		<li ng-repeat="item in items">
-			<img ng-src="{{item.image}}" class="thumb" >
+		<li ng-repeat="item in items" class="greyGrad clearfix">
+			<span class="thumb"><img ng-src="{{item.image}}" ></span>
 			<h5>{{item.title}}</h5>
-			<p>{{item.description}}</p>
+			<!--<p>{{item.description}}</p>-->
 		</li>
 	</ul>
-
 
 </div>
 
@@ -60,11 +56,4 @@
 
 	<player item="current" on-finish="finishedPlaying()"></player>
 
-</div>
-
-
-
-<div class="module">
-	<h3>Admin</h3>
-	<button ng-click="skipCurrent()">Skip</button>
 </div>
