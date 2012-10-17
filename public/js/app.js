@@ -37,6 +37,29 @@ project.controller('ListStreams', function($scope, $location, Streams){
 });
 
 project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem, Socket) {
+	var playItem = function(item) {
+		$scope.hostItem = item; //player (host)
+		$scope.nowPlaying = item; // display
+
+		Socket.emit('host:playingItem', {
+			stream : $scope.stream._id,
+			id : $scope.hostItem._id
+		});
+
+		//todo save play directly via post.
+	};
+
+	var playNext = function() {
+		if ($scope.items.length === 0) {
+				//we ran out of stuff, stop this host
+				$scope.isHostPlaying = false;
+				$scope.hostItem = null;
+				$scope.nowPlaying = null;
+			} else {
+				playItem($scope.items.shift());
+			}		
+	};
+
 	$scope.isHostPlaying = false;
 	$scope.stream = Streams.get({ streamId : $routeParams.streamId});
 	$scope.items = StreamItem.query({ streamId : $routeParams.streamId});
@@ -83,28 +106,6 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		//}, 200);
 	};
 
-	var playItem = function(item) {
-		$scope.hostItem = item; //player (host)
-		$scope.nowPlaying = item; // display
-
-		Socket.emit('host:playingItem', {
-			stream : $scope.stream._id,
-			id : $scope.hostItem._id
-		});
-
-		//todo save play directly via post.
-	};
-
-	var playNext = function() {
-		if ($scope.items.length === 0) {
-				//we ran out of stuff, stop this host
-				$scope.isHostPlaying = false;
-				$scope.hostItem = null;
-				$scope.nowPlaying = null;
-			} else {
-				playItem($scope.items.shift());
-			}		
-	};
 
 	$scope.startHostPlaying = function() {
 		$scope.isHostPlaying = true;
@@ -135,6 +136,10 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 			id : $scope.nowPlaying._id,
 			stream: $scope.stream._id
 		});
+	};
+
+	$scope.submitVote = function(item) {
+
 	};
 
 	Socket.on('host:playingItem', function(data) {
