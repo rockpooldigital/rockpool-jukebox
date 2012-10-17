@@ -49,12 +49,16 @@
 
 <div class="module">
 	<h3>Host</h3>
-	<button ng-click="startPlaying()">&#9656; Start</button>
-	<button ng-click="stopPlaying()">&#9726; Stop</button>
+	<button ng-click="startPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>
+	<button ng-click="stopPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop</button>
 
-	<player item="current" onFinish="startPlaying()"></player>
+	<player item="current" on-finish="finishedPlaying()"></player>
 
 </div>
 
 
 
+<div class="module">
+	<h3>Admin</h3>
+	<button ng-click="skipCurrent()">Skip</button>
+</div>

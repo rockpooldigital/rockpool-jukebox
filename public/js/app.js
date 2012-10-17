@@ -21,6 +21,8 @@ project.controller('ListStreams', function($scope, $location, Streams){
 });
 
 project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem) {
+	$scope.isHostPlaying = false;
+
 	var stream = Streams.get({ streamId : $routeParams.streamId}, function() {
 			$scope.stream = stream;
 	});
@@ -63,11 +65,27 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 	};
 
 	$scope.startPlaying = function() {
-		$scope.current = $scope.items.shift();
+		if ($scope.items.length > 0) {
+			$scope.current = $scope.items.shift();
+			$scope.isHostPlaying = true;
+		}
 	};
 
 	$scope.stopPlaying = function() {
+		$scope.current = null;
+		$scope.isHostPlaying = false;
+	};
 
+	$scope.finishedPlaying = function() {
+		if ($scope.items.length > 0) {
+			$scope.current = $scope.items.shift();
+		}
+	};
+
+	$scope.skipCurrent = function() {
+		if ($scope.items.length > 0) {
+			$scope.current = $scope.items.shift();
+		}
 	};
 });
 /*

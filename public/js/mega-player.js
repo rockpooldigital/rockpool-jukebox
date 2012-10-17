@@ -184,6 +184,14 @@ MegaPlayer = function($) {
 				}
 			};
 
+			var kill = function() {
+				if (activePlayer) {
+								activePlayer.stop();
+								activePlayer.hide();
+							}
+				activePlayer = null;
+			}
+
 			return {
 				play : function(item) {
 					var type = item.type;
@@ -193,10 +201,7 @@ MegaPlayer = function($) {
 
 					if (player) {
 						if (player !== activePlayer) {
-						  if (activePlayer) {
-								activePlayer.stop();
-								activePlayer.hide();
-							}
+						  kill();
 							player.show();
 						}
 						activePlayer = player;
@@ -206,6 +211,9 @@ MegaPlayer = function($) {
 					} else {
 						alert('Unsupported item type');
 					}	
+				},
+				stop : function() {
+					kill();
 				},
 				bind : function(eventName, callback) {
 					if (typeof(eventListeners[eventName]) === 'undefined') {

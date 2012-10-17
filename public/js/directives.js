@@ -5,11 +5,14 @@ angular.module('jukeboxDirectives', [])
 
 				var megaPlayer = MegaPlayer.create(element);
 				megaPlayer.bind('finish', function() {
-					alert('finished');
+					scope.onFinish();
 				});
 
 				var playVideo = function(item) {
-					if (!item) return;
+					if (!item) {
+						megaPlayer.stop();
+						return;
+					}
 					var player = null;
 
 					var map = {
@@ -32,14 +35,15 @@ angular.module('jukeboxDirectives', [])
 				});
 			},
 
-			template: 'monkey',
+		//	template: 'monkey',
 
 			scope : {
 				item : '=',
 				onFinish : '&',
 			},
 
-			restrict : 'E'
+			restrict : 'E',
+			transclude : true
 		}
 	});
 
