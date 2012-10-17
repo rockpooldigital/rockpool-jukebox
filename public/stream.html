@@ -3,16 +3,17 @@
 
 <div class="module">
 	<h3>Now</h3>
-	<div ng-show="current">
-		<img ng-src="{{current.image}}" class="" />
-		<h4>{{current.title}}</h4>
-		<p>{{current.description}}</p>
+	<div ng-show="nowPlaying">
+		<h4>{{nowPlaying.title}}</h4>
+		<p>
+			<img ng-src="{{nowPlaying.image}}" width="100">
+		{{nowPlaying.description}}</p>
 	</div>
 </div>
 
 <div class="module">
 	<h3>Admin</h3>
-	<button ng-click="skipCurrent()" class="btn">Skip</button>
+	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip</button>
 </div>
 
 <div id="queue" class="module">
@@ -51,9 +52,9 @@
 
 <div class="module">
 	<h3>Host</h3>
-	<button ng-click="startPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>
-	<button ng-click="stopPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop</button>
+	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>
+	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop</button>
 
-	<player item="current" on-finish="finishedPlaying()"></player>
+	<player item="hostItem" on-finish="hostFinishedPlaying()"></player>
 
 </div>

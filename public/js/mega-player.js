@@ -85,11 +85,18 @@ MegaPlayer = function($) {
 	};
 
 	var createSoundCloudWrapper = function(container, options) {
-		var widget;
+		//var widget;
 		return {
 			hide : function() { $(container).hide(); },
 			show : function() { $(container).show(); },
-			stop : function() {  if (widget) { widget.pause(); }},
+			stop : function() {  if (true) { 
+					var widget = SC.Widget(container.find('iframe').get(0));
+					console.log(widget);
+					widget.unbind(SC.Widget.Events.FINISH);
+					///above throws error from soundcloud api so will just bin it
+					container.empty();
+				}
+			},
 			play: function(url, notifier) { 
 				console.log('play SoundCloud', url); 
 				container.empty();
@@ -100,12 +107,13 @@ MegaPlayer = function($) {
 				SC.oEmbed(url, { 
 						auto_play: true,
 						width: options.width, 
-						height: options.height 
+						height: options.height,
+						iframe: true
 					},
 					function(oEmbed) {
 					  console.log( oEmbed);
 						container.html(oEmbed.html);
-						widget = SC.Widget(container.find('iframe').get(0));
+						var widget = SC.Widget(container.find('iframe').get(0));
 						widget.bind(SC.Widget.Events.FINISH , function() {
 							if(notifier) { 
 								notifier({ status : 'finished' }); 

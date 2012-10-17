@@ -8,6 +8,15 @@ var delay = (function(){
   };
 })();
 
+function findStreamItemInSet(set, id) {
+	for (var j =0; j < set.length; j++) {
+		if (id === set[j]._id) {
+			return set[j];
+		}
+	}
+	return null;
+}
+
 project.config(function($routeProvider) {
 $routeProvider.
   when('/', {controller:'ListStreams', templateUrl:'streams.html'})
@@ -27,15 +36,14 @@ project.controller('ListStreams', function($scope, $location, Streams){
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem) {
+project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem, Socket) {
 	$scope.isHostPlaying = false;
+	$scope.stream = Streams.get({ streamId : $routeParams.streamId});
+	$scope.items = StreamItem.query({ streamId : $routeParams.streamId});
 
-	var stream = Streams.get({ streamId : $routeParams.streamId}, function() {
-			$scope.stream = stream;
-	});
-
-	$scope.items = StreamItem.query({ streamId : $routeParams.streamId}, function(docs) {
-		//console.log(docs);
+	//should we leave the other rooms here
+	Socket.emit('stream:join', { 
+		stream : $routeParams.streamId
 	});
 
 	$scope.addItem = function() {
@@ -45,6 +53,10 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		
 		item.$save({streamId: $scope.stream._id}, function(saved) {
 			$scope.items.push(saved);
+			Socket.emit('stream:itemAdded', {
+				id : saved._id,
+				stream : $scope.stream._id
+			});
 		});
 	};
 
@@ -71,32 +83,110 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		//}, 200);
 	};
 
-	$scope.startPlaying = function() {
-		if ($scope.items.length > 0) {
-			$scope.current = $scope.items.shift();
-			$scope.isHostPlaying = true;
+	var playItem = function(item) {
+		$scope.hostItem = item; //player (host)
+		$scope.nowPlaying = item; // display
+
+		Socket.emit('host:playingItem', {
+			stream : $scope.stream._id,
+			id : $scope.hostItem._id
+		});
+
+		//todo save play directly via post.
+	};
+
+	var playNext = function() {
+		if ($scope.items.length === 0) {
+				//we ran out of stuff, stop this host
+				$scope.isHostPlaying = false;
+				$scope.hostItem = null;
+				$scope.nowPlaying = null;
+			} else {
+				playItem($scope.items.shift());
+			}		
+	};
+
+	$scope.startHostPlaying = function() {
+		$scope.isHostPlaying = true;
+		//if we have a track playing elsewhere, play that
+		if ($scope.nowPlaying) {
+			//this won't be in the list of items so don't need to remove it
+			playItem($scope.nowPlaying);
+		} else {
+			playNext();
 		}
 	};
 
-	$scope.stopPlaying = function() {
-		$scope.current = null;
+	$scope.stopHostPlaying = function() {
+		$scope.hostItem = null;
 		$scope.isHostPlaying = false;
 	};
 
-	$scope.finishedPlaying = function() {
-		if ($scope.items.length > 0) {
-			$scope.current = $scope.items.shift();
-		}
+	$scope.hostFinishedPlaying = function() {
+		playNext();
 	};
 
 	$scope.skipCurrent = function() {
-		if ($scope.items.length > 0) {
-			$scope.current = $scope.items.shift();
+		if ($scope.isHostPlaying) {
+			playNext();
 		}
+
+		Socket.emit('stream:itemSkipped',{
+			id : $scope.nowPlaying._id,
+			stream: $scope.stream._id
+		});
 	};
+
+	Socket.on('host:playingItem', function(data) {
+		//do not care about other streams
+		if (data.stream != $scope.stream._id) { return; }
+
+		//if we are playing then we don't care
+		if ($scope.isHostPlaying ) { return; }
+
+		//load item for displaying becaquse we are not a host
+		var item = findStreamItemInSet($scope.items, data.id);
+				
+		if (item !== null) {
+			var index = $scope.items.indexOf(item);
+			$scope.items.splice(index, 1);
+			$scope.nowPlaying = item;
+		}		
+	});
+
+	Socket.on('stream:itemAdded', function(data) {
+		//do not care about other streams
+		if (data.stream != $scope.stream._id) { return; }
+		
+		//add to our list if we don't have it
+		if (findStreamItemInSet($scope.items, data.id) === null) {
+			StreamItem.get({ streamId : data.stream, id : data.id}, function(item) {
+				if (item) {
+					$scope.items.push(item);
+				}
+			});
+		}
+	});
+
+	Socket.on('stream:itemSkipped', function(data) {
+		//do not care about other streams
+		if (data.stream != $scope.stream._id) { return; }
+
+		//if we are not playing then the display can wait until we get host:playingItem
+		if (!$scope.isHostPlaying) { return; }
+
+		//ignore if not playing this track
+		if ($scope.hostItem && $scope.hostItem._id !== data.id) { return; }
+
+		playNext();
+	});
+
+	Socket.on('stream:clientJoined', function(data) {
+		if ($scope.isHostPlaying && $scope.hostItem) {
+			Socket.emit('host:playingItem', {
+				stream : $scope.stream._id,
+				id : $scope.hostItem._id
+			});
+		}
+	});
 });
-/*
-project.controller('ListStreamsCtrl', function ListStreamsCtrl($scope, $location) {
-	var self = this;
-	alert('tom');
-});*/

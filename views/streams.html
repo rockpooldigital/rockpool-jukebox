@@ -1,15 +1,6 @@
-<html>
-  <head>
-    <title>Streams</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  </head>
-  
-  <body>
-    <h1>Streams</h1>
-    <ul>
-      <% for(var i=0; i<streams.length; i++) {%>
-         <li><a href="/streams/<%= streams[i].name %>"><%= streams[i].name %></a></li>
-      <% } %>
-    </ul>
-  </body>
-</html>
+<h1>Streams</h1>
+<ul>
+  <% for(var i=0; i<streams.length; i++) {%>
+     <li><a href="/streams/<%= streams[i].name %>"><%= streams[i].name %></a></li>
+  <% } %>
+</ul>
