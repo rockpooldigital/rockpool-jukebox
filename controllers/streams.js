@@ -44,11 +44,11 @@ var queryMedia = function(url, next) {
 
 module.exports = function(db) {
 	return {
-		'stream' : function(req,res,next){
+		stream : function(req,res,next){
 			res.send(req.params.name);
 		},
 
-		'streams': function(req, res, next) {
+		streams: function(req, res, next) {
 			var collection = db.collection('streams');
 
 			if (req.params.id) {
@@ -65,7 +65,26 @@ module.exports = function(db) {
 			}
 		},
 
-		'item_new_lookup' : function(req, res, next) {
+		stream_add : function(req, res, next) {
+			var collection = db.collection('streams');
+			if (!req.body.name)
+			{
+				res.send(400); 
+				return;
+			}
+
+			var item = {
+				name: req.body.name,
+				created : new Date()
+			};
+
+			collection.insert(item, function(err, docs) {
+				if (err) return next(err);
+				res.send(docs[0]);
+			});		
+		},
+
+		item_new_lookup : function(req, res, next) {
 			var url = req.query.url;
 			if (!url) {
 				res.send(400);
@@ -83,7 +102,7 @@ module.exports = function(db) {
 			});
 		},
 
-		'item_add' : function(req, res, next) {
+		item_add : function(req, res, next) {
 			console.log(req.body, req.params);
 
 			if (!req.body.url || !req.params.streamId)
@@ -117,7 +136,7 @@ module.exports = function(db) {
 			});
 		},
 
-		'item_get_active': function(req, res, next) {
+		item_get_active: function(req, res, next) {
 			if (!req.params.streamId) {
 				res.send(400); return;
 			}

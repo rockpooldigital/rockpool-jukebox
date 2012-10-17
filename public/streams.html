@@ -1,0 +1,18 @@
+<ul>
+	<li ng-repeat="stream in streams">
+		<a href="#/stream/{{stream._id}}">{{stream.name}}</a>
+	</li>
+</ul>
+
+
+<form name="addStreamForm">
+	<div ng-class="{error: addStreamForm.name.$invalid}" >
+		<label>Name <input type="text" name="name" ng-model="stream.name" required size="50" ></label>
+		<span ng-show="addStreamForm.name.$error.required" class="help-inline">
+	        Required
+	    </span>
+	</div>
+
+	<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid"
+          class="btn btn-primary">Add Item</button>
+</form>

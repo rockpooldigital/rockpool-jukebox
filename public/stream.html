@@ -11,7 +11,7 @@
 <h3>Queue</h3>
 
 
-	<form name="addItemForm" id="stream-add">
+	<form name="addItemForm">
 		<div ng-class="{error: addItemForm.name.$invalid}" >
 			<label>URL <input type="url" name="url" ng-model="entry.url" required size="100" ng-change="lookupItem()"></label>
 			<span ng-show="addItemForm.url.$error.required" class="help-inline">

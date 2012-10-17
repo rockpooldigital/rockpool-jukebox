@@ -87,6 +87,7 @@ app.get('/logout', auth_controller.logout);
 
 app.get('/data/stream/:id', streams_controller.streams);
 app.get('/data/stream', streams_controller.streams);
+app.post('/data/stream', streams_controller.stream_add);
 
 app.post('/data/stream/:streamId/item', streams_controller.item_add);
 app.get('/data/stream/:streamId/queryMedia', streams_controller.item_new_lookup);

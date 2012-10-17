@@ -10,7 +10,7 @@ var delay = (function(){
 
 project.config(function($routeProvider) {
 $routeProvider.
-  when('/', {controller:'ListStreams', templateUrl:'listStreams.html'})
+  when('/', {controller:'ListStreams', templateUrl:'streams.html'})
   .when('/stream/:streamId', { controller : 'Stream', templateUrl:'stream.html'})
   .otherwise({redirectTo:'/'});
 });
@@ -18,6 +18,13 @@ $routeProvider.
 project.controller('ListStreams', function($scope, $location, Streams){
 	var streams = Streams.query();
 	$scope.streams =streams;
+	$scope.addStream = function() {
+		var stream = new Streams({ name : $scope.stream.name });
+		$scope.stream.name = "";
+		stream.$save(function(saved) {
+			$scope.streams.push(saved);
+		});
+	}
 });
 
 project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem) {

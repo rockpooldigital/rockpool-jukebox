@@ -160,12 +160,15 @@ MegaPlayer = function($) {
 			opts.width = opts.width || 540;
 			opts.height = opts.height || 304;
 
-			var self = this;
-							var players = { 
+			var self = this, players = { 
 			  youtube : null,
 			  flowplayer : null
 			}, activePlayer=null, eventListeners = {
 				'finish' : []
+			}, factories = {
+				youtube : createYoutubeWrapper,
+				soundcloud : createSoundCloudWrapper,
+				vimeo : createVimeoWrapper
 			};
 
 			var fireEvent = function(eventName, arg) {
@@ -174,17 +177,10 @@ MegaPlayer = function($) {
 				}
 			};
 
-			var factories = {
-				youtube : createYoutubeWrapper,
-				soundcloud : createSoundCloudWrapper,
-				vimeo : createVimeoWrapper
-			};
-
 			var getPlayer = function(type) {
 				if (players[type]) {
 					return players[type];
-				}
-				else {
+				} else {
 					if (typeof(factories[type]) === "undefined") {
 						throw new Error("unsupported type");
 					}
@@ -209,9 +205,8 @@ MegaPlayer = function($) {
 			return {
 				play : function(item) {
 					var type = item.type;
-					if (typeof(type) !== "undefined") {
-						player = getPlayer(type);
-					}
+
+					var player = getPlayer(type);
 
 					if (player) {
 						if (player !== activePlayer) {
