@@ -12,6 +12,7 @@
     "ejs" : "",
     "request": "",
     "cheerio":"",
-    "entities" :""
+    "entities" :"",
+    "socket.io" : ""
   }
 }

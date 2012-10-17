@@ -65,7 +65,10 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-var app = express();
+var app = express()
+	,server = require('http').createServer(app)
+	,io = require('socket.io').listen(server);
+
 app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.session({ secret:'keyboard cat', store: new MemoryStore({ reapInterval:  60000 * 10 })}));
@@ -76,6 +79,34 @@ app.engine('.html', require('ejs').__express);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
+
+
+io.set('log level', 1); 
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('stream:join', function (data) {
+    socket.join(data.stream);
+    socket.broadcast.to(data.stream).emit('stream:clientJoined');
+  });
+
+  socket.on('stream:itemAdded', function(data) {
+		socket.broadcast.to(data.stream).emit('stream:itemAdded', {
+      stream : data.stream, id : data.id
+    });
+  });
+
+  socket.on('host:playingItem', function(data) {
+    socket.broadcast.to(data.stream).emit('host:playingItem', {
+      stream : data.stream, id : data.id
+    });
+  });
+
+  socket.on('stream:itemSkipped', function(data) {
+    socket.broadcast.to(data.stream).emit('stream:itemSkipped', {
+      stream : data.stream, id : data.id
+    });
+  });
+});
 
 
 var auth_controller = require('./controllers/authentication.js');
@@ -91,11 +122,13 @@ app.post('/data/stream', streams_controller.stream_add);
 
 app.post('/data/stream/:streamId/item', streams_controller.item_add);
 app.get('/data/stream/:streamId/queryMedia', streams_controller.item_new_lookup);
-app.get('/data/stream/:streamId/item', streams_controller.item_get_active);
+app.get('/data/stream/:streamId/item/:id', streams_controller.itemFindById);
+app.get('/data/stream/:streamId/item', streams_controller.itemFindActiveByStream);
+
 
 app.get('/', function(req, res){
 	res.render('app.html');
 });
 
-app.listen(8081);
+server.listen(config.PORT || 8081);
 console.log("listening on port 8081");

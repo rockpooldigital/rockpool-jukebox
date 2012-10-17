@@ -5,7 +5,9 @@ angular.module('jukeboxDirectives', [])
 
 				var megaPlayer = MegaPlayer.create(element);
 				megaPlayer.bind('finish', function() {
-					scope.onFinish();
+					scope.$apply(function() {
+						scope.onFinish();
+					});
 				});
 
 				var playVideo = function(item) {

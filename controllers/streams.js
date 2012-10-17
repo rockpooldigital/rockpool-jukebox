@@ -103,7 +103,7 @@ module.exports = function(db) {
 		},
 
 		item_add : function(req, res, next) {
-			console.log(req.body, req.params);
+			//console.log(req.body, req.params);
 
 			if (!req.body.url || !req.params.streamId)
 			{
@@ -136,7 +136,7 @@ module.exports = function(db) {
 			});
 		},
 
-		item_get_active: function(req, res, next) {
+		itemFindActiveByStream: function(req, res, next) {
 			if (!req.params.streamId) {
 				res.send(400); return;
 			}
@@ -145,6 +145,18 @@ module.exports = function(db) {
 			.find({ streamId : new BSON.ObjectID(req.params.streamId) })
 			.toArray(function(err, result) {
 				if (err) return next(err);
+				res.send(result);
+			});
+		},
+
+		itemFindById : function(req, res, next) {
+			if (!req.params.id || !req.params.streamId) {
+				res.send(400); return;
+			}
+
+			db.collection('items')
+			.findOne({ streamId : new BSON.ObjectID(req.params.streamId), _id : new BSON.ObjectID(req.params.id) }, function(err, result) {
+				if(err) return next(err);
 				res.send(result);
 			});
 		}
