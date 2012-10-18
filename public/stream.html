@@ -1,12 +1,14 @@
-<h2>{{ stream.name }}</h2>
+<!-- <h2 id="streamName">{{ stream.name }}</h2> -->
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
-<div class="module" id="nowPlaying">
-	<h3>Now playing:</h3>
+<div class="clearfix" id="nowPlaying">
+	<!-- <h3>Now playing:</h3> -->
 	<div ng-show="nowPlaying">
-		<h4>{{nowPlaying.title}}</h4>
-		<img ng-src="{{nowPlaying.image}}" alt="" />
-		<p>{{nowPlaying.description}}</p>
+		<h4 class="title">{{nowPlaying.title}}</h4>
+		<span class="thumb">
+			<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+		</span>
+		<!-- <p>{{nowPlaying.description}}</p> -->
 	</div>
 </div>
 
@@ -44,16 +46,9 @@
 			<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 			<h5>{{item.title}}</h5>
 			<!--<p>{{item.description}}</p>-->
-
-			<style >
-				button.voteActive {
-					font-weight: bold;
-				}
-			</style>
-			<button ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}">VoteDown</button>
+			<img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" />
 			<span style="font-size:1.6em;">{{item.totalVotes || 0}}</span>
-			<button ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}">VoteUp</button>
-			
+			<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
 		</li>
 	</ul>
 

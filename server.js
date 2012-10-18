@@ -16,7 +16,7 @@ var BSON = mongo.BSONPure;
 passport.use(new FacebookStrategy({
     clientID: config.FACEBOOK_APP_ID,
     clientSecret: config.FACEBOOK_APP_SECRET,
-    callbackURL: "http://localhost:8081/auth/facebook/callback"
+    callbackURL: "http://localhost:8046/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
   	var users = db.collection('users');

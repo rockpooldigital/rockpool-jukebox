@@ -114,7 +114,7 @@ textarea {resize: vertical;}
 	margin:4px 0 0 0;
 	padding: 4px;
 }
-.module h3 {
+.module h3 {2
 	margin:0;
 	padding: 0;
 }
@@ -150,8 +150,40 @@ textarea {resize: vertical;}
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#dddddd',GradientType=0 ); /* IE6-9 */
 }
 
+#fbAuth {
 
+}
+#streamName {
+	padding: 5px 5px 5px 0;
+}
+#nowPlaying .title{
+	float: right;
 
+}
+#nowPlaying .thumb{
+	float:left;
+	width:7em;
+	height:7em;
+	margin-right: 5%;
+	overflow: hidden;
+	text-align: center;
+	border-radius: 3px;
+	border: 4px solid #555;
+}
+#nowPlaying .art{
+	height: 100%;
+	min-width: 100%;
+	margin-left: -2.5em;
+}
+#stream-items .voteUp {
+
+}
+#stream-items .voteDown {
+
+}
+#stream-items .voteActive {
+	font-weight: bold;
+}
 /** Media Queries for Responsive Design. Theses examples override the primary ('mobile first') styles. **/
 
 /** TABLET OVERRIDES **/
@@ -192,4 +224,3 @@ textarea {resize: vertical;}
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi) {
     /* Style adjustments for high resolution devices */
 }
-
