@@ -27,8 +27,23 @@
     <!-- WHITESPACE -->
   </head>
   <body>
-    <a href="/auth/facebook" id="fbAuth">Authenticate</a>
+    <%if (!user) { %>
+      <a id="login" href="/auth/facebook">Login with Facebook</a>
+    <% } else { %>Hello <%= user.name %>
+      <a href="/logout">Logout</a>
+    <% } %>
 
+    <script>
+      $(function() {
+        $('#login').click(function() {
+          //console.dir(location);
+          var target = $(this).attr('href') + "?returnUrl=" + encodeURIComponent(location.hash);
+          //alert(target);
+          window.location=target;
+          return false;
+        });
+      });
+    </script>
   <div ng-view></div>
   </body>
 </html>

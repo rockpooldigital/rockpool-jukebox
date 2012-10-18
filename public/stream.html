@@ -41,7 +41,9 @@
 	          class="btn btn-primary">Add Item</button>
 	</form>
 
-	<ul id="stream-items">
+	<p ng-show="!items.length">No items yet</p>
+
+	<ul id="stream-items" ng-show="items.length">
 		<li ng-repeat="item in items" class="greyGrad clearfix">
 			<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 			<h5>{{item.title}}</h5>

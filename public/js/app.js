@@ -151,6 +151,11 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 			item.totalVotes = result.newCount;
 			item.currentVote = weight;
 			$scope.items.sort(streamItemSorter);
+
+			Socket.emit('stream:itemVoted', {
+				id : item._id,
+				stream : $scope.stream._id
+			});
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
@@ -210,6 +215,21 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 			Socket.emit('host:playingItem', {
 				stream : $scope.stream._id,
 				id : $scope.hostItem._id
+			});
+		}
+	});
+
+	Socket.on('stream:itemVoted', function(data) {
+		//do not care about other streams
+		if (data.stream != $scope.stream._id) { return; }
+
+		var itemInSet = findStreamItemInSet($scope.items, data.id);
+		if (itemInSet !== null) {
+			StreamItem.get({ streamId : data.stream, id : data.id}, function(item) {
+				if (item) {
+					itemInSet.totalVotes =  item.totalVotes;
+					$scope.items.sort(streamItemSorter);
+				}
 			});
 		}
 	});
