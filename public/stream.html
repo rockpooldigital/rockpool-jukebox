@@ -1,13 +1,12 @@
 <h2>{{ stream.name }}</h2>
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
-<div class="module">
-	<h3>Now</h3>
+<div class="module" id="nowPlaying">
+	<h3>Now playing:</h3>
 	<div ng-show="nowPlaying">
 		<h4>{{nowPlaying.title}}</h4>
-		<p>
-			<img ng-src="{{nowPlaying.image}}" width="100">
-		{{nowPlaying.description}}</p>
+		<img ng-src="{{nowPlaying.image}}" alt="" />
+		<p>{{nowPlaying.description}}</p>
 	</div>
 </div>
 
@@ -29,7 +28,7 @@
 	    <div style="border:1px solid blue;" ng-show="newItemLookup">
 	    	<h6>{{newItemLookup.title}}</h6>
 	    	<p>{{newItemLookup.description}}</p>
-	    	<img ng-src="{{newItemLookup.image}}" width="200" >
+	    	<img ng-src="{{newItemLookup.image}}" alt="" />
 	    </div>
 
 	    <div style="border:1px solid blue;" ng-show="newItemLoading">
@@ -42,7 +41,7 @@
 
 	<ul id="stream-items">
 		<li ng-repeat="item in items" class="greyGrad clearfix">
-			<span class="thumb"><img ng-src="{{item.image}}" ></span>
+			<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 			<h5>{{item.title}}</h5>
 			<!--<p>{{item.description}}</p>-->
 

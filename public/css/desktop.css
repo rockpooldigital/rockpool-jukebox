@@ -103,7 +103,6 @@ textarea {resize: vertical;}
 	float:left;
 	width:30%;
 	margin-right: 5%;
-	max-height:4em;
 	overflow: hidden;
 }
 #stream-items .thumb img{
@@ -126,6 +125,7 @@ textarea {resize: vertical;}
 	right:2%;	
 }
 
+/** Common **/
 .btn {
 	border:1px solid #ddd;
 	border-radius: 3px;
@@ -162,7 +162,6 @@ textarea {resize: vertical;}
 		float:left;
 		width:30%;
 		margin-right: 5%;
-		border:1px solid red;
 		overflow: visible;	
 		height: auto;
 	}
@@ -182,8 +181,7 @@ textarea {resize: vertical;}
 		width:30%;
 		margin-right: 5%;
 		overflow: visible;	
-		height: auto;
-		border:1px solid blue;
+		height: auto;		
 	}
 	#stream-items .thumb img{
 		width: 100%;	
