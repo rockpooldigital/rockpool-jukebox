@@ -114,7 +114,7 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-var auth_controller = require('./controllers/authentication.js');
+var auth_controller = require('./controllers/authentication.js').createAuthController(config);
 var streamsCtrl = require('./controllers/streams.js')(db);
 
 app.get('/auth/facebook', auth_controller.auth_facebook);

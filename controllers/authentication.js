@@ -1,38 +1,34 @@
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
-module.exports = function() {
-	return {
-		auth_facebook:  function(req, res, next) {
+module.exports = {
+	createAuthController : function(config) {
+		var getReturnUrl = function(req) {
 			var returnUrl = '/';
 			if (req.query.returnUrl && req.query.returnUrl.indexOf('#/') === 0) {
 				returnUrl = req.query.returnUrl;
 			}
+			return  config.URL + '/auth/facebook/callback?returnUrl=' + encodeURIComponent(returnUrl);	
+		};
 
-			var url =  'http://localhost:8046/auth/facebook/callback?returnUrl=' + encodeURIComponent(returnUrl);
-
-			return passport.authenticate('facebook', {
-			  callbackURL: url
-			})(req, res, next);
-		},
-		auth_facebook_callback: function(req, res, next) {
-			var returnUrl = '/';
-
-			if (req.query.returnUrl && req.query.returnUrl.indexOf('#/') === 0) {
-				returnUrl = req.query.returnUrl;
-			}
-
-			var url =  'http://localhost:8046/auth/facebook/callback?returnUrl=' + encodeURIComponent(returnUrl);
-
-			return passport.authenticate('facebook', { 
-				successRedirect: returnUrl, 
-				failureRedirect: '/?authFailed=1', 
-				callbackURL: url
-			})(req, res, next);
-		},
-		logout:  function(req, res){
-		  req.logOut();
-		  res.redirect("/");
-		},
-	};
-}();
+		return {
+			auth_facebook:  function(req, res, next) {
+				return passport.authenticate('facebook', {
+				  callbackURL: getReturnUrl(req)
+				})(req, res, next);
+			},
+			auth_facebook_callback: function(req, res, next) {
+				var url = getReturnUrl(req);
+				return passport.authenticate('facebook', { 
+					successRedirect: req.query.returnUrl, //should be safe now as came back from FB. maybe this is rubbish.
+					failureRedirect: '/?authFailed=1', 
+					callbackURL: url
+				})(req, res, next);
+			},
+			logout:  function(req, res){
+			  req.logOut();
+			  res.redirect("/");
+			},
+		};
+	}
+};
