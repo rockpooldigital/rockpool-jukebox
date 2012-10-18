@@ -15,8 +15,8 @@ var BSON = mongo.BSONPure;
 
 passport.use(new FacebookStrategy({
     clientID: config.FACEBOOK_APP_ID,
-    clientSecret: config.FACEBOOK_APP_SECRET,
-    callbackURL: (config.URL || ('http://localhost:' + config.PORT)) + "/auth/facebook/callback"
+    clientSecret: config.FACEBOOK_APP_SECRET//,
+  
   },
   function(accessToken, refreshToken, profile, done) {
   	var users = db.collection('users');
@@ -135,7 +135,7 @@ app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 //app.get('/data/item/:id/vote', streamsCtrl.submitVote);
 
 app.get('/', function(req, res){
-	res.render('app.html');
+	res.render('app.html', { user : req.user });
 });
 
 server.listen(config.PORT);
