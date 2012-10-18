@@ -17,6 +17,11 @@ function findStreamItemInSet(set, id) {
 	return null;
 }
 
+function streamItemSorter(a,b) {
+	if (a.totalVotes != b.totalVotes) return b.totalVotes - a.totalVotes;
+	return new Date(a.created) - new Date(b.created);
+}
+
 project.config(function($routeProvider) {
 $routeProvider.
   when('/', {controller:'ListStreams', templateUrl:'streams.html'})
@@ -36,7 +41,7 @@ project.controller('ListStreams', function($scope, $location, Streams){
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem, Socket) {
+project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem, Socket, Vote) {
 	var playItem = function(item) {
 		$scope.hostItem = item; //player (host)
 		$scope.nowPlaying = item; // display
@@ -138,9 +143,22 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		});
 	};
 
-	$scope.submitVote = function(item) {
+	$scope.submitVote = function(item, weight) {
+		//if already voted same then this is a cancel
+		if (item.currentVote == weight) { weight = 0; }
 
+		Vote.submit(item._id, weight, function(result) {
+			item.totalVotes = result.newCount;
+			item.currentVote = weight;
+			$scope.items.sort(streamItemSorter);
+		}, function(reason) {
+			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
+			alert('Unknown error');
+		});
+			//alert("you voted for item " + item.title + "with "  + weight);
 	};
+
+	//$scope.getCurrentUserVote = function
 
 	Socket.on('host:playingItem', function(data) {
 		//do not care about other streams
@@ -168,6 +186,7 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 			StreamItem.get({ streamId : data.stream, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
+					$scope.items.sort(streamItemSorter);
 				}
 			});
 		}

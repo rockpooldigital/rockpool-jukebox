@@ -110,21 +110,24 @@ io.sockets.on('connection', function (socket) {
 
 
 var auth_controller = require('./controllers/authentication.js');
-var streams_controller = require('./controllers/streams.js')(db);
+var streamsCtrl = require('./controllers/streams.js')(db);
 
 app.get('/auth/facebook', auth_controller.auth_facebook);
 app.get('/auth/facebook/callback', auth_controller.auth_facebook_callback);
 app.get('/logout', auth_controller.logout);
 
-app.get('/data/stream/:id', streams_controller.streams);
-app.get('/data/stream', streams_controller.streams);
-app.post('/data/stream', streams_controller.stream_add);
+app.get('/data/stream/:id', streamsCtrl.streams);
+app.get('/data/stream', streamsCtrl.streams);
+app.post('/data/stream', streamsCtrl.stream_add);
 
-app.post('/data/stream/:streamId/item', streams_controller.item_add);
-app.get('/data/stream/:streamId/queryMedia', streams_controller.item_new_lookup);
-app.get('/data/stream/:streamId/item/:id', streams_controller.itemFindById);
-app.get('/data/stream/:streamId/item', streams_controller.itemFindActiveByStream);
+app.post('/data/stream/:streamId/item', streamsCtrl.item_add);
+app.get('/data/stream/:streamId/queryMedia', streamsCtrl.item_new_lookup);
+app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
+app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 
+
+app.post('/data/item/:id/vote', streamsCtrl.submitVote);
+//app.get('/data/item/:id/vote', streamsCtrl.submitVote);
 
 app.get('/', function(req, res){
 	res.render('app.html');

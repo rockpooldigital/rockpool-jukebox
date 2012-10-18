@@ -42,6 +42,33 @@ var queryMedia = function(url, next) {
 	});
 };
 
+
+var processResult = function(item, user) {
+	var result = {
+					_id : item._id,
+					streamId: item.streamId,
+					title: item.title,
+					description : item.description,
+					url : item.url,
+					image: item.image,
+					openGraph : item.openGraph,
+					created : item.created,
+					totalVotes : item.totalVotes,
+					currentVote: 0
+				};
+
+  if (item.votes && user) {
+  	for (var i=0;i<item.votes.length;i++) {
+  		if (item.votes[i].userId.equals(user._id)) {
+  			result.currentVote = item.votes[i].weight;
+  			break;
+  		}
+  	}
+  }
+
+	return result;
+};
+
 module.exports = function(db) {
 	return {
 		stream : function(req,res,next){
@@ -103,8 +130,6 @@ module.exports = function(db) {
 		},
 
 		item_add : function(req, res, next) {
-			//console.log(req.body, req.params);
-
 			if (!req.body.url || !req.params.streamId)
 			{
 				res.send(400); 
@@ -131,7 +156,7 @@ module.exports = function(db) {
 
 				collection.insert(item, function(err, docs) {
 					if (err) return next(err);
-					res.send(docs[0]);
+					res.send(processResult(docs[0], req.user)) ;
 				});		
 			});
 		},
@@ -143,9 +168,10 @@ module.exports = function(db) {
 			
 			db.collection('items')
 			.find({ streamId : new BSON.ObjectID(req.params.streamId) })
+			.sort({ totalVotes: -1, created: 1})
 			.toArray(function(err, result) {
 				if (err) return next(err);
-				res.send(result);
+				res.send(result.map(function(i) { return processResult(i, req.user); }));
 			});
 		},
 
@@ -157,7 +183,98 @@ module.exports = function(db) {
 			db.collection('items')
 			.findOne({ streamId : new BSON.ObjectID(req.params.streamId), _id : new BSON.ObjectID(req.params.id) }, function(err, result) {
 				if(err) return next(err);
-				res.send(result);
+				res.send(processResult(result, req.user));
+			});
+		},
+
+		submitVote : function(req, res, next) {
+			if (!req.user) {
+				return res.send(401);
+			}
+
+			var weight = parseInt(req.body.weight);
+
+			if (!req.params.id || weight > 1 || weight < -1 || isNaN(weight)) {
+				return res.send(400);
+			}
+
+			var userId = req.user._id;
+			//var weight = req.body.weight > 0 ? 1 : -1;
+
+			var sumVotes = function(item) {
+				var sum =0 ;
+				for(var j=0; j<item.votes.length;j++) { sum+=item.votes[j].weight; }
+				return sum;
+			}
+
+			var respond = function(success, reason, item) {
+				res.send({
+									success: success,
+									reason: reason ? reason : null,
+									newCount : item.totalVotes
+								});
+			};
+
+			var items = db.collection('items');
+			items.findOne({ _id : new BSON.ObjectID(req.params.id) }, function(err, item) {
+				if (err) return next(err);
+				if (item.votes) {
+					var found = false;
+					for (var i = 0; i < item.votes.length; i++) {
+						var vote = item.votes[i];
+
+						if (vote.userId.equals(userId)) {
+							//found an existing vote
+							if (vote.weight === weight) {
+								//same vote has already been cast
+								return respond(false, "duplicate", item);
+							} else {
+								//this probably all needs to be done in some sort of transaction or calculated inside mongo
+								var currentSum = sumVotes(item);
+								currentSum -= vote.weight;
+								currentSum += weight;
+
+								//remove existing
+								items.findAndModify(
+										{ 'votes.userId' : userId, '_id' : item._id },  
+										[['_id', 'asc']],
+										{ '$set' : { 
+												'votes.$.weight' : weight, 
+												'votes.$.created' : new Date(),
+												'totalVotes' : currentSum
+											}
+										}
+										, 
+										{ new : true },
+										function (err, saved) {
+											if (err) return next(err);
+											respond(true, null, saved);
+										}
+								)
+								return;
+							}
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						var currentSum = sumVotes(item);
+						currentSum += weight;
+
+						//add vote
+						items.findAndModify({_id : item._id}, [['_id', 'asc']], 
+										{ 
+											'$push' : { 'votes' : { weight: weight , userId: userId, created : new Date()}},
+											'$set' : { 'totalVotes' : currentSum }
+										}, 	
+										{ new : true },
+										function(err, saved) {
+											if (err) return next(err);
+											respond(true, null, saved);
+										}
+						);
+					}
+				}
 			});
 		}
 	};

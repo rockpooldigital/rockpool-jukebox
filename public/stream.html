@@ -45,6 +45,16 @@
 			<span class="thumb"><img ng-src="{{item.image}}" ></span>
 			<h5>{{item.title}}</h5>
 			<!--<p>{{item.description}}</p>-->
+
+			<style >
+				button.voteActive {
+					font-weight: bold;
+				}
+			</style>
+			<button ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}">VoteDown</button>
+			<span style="font-size:1.6em;">{{item.totalVotes || 0}}</span>
+			<button ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}">VoteUp</button>
+			
 		</li>
 	</ul>
 
