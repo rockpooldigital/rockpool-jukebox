@@ -16,7 +16,7 @@ var BSON = mongo.BSONPure;
 passport.use(new FacebookStrategy({
     clientID: config.FACEBOOK_APP_ID,
     clientSecret: config.FACEBOOK_APP_SECRET,
-    callbackURL: "http://localhost:8081/auth/facebook/callback"
+    callbackURL: (config.URL || ('http://localhost:' + config.PORT)) + "/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
   	var users = db.collection('users');
@@ -106,8 +106,13 @@ io.sockets.on('connection', function (socket) {
       stream : data.stream, id : data.id
     });
   });
-});
 
+  socket.on('stream:itemVoted', function(data) {
+    socket.broadcast.to(data.stream).emit('stream:itemVoted', {
+      stream : data.stream, id : data.id
+    });
+  });
+});
 
 var auth_controller = require('./controllers/authentication.js');
 var streamsCtrl = require('./controllers/streams.js')(db);
@@ -133,5 +138,5 @@ app.get('/', function(req, res){
 	res.render('app.html');
 });
 
-server.listen(config.PORT || 8081);
-console.log("listening on port 8081");
+server.listen(config.PORT);
+console.log("listening on port " + config.PORT);
