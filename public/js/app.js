@@ -23,34 +23,30 @@ function streamItemSorter(a,b) {
 }
 
 project.config(function($routeProvider) {
-$routeProvider.
-  when('/', {controller:'ListStreams', templateUrl:'streams.html'})
-  .when('/stream/:streamId', { controller : 'Stream', templateUrl:'stream.html'})
-  .otherwise({redirectTo:'/'});
+	$routeProvider.
+	  when('/', {controller:'ListStreams', templateUrl:'streams.html'})
+	  .when('/stream/:streamId', { controller : 'Stream', templateUrl:'stream.html'})
+	  .otherwise({redirectTo:'/'});
 });
 
-project.controller('ListStreams', function($scope, $location, Streams){
-	var streams = Streams.query();
+project.controller('ListStreams', function($scope, $location, StreamData) {
+	var streams = StreamData.getStreams();
 	$scope.streams =streams;
 	$scope.addStream = function() {
-		var stream = new Streams({ name : $scope.stream.name });
-		$scope.stream.name = "";
-		stream.$save(function(saved) {
+		StreamData.addStream({ name : $scope.stream.name }, function(saved) {
 			$scope.streams.push(saved);
 		});
+		$scope.stream.name = "";
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, $http, Streams, StreamItem, Socket, Vote) {
+project.controller('Stream', function($scope, $location, $routeParams, StreamNotification, StreamData) {
 	var playItem = function(item) {
 		$scope.hostItem = item; //player (host)
 		$scope.nowPlaying = item; // display
 
-		Socket.emit('host:playingItem', {
-			stream : $scope.stream._id,
-			id : $scope.hostItem._id
-		});
-
+		StreamNotification.notifyPlay($scope.stream._id, $scope.hostItem._id);
+		
 		//todo save play directly via post.
 	};
 
@@ -66,49 +62,37 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 	};
 
 	$scope.isHostPlaying = false;
-	$scope.stream = Streams.get({ streamId : $routeParams.streamId});
-	$scope.items = StreamItem.query({ streamId : $routeParams.streamId});
-
-	//should we leave the other rooms here
-	Socket.emit('stream:join', { 
-		stream : $routeParams.streamId
+	
+	$scope.stream = StreamData.getStream({ streamId : $routeParams.streamId}, function() {
+		StreamNotification.notifyJoin($scope.stream._id);
 	});
+	
+	$scope.items = StreamData.getItems({ streamId : $routeParams.streamId});
+
 
 	$scope.addItem = function() {
-		var item = new StreamItem({ url : $scope.newItemLookup.url });
+		StreamData.addItem($scope.stream._id, { url : $scope.newItemLookup.url }, function(saved) {
+			$scope.items.push(saved);
+			StreamNotification.notifyAdd($scope.stream._id, saved._id);
+		});
+
 		$scope.newItemLookup = null;
 		$scope.entry.url = "";
-		
-		item.$save({streamId: $scope.stream._id}, function(saved) {
-			$scope.items.push(saved);
-			Socket.emit('stream:itemAdded', {
-				id : saved._id,
-				stream : $scope.stream._id
-			});
-		});
 	};
 
 	$scope.lookupItem = function() {
-		console.log('fire', $scope.entry.url);
-
 		if (!$scope.entry.url) { return ; }
+
+		StreamData.lookupItem($scope.stream._id, $scope.entry.url, function(data) {
+						$scope.newItemLookup = data;
+						$scope.newItemLoading = false;
+					}, function() {
+						$scope.newItemLoading = false;
+						//alert('Failed to lookup item');
+					});
 
 		$scope.newItemLoading = true;
 		$scope.newItemLookup = null;
-
-			console.log('fire');
-			var url = "/data/stream/" + $scope.stream._id +"/queryMedia?url="
-					+ encodeURIComponent($scope.entry.url);
-			$http.get(url)
-				.success(function(data, status, header, config) {
-					console.log(data);
-					$scope.newItemLookup = data;
-					$scope.newItemLoading = false;
-				})
-				.error(function() {
-					$scope.newItemLoading = false;
-				});
-		//}, 200);
 	};
 
 
@@ -137,25 +121,20 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 			playNext();
 		}
 
-		Socket.emit('stream:itemSkipped',{
-			id : $scope.nowPlaying._id,
-			stream: $scope.stream._id
-		});
+		StreamNotification.notifySkip($scope.stream._id, $scope.nowPlaying._id);
 	};
 
 	$scope.submitVote = function(item, weight) {
 		//if already voted same then this is a cancel
 		if (item.currentVote == weight) { weight = 0; }
 
-		Vote.submit(item._id, weight, function(result) {
+		StreamData.submitVote(item._id, weight, function(result) {
 			item.totalVotes = result.newCount;
 			item.currentVote = weight;
 			$scope.items.sort(streamItemSorter);
 
-			Socket.emit('stream:itemVoted', {
-				id : item._id,
-				stream : $scope.stream._id
-			});
+			StreamNotification.notifyVoted($scope.stream._id, item._id);
+
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
@@ -165,7 +144,7 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 
 	//$scope.getCurrentUserVote = function
 
-	Socket.on('host:playingItem', function(data) {
+	StreamNotification.setOnPlay(function(data) {
 		//do not care about other streams
 		if (data.stream != $scope.stream._id) { return; }
 
@@ -182,13 +161,13 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		}		
 	});
 
-	Socket.on('stream:itemAdded', function(data) {
+	StreamNotification.setOnItemAdded(function(data) {
 		//do not care about other streams
 		if (data.stream != $scope.stream._id) { return; }
 		
 		//add to our list if we don't have it
 		if (findStreamItemInSet($scope.items, data.id) === null) {
-			StreamItem.get({ streamId : data.stream, id : data.id}, function(item) {
+			StreamData.getItem({ streamId : data.stream, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
 					$scope.items.sort(streamItemSorter);
@@ -197,7 +176,7 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		}
 	});
 
-	Socket.on('stream:itemSkipped', function(data) {
+	StreamNotification.setOnItemSkipped(function(data) {
 		//do not care about other streams
 		if (data.stream != $scope.stream._id) { return; }
 
@@ -210,24 +189,22 @@ project.controller('Stream', function($scope, $location, $routeParams, $http, St
 		playNext();
 	});
 
-	Socket.on('stream:clientJoined', function(data) {
+	StreamNotification.setOnClientJoined(function(data) {
 		if ($scope.isHostPlaying && $scope.hostItem) {
-			Socket.emit('host:playingItem', {
-				stream : $scope.stream._id,
-				id : $scope.hostItem._id
-			});
+			StreamNotification.notifyPlay($scope.stream._id,$scope.hostItem._id);
 		}
 	});
 
-	Socket.on('stream:itemVoted', function(data) {
+	StreamNotification.setOnItemVoted(function(data) { 
 		//do not care about other streams
 		if (data.stream != $scope.stream._id) { return; }
 
 		var itemInSet = findStreamItemInSet($scope.items, data.id);
 		if (itemInSet !== null) {
-			StreamItem.get({ streamId : data.stream, id : data.id}, function(item) {
+			StreamData.getItem({ streamId : data.stream, id : data.id}, function(item) {
 				if (item) {
 					itemInSet.totalVotes =  item.totalVotes;
+					itemInSet.currentVote =  item.currentVote;
 					$scope.items.sort(streamItemSorter);
 				}
 			});
