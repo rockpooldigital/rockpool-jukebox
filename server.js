@@ -92,12 +92,14 @@ app.get('/data/stream', streamsCtrl.streams);
 app.post('/data/stream', streamsCtrl.stream_add);
 
 app.post('/data/stream/:streamId/item', streamsCtrl.item_add);
+
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.item_new_lookup);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 
 
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
+app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 //app.get('/data/item/:id/vote', streamsCtrl.submitVote);
 
 app.get('/', function(req, res){

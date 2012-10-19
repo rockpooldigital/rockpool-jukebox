@@ -114,10 +114,13 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 	};
 
 	$scope.hostFinishedPlaying = function() {
+		StreamData.markPlayed($scope.hostItem._id);
 		playNext();
 	};
 
 	$scope.skipCurrent = function() {
+		StreamData.markPlayed($scope.hostItem._id);
+		
 		if ($scope.isHostPlaying) {
 			playNext();
 		}

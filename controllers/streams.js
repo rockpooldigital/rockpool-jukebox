@@ -151,7 +151,8 @@ module.exports = function(db) {
 					//site: req.body.site_name,
 					openGraph : data.openGraph,
 					votes : [],
-					created : new Date()
+					created : new Date(),
+					played : false
 				};
 
 				collection.insert(item, function(err, docs) {
@@ -167,7 +168,7 @@ module.exports = function(db) {
 			}
 			
 			db.collection('items')
-			.find({ streamId : new BSON.ObjectID(req.params.streamId) })
+			.find({ streamId : new BSON.ObjectID(req.params.streamId), played:  false })
 			.sort({ totalVotes: -1, created: 1})
 			.toArray(function(err, result) {
 				if (err) return next(err);
@@ -184,6 +185,20 @@ module.exports = function(db) {
 			.findOne({ streamId : new BSON.ObjectID(req.params.streamId), _id : new BSON.ObjectID(req.params.id) }, function(err, result) {
 				if(err) return next(err);
 				res.send(processResult(result, req.user));
+			});
+		},
+
+		itemMarkPlayed : function(req, res, next) {
+			if (!req.params.id ) {
+				res.send(400); return;
+			}
+			var items = db.collection('items');
+			items.update(
+				{ _id : new BSON.ObjectID(req.params.id) },
+				{ '$set' : { played: true } },
+				function(err, data) {
+					if (err) return next(err);
+					res.send(200);
 			});
 		},
 

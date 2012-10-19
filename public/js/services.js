@@ -49,6 +49,11 @@ angular.module('jukeboxServices', ['ngResource'])
 				var item = new StreamItem(item);
 				item.$save({streamId: streamId}, success, fail);
 			},
+			markPlayed: function(itemId, success, fail) {
+				$http.post('/data/item/' +  itemId + '/played')
+					.success(function() { if(success) success(); })
+					.error(function() { if(fail) fail(); })
+			},
 			submitVote : function(itemId, weight, success, fail) {
 				$http.post("/data/item/" + itemId + "/vote", { weight : weight })
 				.success(function(data) {

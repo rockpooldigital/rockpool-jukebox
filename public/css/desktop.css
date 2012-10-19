@@ -176,10 +176,10 @@ textarea {resize: vertical;}
 	margin-left: -2.5em;
 }
 #stream-items .voteUp {
-
+	height: 20px;
 }
 #stream-items .voteDown {
-
+	height: 20px;	
 }
 #stream-items .voteActive {
 	font-weight: bold;
@@ -233,4 +233,9 @@ img.voteActive {
 
 #stream-items li {
 	height: 100px !important;
+}
+
+#stream-items li img !important {
+
+	width : 100px;
 }
