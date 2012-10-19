@@ -41,7 +41,9 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 });
 
 project.controller('Stream', function($scope, $location, $routeParams, StreamNotification, StreamData) {
-	var playItem = function(item) {
+	var streamId = $routeParams.streamId;
+
+	function playItem(item) {
 		$scope.hostItem = item; //player (host)
 		$scope.nowPlaying = item; // display
 
@@ -50,7 +52,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 		//todo save play directly via post.
 	};
 
-	var playNext = function() {
+	function playNext() {
 		if ($scope.items.length === 0) {
 				//we ran out of stuff, stop this host
 				$scope.isHostPlaying = false;
@@ -63,17 +65,16 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	$scope.isHostPlaying = false;
 	
-	$scope.stream = StreamData.getStream({ streamId : $routeParams.streamId}, function() {
-		StreamNotification.notifyJoin($scope.stream._id);
+	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
+		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
+			StreamNotification.notifyJoin($scope.stream._id);	
+		});		
 	});
 	
-	$scope.items = StreamData.getItems({ streamId : $routeParams.streamId});
-
-
 	$scope.addItem = function() {
-		StreamData.addItem($scope.stream._id, { url : $scope.newItemLookup.url }, function(saved) {
+		StreamData.addItem(streamId, { url : $scope.newItemLookup.url }, function(saved) {
 			$scope.items.push(saved);
-			StreamNotification.notifyAdd($scope.stream._id, saved._id);
+			StreamNotification.notifyAdd(streamId, saved._id);
 		});
 
 		$scope.newItemLookup = null;
@@ -83,13 +84,13 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 	$scope.lookupItem = function() {
 		if (!$scope.entry.url) { return ; }
 
-		StreamData.lookupItem($scope.stream._id, $scope.entry.url, function(data) {
-						$scope.newItemLookup = data;
-						$scope.newItemLoading = false;
-					}, function() {
-						$scope.newItemLoading = false;
-						//alert('Failed to lookup item');
-					});
+		StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
+			$scope.newItemLookup = data;
+			$scope.newItemLoading = false;
+		}, function() {
+			$scope.newItemLoading = false;
+			//alert('Failed to lookup item');
+		});
 
 		$scope.newItemLoading = true;
 		$scope.newItemLookup = null;
@@ -121,7 +122,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 			playNext();
 		}
 
-		StreamNotification.notifySkip($scope.stream._id, $scope.nowPlaying._id);
+		StreamNotification.notifySkip(streamId, $scope.nowPlaying._id);
 	};
 
 	$scope.submitVote = function(item, weight) {
@@ -133,7 +134,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 			item.currentVote = weight;
 			$scope.items.sort(streamItemSorter);
 
-			StreamNotification.notifyVoted($scope.stream._id, item._id);
+			StreamNotification.notifyVoted(streamId, item._id);
 
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
@@ -146,7 +147,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	StreamNotification.setOnPlay(function(data) {
 		//do not care about other streams
-		if (data.stream != $scope.stream._id) { return; }
+		if (data.stream != streamId) { return; }
 
 		//if we are playing then we don't care
 		if ($scope.isHostPlaying ) { return; }
@@ -163,11 +164,11 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	StreamNotification.setOnItemAdded(function(data) {
 		//do not care about other streams
-		if (data.stream != $scope.stream._id) { return; }
+		if (data.stream != streamId) { return; }
 		
 		//add to our list if we don't have it
 		if (findStreamItemInSet($scope.items, data.id) === null) {
-			StreamData.getItem({ streamId : data.stream, id : data.id}, function(item) {
+			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
 					$scope.items.sort(streamItemSorter);
@@ -178,7 +179,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	StreamNotification.setOnItemSkipped(function(data) {
 		//do not care about other streams
-		if (data.stream != $scope.stream._id) { return; }
+		if (data.stream != streamId) { return; }
 
 		//if we are not playing then the display can wait until we get host:playingItem
 		if (!$scope.isHostPlaying) { return; }
@@ -197,7 +198,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	StreamNotification.setOnItemVoted(function(data) { 
 		//do not care about other streams
-		if (data.stream != $scope.stream._id) { return; }
+		if (data.stream != streamId) { return; }
 
 		var itemInSet = findStreamItemInSet($scope.items, data.id);
 		if (itemInSet !== null) {

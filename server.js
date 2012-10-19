@@ -1,16 +1,11 @@
 var express = require('express');
 var mongo = require('mongodb'), Server = mongo.Server, Db = mongo.Db;
-
 var server = new Server('localhost', 27017, {auto_reconnect: true});
 var db = new Db('jukebox', server, { safe : true});
 var MemoryStore = require('connect').session.MemoryStore;
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
-
 var config = require('./config');
-
-//var FACEBOOK_APP_ID = '372872592790204', FACEBOOK_APP_SECRET = '391221d701fb8ba952a112aab208a923';
-
 var BSON = mongo.BSONPure; 
 
 passport.use(new FacebookStrategy({
@@ -82,37 +77,8 @@ app.use(express.static(__dirname + '/public'));
 
 
 io.set('log level', 1); 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('stream:join', function (data) {
-    socket.join(data.stream);
-    socket.broadcast.to(data.stream).emit('stream:clientJoined');
-  });
 
-  socket.on('stream:itemAdded', function(data) {
-		socket.broadcast.to(data.stream).emit('stream:itemAdded', {
-      stream : data.stream, id : data.id
-    });
-  });
-
-  socket.on('host:playingItem', function(data) {
-    socket.broadcast.to(data.stream).emit('host:playingItem', {
-      stream : data.stream, id : data.id
-    });
-  });
-
-  socket.on('stream:itemSkipped', function(data) {
-    socket.broadcast.to(data.stream).emit('stream:itemSkipped', {
-      stream : data.stream, id : data.id
-    });
-  });
-
-  socket.on('stream:itemVoted', function(data) {
-    socket.broadcast.to(data.stream).emit('stream:itemVoted', {
-      stream : data.stream, id : data.id
-    });
-  });
-});
+require('./notification-sockets').setup(io);
 
 var auth_controller = require('./controllers/authentication.js').createAuthController(config);
 var streamsCtrl = require('./controllers/streams.js')(db);
