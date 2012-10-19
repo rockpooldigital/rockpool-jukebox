@@ -79,6 +79,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 		StreamData.addItem(streamId, { url : $scope.newItemLookup.url }, function(saved) {
 			$scope.items.push(saved);
 			StreamNotification.notifyAdd(streamId, saved._id);
+			$scope.items.sort(streamItemSorter);
 		});
 
 		$scope.newItemLookup = null;
