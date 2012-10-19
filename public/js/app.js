@@ -18,6 +18,9 @@ function findStreamItemInSet(set, id) {
 }
 
 function streamItemSorter(a,b) {
+	//temp hack
+	if (typeof(a.totalVotes)==="undefined") a.totalVotes = 0;
+	if (typeof(b.totalVotes)==="undefined") b.totalVotes = 0;
 	if (a.totalVotes != b.totalVotes) return b.totalVotes - a.totalVotes;
 	return new Date(a.created) - new Date(b.created);
 }
@@ -68,6 +71,7 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
+			$scope.items.sort(streamItemSorter);
 		});		
 	});
 	
@@ -119,9 +123,9 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 	};
 
 	$scope.skipCurrent = function() {
-		StreamData.markPlayed($scope.hostItem._id);
-		
-		if ($scope.isHostPlaying) {
+		StreamData.markPlayed($scope.nowPlaying._id);
+
+		if ($scope.isHostPlaying && $scope.hostItem._id == $scope.nowPlaying._id) {
 			playNext();
 		}
 

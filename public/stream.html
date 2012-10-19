@@ -11,11 +11,11 @@
 		<!-- <p>{{nowPlaying.description}}</p> -->
 	</div>
 </div>
-
+<!--
 <div class="module">
 	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
-</div>
-
+</div> 
+-->
 <div id="queue" class="module">
 
 	<h3>Queue</h3>
@@ -60,6 +60,7 @@
 
 <div class="module">
 	<h3>Host</h3>
+	<p>Only use if you want to host audio</p>
 	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>
 	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop</button>
 

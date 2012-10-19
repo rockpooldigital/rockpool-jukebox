@@ -152,7 +152,8 @@ module.exports = function(db) {
 					openGraph : data.openGraph,
 					votes : [],
 					created : new Date(),
-					played : false
+					played : false,
+					totalVotes : 0
 				};
 
 				collection.insert(item, function(err, docs) {

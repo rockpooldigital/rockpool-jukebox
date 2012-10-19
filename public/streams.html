@@ -8,6 +8,7 @@
 
 
 <form name="addStreamForm">
+	<h2>Add Stream</h2>
 	<div ng-class="{error: addStreamForm.name.$invalid}" >
 		<label>Name <input type="text" name="name" ng-model="stream.name" required size="50" ></label>
 		<span ng-show="addStreamForm.name.$error.required" class="help-inline">
