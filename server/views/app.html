@@ -42,8 +42,15 @@
           window.location=target;
           return false;
         });
+
+          if (jQuery.browser.msie) {
+              $('#app').remove();
+               alert('Sorry, you are using IE which is currently not supported');
+           return;
+          }
+
       });
     </script>
-  <div ng-view></div>
+  <div id="app" ng-view></div>
   </body>
 </html>

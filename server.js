@@ -28,8 +28,7 @@ function facebookCallback(accessToken, refreshToken, profile, done) {
 				done(null, result[0]._id);
 			});
 		} else {
-			users.update(
-				{ _id: user._id},
+			users.update({ _id: user._id},
 				{ $set:{name : profile.displayName} },
 				function(err,result) {
 					if (err) { return done(err);}
@@ -58,7 +57,6 @@ passport.deserializeUser(function(id, done) {
 		done(null, user);
 	})
 });
-
 
 var app = express()
 	,server = require('http').createServer(app)
@@ -94,17 +92,14 @@ app.get('/logout', auth_controller.logout);
 app.get('/data/stream/:id', streamsCtrl.streams);
 app.get('/data/stream', streamsCtrl.streams);
 app.post('/data/stream', streamsCtrl.streamAdd);
-
 app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
-
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
-
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
 	res.render('app.html', { user : req.user });
 });
 

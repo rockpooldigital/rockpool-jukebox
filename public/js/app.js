@@ -43,8 +43,13 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, StreamNotification, StreamData, YouTubeSearch) {
+project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, YouTubeSearch) {
 	var streamId = $routeParams.streamId;
+
+	Socket.setOnStatus(function (eventName) {
+		//console.dir(arg);
+		$scope.socketStatus = eventName ; 
+	});
 
 	function playItem(item) {
 		$scope.hostItem = item; //player (host)

@@ -1,6 +1,8 @@
 <h1 id="streamName">{{ stream.name }}</h1>
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
+<span style="background-color:red;padding:3px;">Socket: {{ socketStatus }} </span>
+
 <div class="clearfix" id="nowPlaying">
 	<!-- <h3>Now playing:</h3> -->
 	<div ng-show="nowPlaying">
@@ -21,6 +23,7 @@
 	<h3>Queue</h3>
 
 	<form name="addItemForm">
+		<p>Enter a URL to a YouTube or Vimeo video, or SoundCloud track</p>
 		<div ng-class="{error: addItemForm.name.$invalid}" >
 			<label>URL <input class="txtUrl" type="url" name="url" ng-model="entry.url" required ng-change="lookupItem()"></label>
 			<span ng-show="addItemForm.url.$error.required" class="help-inline">Required</span>
@@ -28,7 +31,7 @@
 
 		<div>
 			
-			<label>Search YouTube <input type="text" name="yt" ng-model="entry.youTubeQuery" ng-change="searchYouTube()" >
+			or <label>search YouTube <input type="text" name="yt" ng-model="entry.youTubeQuery" ng-change="searchYouTube()" >
 
 			<ul ng-show="entry.youtubeResults">
 				<li ng-repeat="yt in entry.youtubeResults">
