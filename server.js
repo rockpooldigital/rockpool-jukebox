@@ -46,14 +46,14 @@ passport.serializeUser(function(id, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-	console.log("ds for " + id);
+	//console.log("ds for " + id);
 	var users = db.collection('users');
 	users.findOne({ _id: new BSON.ObjectID(id) }, function(err, user){
 		if(err) {
-			console.log("err");
+			//console.log("err");
 			done(err);
 		}	else {
-			console.log("r is " + user);
+			//console.log("r is " + user);
 			done(null, user);
 		}
 	})
@@ -71,17 +71,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
 app.engine('.html', require('ejs').__express);
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/server/views');
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 
 
 io.set('log level', 1); 
 
-require('./notification-sockets').setup(io);
+require('./server/notification-sockets').setup(io);
 
-var auth_controller = require('./controllers/authentication.js').createAuthController(config);
-var streamsCtrl = require('./controllers/streams.js')(db);
+var auth_controller = require('./server/controllers/authentication.js').createAuthController(config);
+var streamsCtrl = require('./server/controllers/streams.js')(db);
 
 app.get('/auth/facebook', auth_controller.auth_facebook);
 app.get('/auth/facebook/callback', auth_controller.auth_facebook_callback);
