@@ -5,15 +5,11 @@ var cheerio = require('cheerio');
 var entities = require("entities");
 
 var queryMedia = function(url, next) {
+	url = url.replace('/#!', '');
 	request(url, function(err, resp, body) {
 		if (err) return next(err);
 
-		var data = {
-			title: "",
-			description: "",
-			url : "",
-			image : ""
-		},  openGraph = {};
+		var data = {},  openGraph = {};
 
 		var $ = cheerio.load(body);
 
@@ -25,18 +21,13 @@ var queryMedia = function(url, next) {
 				if (elem.attribs.property && elem.attribs.property.indexOf("og:") == 0) {
 					openGraph[elem.attribs.property.substring(3)] = value;
 				}
-
-				switch (elem.attribs.property) {
-					case "og:title": data.title = value; break;
-					case "og:description": data.description = value; break;
-					case "og:image": data.image = value; break;
-					case "og:url": data.url = value; break;
-					//case "og:type": data.type = value; break;
-					//case "og:site_name": data.site_name = value; break;
-				}
 			}
 		});
-	
+		
+		data.title = openGraph.title || "Unknown";
+		data.description = openGraph.description || "";
+		data.image = openGraph.image || "";
+		data.url = openGraph.url || "";
 		data.openGraph = openGraph;
 		next(null, data);
 	});
