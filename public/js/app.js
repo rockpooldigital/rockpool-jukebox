@@ -68,10 +68,16 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 
 	$scope.isHostPlaying = false;
 	
+	$scope.items = [];
+
+  //this is a bit lame because it also fires because of itself sorting
+	$scope.$watch('items', function() {
+		$scope.items.sort(streamItemSorter);
+	}, true);
+
 	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
-			$scope.items.sort(streamItemSorter);
 		});		
 	});
 	
@@ -79,7 +85,6 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 		StreamData.addItem(streamId, { url : $scope.newItemLookup.url }, function(saved) {
 			$scope.items.push(saved);
 			StreamNotification.notifyAdd(streamId, saved._id);
-			$scope.items.sort(streamItemSorter);
 		});
 
 		$scope.newItemLookup = null;
@@ -140,7 +145,6 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 		StreamData.submitVote(item._id, weight, function(result) {
 			item.totalVotes = result.newCount;
 			item.currentVote = weight;
-			$scope.items.sort(streamItemSorter);
 
 			StreamNotification.notifyVoted(streamId, item._id);
 
@@ -179,7 +183,6 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
-					$scope.items.sort(streamItemSorter);
 				}
 			});
 		}
@@ -214,7 +217,6 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 				if (item) {
 					itemInSet.totalVotes =  item.totalVotes;
 					itemInSet.currentVote =  item.currentVote;
-					$scope.items.sort(streamItemSorter);
 				}
 			});
 		}
