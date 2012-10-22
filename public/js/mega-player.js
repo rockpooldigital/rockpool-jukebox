@@ -23,7 +23,7 @@ var YouTubeFactory = function() {
 }();
 
 MegaPlayer = function($) {
-	var makeId = function () {
+	function makeId() {
 	    var text = "";
 	    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -32,7 +32,7 @@ MegaPlayer = function($) {
 	    return text;
 	}
 
-	var createYoutubeWrapper = function(container, options) {
+	function createYoutubeWrapper(container, options) {
 		var youtubePlayer = null, notificationEventHandler;
 		
 		return {
@@ -84,48 +84,71 @@ MegaPlayer = function($) {
 		};
 	};
 
-	var createSoundCloudWrapper = function(container, options) {
-		//var widget;
+	function createSoundCloudWrapper(container, options) {
+		//var widget;                //todo: don't store clientId here
+		var  finishedCallback, isLoaded = false, clientId = 'ac784427be84b4f3ba0f0202659afd20';
 		return {
 			hide : function() { $(container).hide(); },
 			show : function() { $(container).show(); },
 			stop : function() {  if (true) { 
 					var widget = SC.Widget(container.find('iframe').get(0));
-					console.log(widget);
-					widget.unbind(SC.Widget.Events.FINISH);
+					widget.pause();
+					//console.log(widget);
+					//widget.unbind(SC.Widget.Events.FINISH);
 					///above throws error from soundcloud api so will just bin it
-					container.empty();
+					//container.empty();
 				}
 			},
 			play: function(url, notifier) { 
-				console.log('play SoundCloud', url); 
-				container.empty();
-				container.attr({
-					width: options.width, 
-					height: options.height 
-				});
-				SC.oEmbed(url, { 
-						auto_play: true,
+				finishedCallback = notifier;
+
+				if (!isLoaded) {
+					SC.initialize({
+						client_id : clientId
+					});
+					container.attr({
 						width: options.width, 
-						height: options.height,
-						iframe: true
-					},
-					function(oEmbed) {
-					  console.log( oEmbed);
+						height: options.height 
+					});
+
+					SC.oEmbed(url, { 
+						iframe: true,
+						auto_play : true
+					}, function(oEmbed) {
 						container.html(oEmbed.html);
 						var widget = SC.Widget(container.find('iframe').get(0));
 						widget.bind(SC.Widget.Events.FINISH , function() {
-							if(notifier) { 
-								notifier({ status : 'finished' }); 
+							if(finishedCallback) { 
+								finishedCallback({ status : 'finished' }); 
 							}
 						});
+						//widget.play();
 						console.log(widget);
-				});
+					});
+					isLoaded = true;
+				} else {
+					//we have to lookup the other type of sound cloud URL.   
+					//because it needs that type here. and only here.
+					var resolveUrl = 'http://api.soundcloud.com/resolve.json'
+						+ '?client_id=' + clientId
+		    		+'&url=' + encodeURIComponent(url);
+		    		+ '&?callback=?';
+
+					$.get(resolveUrl, function(data) {
+						var widget = SC.Widget(container.find('iframe').get(0));
+						widget.load(data.uri, {
+							iframe: true,
+							callback : function() {
+								widget.play();
+							}
+						});
+					});
+				}
 			}
 		};
 	};
 
-	var createVimeoWrapper = function(container, options) {
+	function createVimeoWrapper(container, options) {
 		var videoApi = null, id = makeId();
 		return {
 			hide : function() { $(container).hide(); },
@@ -179,13 +202,13 @@ MegaPlayer = function($) {
 				vimeo : createVimeoWrapper
 			};
 
-			var fireEvent = function(eventName, arg) {
+			 function fireEvent (eventName, arg) {
 				for (var i = 0; i < eventListeners[eventName].length; i++) {
 					eventListeners[eventName][i].call(this, arg);
 				}
 			};
 
-			var getPlayer = function(type) {
+		 function getPlayer (type) {
 				if (players[type]) {
 					return players[type];
 				} else {
