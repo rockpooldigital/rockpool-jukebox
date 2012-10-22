@@ -45,17 +45,17 @@ var queryMedia = function(url, next) {
 
 var processResult = function(item, user) {
 	var result = {
-					_id : item._id,
-					streamId: item.streamId,
-					title: item.title,
-					description : item.description,
-					url : item.url,
-					image: item.image,
-					openGraph : item.openGraph,
-					created : item.created,
-					totalVotes : item.totalVotes,
-					currentVote: 0
-				};
+		_id : item._id,
+		streamId: item.streamId,
+		title: item.title,
+		description : item.description,
+		url : item.url,
+		image: item.image,
+		openGraph : item.openGraph,
+		created : item.created,
+		totalVotes : item.totalVotes,
+		currentVote: 0
+	};
 
   if (item.votes && user) {
   	for (var i=0;i<item.votes.length;i++) {
@@ -238,10 +238,13 @@ module.exports = function(db) {
 			}
 
 			var items = db.collection('items');
-			items.findOne({ _id : new BSON.ObjectID(req.params.id) }, function(err, item) {
+
+			function loadItemCallback(err, item) {
 				if (err) return next(err);
 				if (item.votes) {
-					var matches = item.votes.filter(function(v) { return v.userId.equals(userId);});
+					var matches = item.votes.filter(function(v) { 
+						return v.userId.equals(userId);
+					});
 					//found an existing vote
 					if (matches.length !== 0) {
 						var vote = matches[0];
@@ -255,44 +258,46 @@ module.exports = function(db) {
 							currentSum += weight;
 
 							//remove existing
-							items.findAndModify({ 'votes.userId' : userId, '_id' : item._id },  
-									[['_id', 'asc']],
-									{ '$set' : { 
-											'votes.$.weight' : weight, 
-											'votes.$.created' : new Date(),
-											'totalVotes' : currentSum
-										}
+							items.findAndModify({ 
+									'votes.userId' : userId, 
+									'_id' : item._id 
+								}, [['_id', 'asc']], { '$set' : { 
+										'votes.$.weight' : weight, 
+										'votes.$.created' : new Date(),
+										'totalVotes' : currentSum
 									}
-									, 
-									{ new : true },
-									function (err, saved) {
-										if (err) return next(err);
-										respond(true, null, saved);
-									}
-							)
+								}, { 'new' : true }, function (err, saved) {
+									if (err) return next(err);
+									respond(true, null, saved);
+								});
 							return;
 						}
-					} else  {
-						var currentSum = sumVotes(item);
-						currentSum += weight;
-
-						//add vote
-						items.findAndModify({_id : item._id}, [['_id', 'asc']], { 
-								'$push' : { 
-									'votes' : { 
-										weight: weight , 
-										userId: userId, created : new Date()
-									}
-								},
-								'$set' : { 'totalVotes' : currentSum }
-							}, { new : true }, function(err, saved) {
-								if (err) return next(err);
-								respond(true, null, saved);
-							}
-						);
-					}
+					} 
 				}
-			});
+
+				//create a new vote instead
+				var currentSum = sumVotes(item);
+				currentSum += weight;
+
+				//add vote
+				items.findAndModify({_id : item._id}, [['_id', 'asc']], { 
+						'$push' : { 
+							'votes' : { 
+								weight: weight , 
+								userId: userId, created : new Date()
+							}
+						},
+						'$set' : { 'totalVotes' : currentSum }
+					}, { 'new' : true }, function(err, saved) {
+						if (err) return next(err);
+						respond(true, null, saved);
+					}
+				);
+			}
+
+			items.findOne({ 
+				_id : new BSON.ObjectID(req.params.id) 
+			}, loadItemCallback);
 		}
 	};
 };

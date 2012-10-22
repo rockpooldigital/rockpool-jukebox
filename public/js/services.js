@@ -120,5 +120,26 @@ angular.module('jukeboxServices', ['ngResource'])
 				});
 			}
 		};
-	});
-	
+	})
+.factory('YouTubeSearch', function($http, $rootScope) {
+	return function(q, success, fail) {
+		var url = 'https://gdata.youtube.com/feeds/api/videos?alt=json-in-script&callback=JSON_CALLBACK'
+							+ '&q=' + encodeURIComponent(q)
+							+ '&max-results=10';
+		$http.jsonp(url)
+		.success(function(data) {
+			if (success) {
+				//$rootScope.$apply(function() {
+					success(data);
+				//});
+			}
+		})
+		.error(function() {
+			if (fail) {
+				//$rootScope.$apply(function() {
+				 	fail(data);
+				//});
+			}
+		});
+	}
+});

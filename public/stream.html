@@ -22,8 +22,21 @@
 
 	<form name="addItemForm">
 		<div ng-class="{error: addItemForm.name.$invalid}" >
-			<label>URL <input type="url" name="url" ng-model="entry.url" required ng-change="lookupItem()"></label>
+			<label>URL <input class="txtUrl" type="url" name="url" ng-model="entry.url" required ng-change="lookupItem()"></label>
 			<span ng-show="addItemForm.url.$error.required" class="help-inline">Required</span>
+		</div>
+
+		<div>
+			
+			<label>Search YouTube <input type="text" name="yt" ng-model="entry.youTubeQuery" ng-change="searchYouTube()" >
+
+			<ul ng-show="entry.youtubeResults">
+				<li ng-repeat="yt in entry.youtubeResults">
+					<a ng-click="pickYouTubeResult(yt)">{{ yt.title }}</a>
+
+				</li>
+
+			</ul>
 		</div>
 
 	    <div style="border:1px solid blue;" ng-show="newItemLookup">

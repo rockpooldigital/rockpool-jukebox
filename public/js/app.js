@@ -43,7 +43,7 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, StreamNotification, StreamData) {
+project.controller('Stream', function($scope, $location, $routeParams, StreamNotification, StreamData, YouTubeSearch) {
 	var streamId = $routeParams.streamId;
 
 	function playItem(item) {
@@ -106,6 +106,31 @@ project.controller('Stream', function($scope, $location, $routeParams, StreamNot
 		$scope.newItemLookup = null;
 	};
 
+	$scope.searchYouTube = function() {
+		delay(function() {
+			if ($scope.entry.youTubeQuery.length === 0) { return; }
+			YouTubeSearch($scope.entry.youTubeQuery, function(result) {
+				console.log(result.feed);
+				var filtered = result.feed.entry.map(function(e) {
+					console.log(e);
+					return { 
+						title : e.title['$t'], 
+						url : e.link.filter(function(url) {
+							return url.type == "text/html"
+						})[0].href
+					};
+				});
+
+				$scope.entry.youtubeResults = filtered;
+				//console.log(filtered);
+			});
+		}, 300);
+	};
+
+	$scope.pickYouTubeResult = function(item) {
+		$scope.entry.url = item.url;
+		$scope.lookupItem();
+	}
 
 	$scope.startHostPlaying = function() {
 		$scope.isHostPlaying = true;

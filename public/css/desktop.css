@@ -239,3 +239,7 @@ img.voteActive {
 
 	width : 100px;
 }
+
+input.txtUrl {
+	width: 600px;
+}
