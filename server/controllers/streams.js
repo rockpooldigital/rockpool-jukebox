@@ -92,7 +92,7 @@ module.exports = function(db) {
 			}
 		},
 
-		stream_add : function(req, res, next) {
+		streamAdd : function(req, res, next) {
 			var collection = db.collection('streams');
 			if (!req.body.name)
 			{
@@ -111,7 +111,7 @@ module.exports = function(db) {
 			});		
 		},
 
-		item_new_lookup : function(req, res, next) {
+		itemNewLookup : function(req, res, next) {
 			var url = req.query.url;
 			if (!url) {
 				res.send(400);
@@ -129,7 +129,7 @@ module.exports = function(db) {
 			});
 		},
 
-		item_add : function(req, res, next) {
+		itemAdd : function(req, res, next) {
 			if (!req.body.url || !req.params.streamId)
 			{
 				res.send(400); 
@@ -146,9 +146,7 @@ module.exports = function(db) {
 					title: data.title,
 					description : data.description,
 					url : data.url,
-					//type: req.body.type,
 					image: data.image,
-					//site: req.body.site_name,
 					openGraph : data.openGraph,
 					votes : [],
 					created : new Date(),
@@ -169,7 +167,10 @@ module.exports = function(db) {
 			}
 			
 			db.collection('items')
-			.find({ streamId : new BSON.ObjectID(req.params.streamId), played:  false })
+			.find({ 
+				streamId : new BSON.ObjectID(req.params.streamId), 
+				played:  false 
+			})
 			.sort({ totalVotes: -1, created: 1})
 			.toArray(function(err, result) {
 				if (err) return next(err);
@@ -183,7 +184,10 @@ module.exports = function(db) {
 			}
 
 			db.collection('items')
-			.findOne({ streamId : new BSON.ObjectID(req.params.streamId), _id : new BSON.ObjectID(req.params.id) }, function(err, result) {
+			.findOne({ 
+				streamId : new BSON.ObjectID(req.params.streamId), 
+				_id : new BSON.ObjectID(req.params.id) 
+			}, function(err, result) {
 				if(err) return next(err);
 				res.send(processResult(result, req.user));
 			});
@@ -194,8 +198,7 @@ module.exports = function(db) {
 				res.send(400); return;
 			}
 			var items = db.collection('items');
-			items.update(
-				{ _id : new BSON.ObjectID(req.params.id) },
+			items.update({ _id : new BSON.ObjectID(req.params.id) },
 				{ '$set' : { played: true } },
 				function(err, data) {
 					if (err) return next(err);
@@ -217,77 +220,75 @@ module.exports = function(db) {
 			var userId = req.user._id;
 			//var weight = req.body.weight > 0 ? 1 : -1;
 
-			var sumVotes = function(item) {
-				var sum =0 ;
-				for(var j=0; j<item.votes.length;j++) { sum+=item.votes[j].weight; }
+			function sumVotes(item) {
+				if (typeof(item.votes) === "undefined" || item.votes.length === 0) { return 0 ;}
+				var sum = 0;
+				for (var i=0;i<item.votes.length;i++) {
+					sum+= item.votes[i].weight;
+				}
 				return sum;
 			}
 
-			var respond = function(success, reason, item) {
+			function respond(success, reason, item) {
 				res.send({
-									success: success,
-									reason: reason ? reason : null,
-									newCount : item.totalVotes
-								});
-			};
+					success: success,
+					reason: reason ? reason : null,
+					newCount : item.totalVotes
+				});
+			}
 
 			var items = db.collection('items');
 			items.findOne({ _id : new BSON.ObjectID(req.params.id) }, function(err, item) {
 				if (err) return next(err);
 				if (item.votes) {
-					var found = false;
-					for (var i = 0; i < item.votes.length; i++) {
-						var vote = item.votes[i];
+					var matches = item.votes.filter(function(v) { return v.userId.equals(userId);});
+					//found an existing vote
+					if (matches.length !== 0) {
+						var vote = matches[0];
+						if (vote.weight === weight) {
+							//same vote has already been cast
+							return respond(false, "duplicate", item);
+						} else {
+							//this probably all needs to be done in some sort of transaction or calculated inside mongo
+							var currentSum = sumVotes(item);
+							currentSum -= vote.weight;
+							currentSum += weight;
 
-						if (vote.userId.equals(userId)) {
-							//found an existing vote
-							if (vote.weight === weight) {
-								//same vote has already been cast
-								return respond(false, "duplicate", item);
-							} else {
-								//this probably all needs to be done in some sort of transaction or calculated inside mongo
-								var currentSum = sumVotes(item);
-								currentSum -= vote.weight;
-								currentSum += weight;
-
-								//remove existing
-								items.findAndModify(
-										{ 'votes.userId' : userId, '_id' : item._id },  
-										[['_id', 'asc']],
-										{ '$set' : { 
-												'votes.$.weight' : weight, 
-												'votes.$.created' : new Date(),
-												'totalVotes' : currentSum
-											}
+							//remove existing
+							items.findAndModify({ 'votes.userId' : userId, '_id' : item._id },  
+									[['_id', 'asc']],
+									{ '$set' : { 
+											'votes.$.weight' : weight, 
+											'votes.$.created' : new Date(),
+											'totalVotes' : currentSum
 										}
-										, 
-										{ new : true },
-										function (err, saved) {
-											if (err) return next(err);
-											respond(true, null, saved);
-										}
-								)
-								return;
-							}
-							found = true;
-							break;
+									}
+									, 
+									{ new : true },
+									function (err, saved) {
+										if (err) return next(err);
+										respond(true, null, saved);
+									}
+							)
+							return;
 						}
-					}
-					if (!found) {
+					} else  {
 						var currentSum = sumVotes(item);
 						currentSum += weight;
 
 						//add vote
-						items.findAndModify({_id : item._id}, [['_id', 'asc']], 
-										{ 
-											'$push' : { 'votes' : { weight: weight , userId: userId, created : new Date()}},
-											'$set' : { 'totalVotes' : currentSum }
-										}, 	
-										{ new : true },
-										function(err, saved) {
-											if (err) return next(err);
-											respond(true, null, saved);
-										}
+						items.findAndModify({_id : item._id}, [['_id', 'asc']], { 
+								'$push' : { 
+									'votes' : { 
+										weight: weight , 
+										userId: userId, created : new Date()
+									}
+								},
+								'$set' : { 'totalVotes' : currentSum }
+							}, { new : true }, function(err, saved) {
+								if (err) return next(err);
+								respond(true, null, saved);
+							}
 						);
 					}
 				}

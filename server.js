@@ -1,61 +1,61 @@
-var express = require('express');
-var mongo = require('mongodb'), Server = mongo.Server, Db = mongo.Db;
-var server = new Server('localhost', 27017, {auto_reconnect: true});
-var db = new Db('jukebox', server, { safe : true});
-var MemoryStore = require('connect').session.MemoryStore;
-var passport = require('passport')
-  , FacebookStrategy = require('passport-facebook').Strategy;
-var config = require('./config');
-var BSON = mongo.BSONPure; 
+var  config = require('./config'),
+	express = require('express'),
+	mongo = require('mongodb');
+var server = new  mongo.Server(
+	config.DB_HOST || 'localhost', 
+	config.DB_PORT || 27017, 
+	{ auto_reconnect: true }
+);
+var db = new mongo.Db(
+	config.DB_NAME || 'jukebox', 
+	server, 
+	{ safe : true}
+);
+var MemoryStore = require('connect').session.MemoryStore
+	,passport = require('passport')
+  ,FacebookStrategy = require('passport-facebook').Strategy
+	,BSON = mongo.BSONPure; 
 
-passport.use(new FacebookStrategy({
-    clientID: config.FACEBOOK_APP_ID,
-    clientSecret: config.FACEBOOK_APP_SECRET//,
-  
-  },
-  function(accessToken, refreshToken, profile, done) {
-  	var users = db.collection('users');
-  	users.findOne({ facebook_id : profile.id }, function(err,user) {
-  		if (!user) {
-  			console.log("not found");
-  			users.insert({
-  				facebook_id: profile.id,
-  				name: profile.displayName
-  			}, function(err, result) {
-  				if (err) { return done(err); }
-  				done(null, result[0]._id);
-  			});
-  		} else {
-			console.log("user found");  
+function facebookCallback(accessToken, refreshToken, profile, done) {
+	var users = db.collection('users');
+	users.findOne({ facebook_id : profile.id }, function(err,user) {
+		if (!user) {
+			users.insert({
+				facebook_id: profile.id,
+				name: profile.displayName
+			}, function(err, result) {
+				if (err) { return done(err); }
+				done(null, result[0]._id);
+			});
+		} else {
 			users.update(
 				{ _id: user._id},
 				{ $set:{name : profile.displayName} },
 				function(err,result) {
 					if (err) { return done(err);}
-					else { return done(null, user._id);}
+					done(null, user._id);
 				}
 			);			
-  		}
-  	});
-  }
+		}
+	});
+}
+
+passport.use(new FacebookStrategy({
+    clientID: config.FACEBOOK_APP_ID,
+    clientSecret: config.FACEBOOK_APP_SECRET
+  },
+  facebookCallback
 ));
 
 passport.serializeUser(function(id, done) {
-	console.log(id);
   done(null, id);
 });
 
 passport.deserializeUser(function(id, done) {
-	//console.log("ds for " + id);
 	var users = db.collection('users');
 	users.findOne({ _id: new BSON.ObjectID(id) }, function(err, user){
-		if(err) {
-			//console.log("err");
-			done(err);
-		}	else {
-			//console.log("r is " + user);
-			done(null, user);
-		}
+		if(err) return done(err);
+		done(null, user);
 	})
 });
 
@@ -66,7 +66,12 @@ var app = express()
 
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({ secret:'keyboard cat', store: new MemoryStore({ reapInterval:  60000 * 10 })}));
+app.use(
+	express.session({ 
+		secret:'keyboard cat', 
+		store: new MemoryStore({ reapInterval:  60000 * 10 })
+	})
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
@@ -75,7 +80,6 @@ app.set('views', __dirname + '/server/views');
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 
-
 io.set('log level', 1); 
 
 require('./server/notification-sockets').setup(io);
@@ -83,24 +87,22 @@ require('./server/notification-sockets').setup(io);
 var auth_controller = require('./server/controllers/authentication.js').createAuthController(config);
 var streamsCtrl = require('./server/controllers/streams.js')(db);
 
-app.get('/auth/facebook', auth_controller.auth_facebook);
-app.get('/auth/facebook/callback', auth_controller.auth_facebook_callback);
+app.get('/auth/facebook', auth_controller.authFacebook);
+app.get('/auth/facebook/callback', auth_controller.authFacebookCallback);
 app.get('/logout', auth_controller.logout);
 
 app.get('/data/stream/:id', streamsCtrl.streams);
 app.get('/data/stream', streamsCtrl.streams);
-app.post('/data/stream', streamsCtrl.stream_add);
+app.post('/data/stream', streamsCtrl.streamAdd);
 
-app.post('/data/stream/:streamId/item', streamsCtrl.item_add);
+app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
 
-app.get('/data/stream/:streamId/queryMedia', streamsCtrl.item_new_lookup);
+app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 
-
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
-//app.get('/data/item/:id/vote', streamsCtrl.submitVote);
 
 app.get('/', function(req, res){
 	res.render('app.html', { user : req.user });

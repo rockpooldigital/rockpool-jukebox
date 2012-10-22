@@ -12,12 +12,12 @@ module.exports = {
 		};
 
 		return {
-			auth_facebook:  function(req, res, next) {
+			authFacebook:  function(req, res, next) {
 				return passport.authenticate('facebook', {
 				  callbackURL: getReturnUrl(req)
 				})(req, res, next);
 			},
-			auth_facebook_callback: function(req, res, next) {
+			authFacebookCallback: function(req, res, next) {
 				var url = getReturnUrl(req);
 				return passport.authenticate('facebook', { 
 					successRedirect: req.query.returnUrl, //should be safe now as came back from FB. maybe this is rubbish.
