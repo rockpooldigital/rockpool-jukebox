@@ -97,44 +97,51 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	};
 
 	$scope.lookupItem = function() {
-		if (!$scope.entry.url) { return ; }
+		delay(function() {
+			if (!$scope.entry.url || $scope.entry.url.length < 4) { 
+				return ; 
+			}
 
-		StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
-			$scope.newItemLookup = data;
-			$scope.newItemLoading = false;
-		}, function() {
-			$scope.newItemLoading = false;
-			//alert('Failed to lookup item');
-		});
+			if ($scope.entry.url.indexOf('http') === 0) {
+				StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
+					$scope.newItemLookup = data;
+					$scope.newItemLoading = false;
+				}, function() {
+					$scope.newItemLoading = false;
+				});
 
-		$scope.newItemLoading = true;
-		$scope.newItemLookup = null;
+				$scope.$apply(function() {
+					$scope.newItemLoading = true;
+					$scope.newItemLookup = null;
+				});
+			} else  {
+				YouTubeSearch($scope.entry.url, function(result) {
+					console.log(result.feed);
+					var filtered = result.feed.entry.map(function(e) {
+						console.log(e);
+						return { 
+							title : e.title['$t'], 
+							url : e.link.filter(function(url) {
+								return url.type == "text/html"
+							})[0].href,
+							image : e['media$group']['media$thumbnail'][0].url,
+							views : e['yt$statistics'] ? e['yt$statistics'].viewCount : "?"
+						};
+					});
+
+					$scope.entry.youtubeResults = filtered;
+				});
+			}
+		}, 200);
 	};
 
 	$scope.searchYouTube = function() {
-		delay(function() {
-			if ($scope.entry.youTubeQuery.length === 0) { return; }
-			YouTubeSearch($scope.entry.youTubeQuery, function(result) {
-				console.log(result.feed);
-				var filtered = result.feed.entry.map(function(e) {
-					console.log(e);
-					return { 
-						title : e.title['$t'], 
-						url : e.link.filter(function(url) {
-							return url.type == "text/html"
-						})[0].href,
-						image : e['media$group']['media$thumbnail'][0].url
-					};
-				});
 
-				$scope.entry.youtubeResults = filtered;
-				console.log(filtered);
-			});
-		}, 300);
 	};
 
 	$scope.pickYouTubeResult = function(item) {
 		$scope.entry.url = item.url;
+		$scope.entry.youtubeResults= null;
 		$scope.lookupItem();
 	}
 
