@@ -1,77 +1,90 @@
 <h1 id="streamName">{{ stream.name }}</h1>
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
-<span style="background-color:red;padding:3px;">Socket: {{ socketStatus }} </span>
+<span style="background-color:red;padding:3px; display:none;">Socket: {{ socketStatus }} </span>
 
-<div class="clearfix" id="nowPlaying">
-	<!-- <h3>Now playing:</h3> -->
-	<div ng-show="nowPlaying">
-		<h4 class="title">{{nowPlaying.title}}</h4>
-		<span class="thumb">
-			<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
-		</span>
-		<!-- <p>{{nowPlaying.description}}</p> -->
+
+<section id="topRow" class="clearfix">
+
+	<div class="clearfix" id="nowPlaying">
+		
+		<div ng-show="nowPlaying">	
+			<h2>Now playing</h2>		
+			<span class="thumb">
+				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+			</span>
+			<h4 class="title">{{nowPlaying.title}}</h4>
+			<p class="desc">{{nowPlaying.description}}</p>
+			<p class="votes"><em>Votes:</em> {{nowPlaying.totalVotes}}</p>
+		</div>
+
+		<div ng-show="!nowPlaying">
+			<h3>Nothing currently playing</h3>
+		</div>
 	</div>
-</div>
+
+	<form name="addItemForm" id="addItemForm" class="clearfix">
+		
+		<legend>
+			<span>Add to the playlist - Search YouTube or enter a Vimeo, SoundCloud or YouTube URL</span>
+		</legend>
+
+		<div id="resultsWrap">
+			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'Hello Lazarus' or http://vimeo.com/yourVideo" />	
+				
+			<div id="ytResults" ng-show="entry.youtubeResults">
+				<ul>
+					<li ng-repeat="yt in entry.youtubeResults" style="clear:left;">
+						<a ng-click="pickYouTubeResult(yt)" class="clearfix">
+							<img src="{{ yt.image }}" alt="{{yt.title}}" class="thumb" />
+							<strong class="title">{{ yt.title }}</strong>
+							<em class="views">{{ yt.views}} views</em>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	    <div ng-show="newItemLookup" id="preview" class="clearfix">
+	    	<div class="item">
+		    	<span class="thumb"><img ng-src="{{newItemLookup.image}}" alt="" class="art" /></span>
+		    	<h3 class="title">{{newItemLookup.title}}</h3>
+		    	<p class="desc">{{newItemLookup.description}}</p>
+	    	</div>
+	    	<button ng-click="addItem()" class="btn btn-primary" id="addItem">Add</button>	
+	    </div>
+
+	    <div ng-show="newItemLoading" class="loading">
+	    	Please wait...
+	    </div>
+		
+	</form>
+
+</section>
+
 
 <div class="module" style="display:none;">
 	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
 </div> 
 
-<div id="queue" class="module">
+<div id="queue" class="clearfix">
+	
+	<section id="playlist">
+		<p ng-show="!items.length">No items yet</p>
 
-	<h3>Queue</h3>
-
-	<form name="addItemForm">
-		<p>Enter a URL to a YouTube or Vimeo video, or SoundCloud track</p>
-		<div ng-class="{error: addItemForm.name.$invalid}" >
-			<label>URL <input class="txtUrl" type="url" name="url" ng-model="entry.url" required ng-change="lookupItem()"></label>
-			<span ng-show="addItemForm.url.$error.required" class="help-inline">Required</span>
-		</div>
-
-		<div>
-			
-			or <label>search YouTube <input type="text" name="yt" ng-model="entry.youTubeQuery" ng-change="searchYouTube()" >
-
-			<ul ng-show="entry.youtubeResults">
-				<li ng-repeat="yt in entry.youtubeResults" style="clear:left;">
-						<img src="{{ yt.image }}" alt="{{yt.title}}" height="30" style="float:left;">
-					<a ng-click="pickYouTubeResult(yt)">{{ yt.title }}</a>
-
-				</li>
-
-			</ul>
-		</div>
-
-	    <div style="border:1px solid blue;" ng-show="newItemLookup">
-	    	<h6>{{newItemLookup.title}}</h6>
-	    	<p>{{newItemLookup.description}}</p>
-	    	<img ng-src="{{newItemLookup.image}}" alt="" />
-	    </div>
-
-	    <div style="border:1px solid blue;" ng-show="newItemLoading">
-	    	Please wait...
-	    </div>
-
-		<button ng-click="addItem()" ng-disabled="!newItemLookup"
-	          class="btn btn-primary">Add Item</button>
-	</form>
-
-	<p ng-show="!items.length">No items yet</p>
-
-	<ul id="stream-items" ng-show="items.length">
-		<li ng-repeat="item in items" class="greyGrad clearfix">
-			<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
-			<h5>{{item.title}}</h5>
-			<!--<p>{{item.description}}</p>-->
-
-
-			<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
-							<span style="font-size:1.6em;">{{item.totalVotes || 0}}</span>
-
-						<img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" />
-		</li>
-	</ul>
+		<ul id="stream-items" ng-show="items.length">
+			<li ng-repeat="item in items" class="item greyGrad clearfix">
+				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
+				<span class="info">
+					<h5>{{item.title}}</h5>
+					<!--<p>{{item.description}}</p>-->
+					<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
+					<span style="font-size:1.6em;">{{item.totalVotes || 0}}</span>
+					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
+				</span>
+			</li>
+		</ul>
+	</section>
 
 </div>
 
