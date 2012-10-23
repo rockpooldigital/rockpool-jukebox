@@ -13,11 +13,11 @@
 		<!-- <p>{{nowPlaying.description}}</p> -->
 	</div>
 </div>
-<!--
-<div class="module">
+
+<div class="module" style="display:none;">
 	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
 </div> 
--->
+
 <div id="queue" class="module">
 
 	<h3>Queue</h3>
@@ -34,7 +34,8 @@
 			or <label>search YouTube <input type="text" name="yt" ng-model="entry.youTubeQuery" ng-change="searchYouTube()" >
 
 			<ul ng-show="entry.youtubeResults">
-				<li ng-repeat="yt in entry.youtubeResults">
+				<li ng-repeat="yt in entry.youtubeResults" style="clear:left;">
+						<img src="{{ yt.image }}" alt="{{yt.title}}" height="30" style="float:left;">
 					<a ng-click="pickYouTubeResult(yt)">{{ yt.title }}</a>
 
 				</li>

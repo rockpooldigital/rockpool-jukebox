@@ -122,12 +122,13 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 						title : e.title['$t'], 
 						url : e.link.filter(function(url) {
 							return url.type == "text/html"
-						})[0].href
+						})[0].href,
+						image : e['media$group']['media$thumbnail'][0].url
 					};
 				});
 
 				$scope.entry.youtubeResults = filtered;
-				//console.log(filtered);
+				console.log(filtered);
 			});
 		}, 300);
 	};
