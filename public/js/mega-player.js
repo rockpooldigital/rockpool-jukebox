@@ -47,6 +47,7 @@ MegaPlayer = function($) {
 					var match = /\?v=([^&]+)/i.exec(url);
 					player.stopVideo();
 					player.cueVideoById(match[1]);
+					player.setPlaybackQuality('hd720');
 					player.playVideo();
 				};
 
@@ -160,14 +161,13 @@ MegaPlayer = function($) {
 			play: function(url, notifier) { 
 				var match = /vimeo.com\/(\d+)/i.exec(url);
 				var videoId = match[1];
-				var iframe = $('<iframe/>')
-						.attr({ 
-							id : id, 
-							width: options.width,
-							height: options.height,
-							frameborder: '0',
-							src: 'http://player.vimeo.com/video/'+ videoId +'?api=1&player_id=' + id
-						});
+				var iframe = $('<iframe/>').attr({ 
+					id : id, 
+					width: options.width,
+					height: options.height,
+					frameborder: '0',
+					src: 'http://player.vimeo.com/video/'+ videoId +'?api=1&player_id=' + id
+				});
 
 				container.empty();
 				container.append(iframe);

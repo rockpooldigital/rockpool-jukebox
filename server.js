@@ -16,6 +16,19 @@ var MemoryStore = require('connect').session.MemoryStore
   ,FacebookStrategy = require('passport-facebook').Strategy
 	,BSON = mongo.BSONPure; 
 
+db.open(function(err, db) {
+	if (err) { console.log(err); return; }
+	db.ensureIndex('items', {
+		streamId : 1,
+		played : 0
+	}, {
+		unique:false,
+		safe : true,
+	}, function(err, result) {
+		console.log(err|| result);
+	});
+});
+
 function facebookCallback(accessToken, refreshToken, profile, done) {
 	var users = db.collection('users');
 	users.findOne({ facebook_id : profile.id }, function(err,user) {
