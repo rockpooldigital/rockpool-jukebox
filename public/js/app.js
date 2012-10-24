@@ -97,11 +97,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			StreamNotification.notifyAdd(streamId, saved._id);
 			if (closeResults) {
 				$scope.entry.youtubeResults = null;
+				$scope.entry.url = "";
 			}
 		});
-
-		$scope.newItemLookup = null;
-		$scope.entry.url = "";
 	};
 
 	$scope.lookupItem = function() {
@@ -123,6 +121,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 				});
 			} else  {
 				YouTubeSearch($scope.entry.url, function(result) {
+					if (!result) { return; }
 					//console.log(result.feed);
 					var filtered = result.feed.entry.map(function(e) {
 						//console.log(e);
@@ -222,6 +221,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
+					sortItems();
 				}
 			});
 		}
