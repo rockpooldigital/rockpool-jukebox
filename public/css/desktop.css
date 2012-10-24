@@ -96,7 +96,6 @@ textarea {resize: vertical;}
 	border-radius:3px;
 	overflow: hidden;
 }
-
 #stream-items p, 
 #stream-items h5 {
 	margin:1px 0 0 0; 
@@ -110,7 +109,7 @@ textarea {resize: vertical;}
 	overflow: hidden;
 }
 #stream-items .thumb img{
-	width: 100%;	
+	height: 100%;	
 }
 
 
@@ -268,7 +267,8 @@ textarea {resize: vertical;}
 	border-bottom-right-radius: 1em;
 	border-top: 0;
 	box-shadow: 2px 2px 15px #CCC;
-	z-index: 2;
+	z-index: 3;
+	padding:10px 0;
 }
 #ytResults ul{
 	margin: 0;
@@ -281,11 +281,35 @@ textarea {resize: vertical;}
 	list-style: none;
 }
 #ytResults li a{
-	display: block;
+	float: left;
+	width: 60%;
 	padding: .5em 10px;	
 	text-decoration: none;
 }
-#ytResults li a:hover{
+
+#ytResults li {
+
+/*property duration timing-function delay*/
+	-webkit-transition:all 0.2s;
+	-moz-transition:all 0.2s;
+	-ms-transition:all 0.2s;
+	-o-transition:all 0.2s;
+	transition:all 0.2s;
+}
+
+#ytResults li.adding {
+	opacity: 0.6;	
+}
+#ytResults li.adding,
+#ytResults li.adding .addToPlaylist {
+	cursor: wait;
+}
+
+#ytResults li.added {
+	display:none;
+}
+
+#ytResults li:hover{
 	background: #fff;
 }
 #ytResults li .thumb{
@@ -302,7 +326,17 @@ textarea {resize: vertical;}
 #ytResults li .views{
 	float: right;	
 }
-
+#ytResults li .addToPlaylist {
+	float: right;
+	margin:0 10px;	
+	cursor: pointer;
+}
+#ytResults .close {
+	position: absolute;
+	top: -18px;
+	right: -16px;
+	cursor: pointer;
+}
 
 
 /*scrollable playlist*/
@@ -310,26 +344,54 @@ textarea {resize: vertical;}
 	/*height: 50vh;
 	overflow-y: scroll;*/
 }
+body{counter-reset: my-awesome-counter;}
+#stream-items h5{
+	counter-increment: my-awesome-counter;
+}
+#stream-items h5:before{
+	padding-right: 10px;	
+	content: counter(my-awesome-counter);
+}
 #stream-items .item { 
 	float: left;
-	width: 6%;
-	padding:3% 0; /*squares*/
+	width: 12.28125%;
+	padding:6.140625% 0; /*squares*/
 	position: relative;
-	margin: 0 .5% .5% 0;
+	margin: 0 .25% .25% 0;
 }
 #stream-items .item:nth-child(1),
 #stream-items .item:nth-child(2),
 #stream-items .item:nth-child(3),
-#stream-items .item:nth-child(4) {
-	width: 16%;
+#stream-items .item:nth-child(4),
+#stream-items .item:nth-child(5),
+#stream-items .item:nth-child(6) {
+	width: 16.25%;
 	margin-right:.5%;
-	padding:8% 0;	/*squares*/
+	padding:8.125% 0;	/*squares*/
 }
-#stream-items .item:nth-child(4) {}
+#stream-items .item:nth-child(8n+6) {margin-right: 0;}
+
 
 #stream-items .voteUp {
-	height: 20px;
+	height: 1.8em;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	margin: 0;
+	z-index: 2;
+	opacity: 0.4;
+	cursor: pointer;
+	-webkit-transition:opacity 0.2s;
+	-moz-transition:opacity 0.2s;
+	-ms-transition:opacity 0.2s;
+	-o-transition:opacity 0.2s;
+	transition:opacity 0.2s;
 }
+#stream-items .voteActive.voteUp,
+#stream-items .voteUp:hover {
+	opacity: 1;
+}
+
 /*#stream-items .voteDown {
 	height: 20px;	
 }*/
@@ -340,29 +402,45 @@ textarea {resize: vertical;}
 	padding: 5px 5px 5px 0;
 }
 #stream-items .thumb,
-#stream-items .info {
+#stream-items .info,
+#stream-items .votes  {
 	position: absolute;
-	top: 0;
-	left:0;
 	width: 100%;
-	height: 100%;
 }
 #stream-items .thumb{
 	z-index: 1;
+	top: 0;
+	left:0;
+	height: 100%;
 }
 #stream-items .info {
 	display:block;	
-	padding: 20px;
+	bottom: 0;
+	left:0;	
+	padding: 10px;
 	color: #eee;
-	background: rgba(0,0,0,0.8);
-
-	-webkit-transition:all 0.3s;
-	opacity: 0;
+	background: rgba(0,0,0,0.5);
+	opacity: 0.7;
+	z-index: 2;
+	/*transition:all 0.5s;*/
 }
 #stream-items .item:hover .info {	
 	opacity: 1;
-	z-index: 2;
 }
+#stream-items .votes {
+	width: auto;
+	top: 10px;
+	right: 10px;
+	z-index: 2;
+	padding: .125em .5em;
+	font-weight: bold;
+	background: white;
+	border-radius: .75em;
+	opacity: 0.8;
+	min-width: 1.6em;
+	text-align: center;
+}
+
 /** Media Queries for Responsive Design. Theses examples override the primary ('mobile first') styles. **/
 
 /** TABLET OVERRIDES **/

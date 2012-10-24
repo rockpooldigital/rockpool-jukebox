@@ -34,29 +34,18 @@
 				
 			<div id="ytResults" ng-show="entry.youtubeResults">
 				<ul>
-					<li ng-repeat="yt in entry.youtubeResults" style="clear:left;">
-						<a ng-click="pickYouTubeResult(yt)" class="clearfix">
+					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }" class="clearfix">
+						<a ng-click="addItem(yt, true)" class="clearfix">
 							<img src="{{ yt.image }}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
-							<em class="views">{{ yt.views}} views</em>
 						</a>
+						<img src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
+						<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} views</em>
 					</li>
 				</ul>
+				<img src="/img/close.png" alt="Close" class="close" ng-click="closeSearchResults()"/>
 			</div>
 		</div>
-
-	    <div ng-show="newItemLookup" id="preview" class="clearfix">
-	    	<div class="item">
-		    	<span class="thumb"><img ng-src="{{newItemLookup.image}}" alt="" class="art" /></span>
-		    	<h3 class="title">{{newItemLookup.title}}</h3>
-		    	<p class="desc">{{newItemLookup.description}}</p>
-	    	</div>
-	    	<button ng-click="addItem()" class="btn btn-primary" id="addItem">Add</button>	
-	    </div>
-
-	    <div ng-show="newItemLoading" class="loading">
-	    	Please wait...
-	    </div>
 		
 	</form>
 
@@ -78,10 +67,10 @@
 				<span class="info">
 					<h5>{{item.title}}</h5>
 					<!--<p>{{item.description}}</p>-->
-					<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
-					<span style="font-size:1.6em;">{{item.totalVotes || 0}}</span>
 					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
 				</span>
+				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
+				<span class="votes">{{item.totalVotes || 0}}</span>
 			</li>
 		</ul>
 	</section>

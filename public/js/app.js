@@ -21,8 +21,10 @@ function streamItemSorter(a,b) {
 	//temp hack
 	if (typeof(a.totalVotes)==="undefined") a.totalVotes = 0;
 	if (typeof(b.totalVotes)==="undefined") b.totalVotes = 0;
-	if (a.totalVotes != b.totalVotes) return b.totalVotes - a.totalVotes;
-	return new Date(a.created) - new Date(b.created);
+
+	if (a.totalVotes != b.totalVotes) return b.totalVotes > a.totalVotes ? 1 : -1;
+
+	return (new Date(a.created) > new Date(b.created)) ? 1 : -1;
 }
 
 project.config(function($routeProvider) {
@@ -56,7 +58,6 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		$scope.nowPlaying = item; // display
 
 		StreamNotification.notifyPlay($scope.stream._id, $scope.hostItem._id);
-		
 		//todo save play directly via post.
 	};
 
@@ -71,25 +72,32 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			}		
 	};
 
+	function sortItems() {
+		$scope.items.sort(streamItemSorter)
+	}
+
 	$scope.isHostPlaying = false;
 	
 	$scope.items = [];
 
-  //this is a bit lame because it also fires because of itself sorting
-	$scope.$watch('items', function() {
-		$scope.items.sort(streamItemSorter);
-	}, true);
-
 	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
+			sortItems();
 		});		
 	});
 	
-	$scope.addItem = function() {
-		StreamData.addItem(streamId, { url : $scope.newItemLookup.url }, function(saved) {
+	$scope.addItem = function(item, closeResults) {
+		item.adding = true;
+		StreamData.addItem(streamId, { url : item.url }, function(saved) {
+			item.added=  true;
+			item.adding = false;
 			$scope.items.push(saved);
+			sortItems();
 			StreamNotification.notifyAdd(streamId, saved._id);
+			if (closeResults) {
+				$scope.entry.youtubeResults = null;
+			}
 		});
 
 		$scope.newItemLookup = null;
@@ -104,21 +112,20 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 			if ($scope.entry.url.indexOf('http') === 0) {
 				StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
-					$scope.newItemLookup = data;
-					$scope.newItemLoading = false;
-				}, function() {
-					$scope.newItemLoading = false;
+					$scope.entry.youtubeResults=[data];
+					//hide spinner
+				}, function() { // (error)
+					//hide spinner
 				});
 
 				$scope.$apply(function() {
-					$scope.newItemLoading = true;
-					$scope.newItemLookup = null;
+					//show spinner
 				});
 			} else  {
 				YouTubeSearch($scope.entry.url, function(result) {
-					console.log(result.feed);
+					//console.log(result.feed);
 					var filtered = result.feed.entry.map(function(e) {
-						console.log(e);
+						//console.log(e);
 						return { 
 							title : e.title['$t'], 
 							url : e.link.filter(function(url) {
@@ -135,14 +142,8 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		}, 200);
 	};
 
-	$scope.searchYouTube = function() {
-
-	};
-
-	$scope.pickYouTubeResult = function(item) {
-		$scope.entry.url = item.url;
-		$scope.entry.youtubeResults= null;
-		$scope.lookupItem();
+	$scope.closeSearchResults = function() {
+		$scope.entry.youtubeResults = null;
 	}
 
 	$scope.startHostPlaying = function() {
@@ -185,7 +186,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			item.currentVote = weight;
 
 			StreamNotification.notifyVoted(streamId, item._id);
-
+			sortItems();
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
@@ -221,6 +222,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
+					sortItems();
 				}
 			});
 		}
@@ -255,6 +257,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 				if (item) {
 					itemInSet.totalVotes =  item.totalVotes;
 					itemInSet.currentVote =  item.currentVote;
+					sortItems();
 				}
 			});
 		}
