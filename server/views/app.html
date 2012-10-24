@@ -26,12 +26,15 @@
 
   </head>
   <body>
-    <%if (!user) { %>
-      <a id="login" href="/auth/facebook">Login with Facebook</a>
-    <% } else { %>Hello <%= user.name %>
-      <a href="/logout">Logout</a>
-    <% } %>
+    <header id="header">
+      <img src="/img/radio-icon.jpg" alt="" id="logo" />
 
+      <%if (!user) { %>
+        <a id="login" href="/auth/facebook">Login with Facebook</a>
+      <% } else { %>Hello <%= user.name %>
+        <a href="/logout">Logout</a>
+      <% } %>
+    </header>
     <script>
       $(function() {
         $('#login').click(function() {
