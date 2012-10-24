@@ -34,31 +34,18 @@
 				
 			<div id="ytResults" ng-show="entry.youtubeResults">
 				<ul>
-					<li ng-repeat="yt in entry.youtubeResults" style="clear:left;">
-						<a ng-click="pickYouTubeResult(yt)" class="clearfix">
+					<li ng-repeat="yt in entry.youtubeResults" style="clear:left;" ng-class="{ added : yt.added , adding : yt.adding }">
+						<a ng-click="addItem(yt, true)" class="clearfix">
 							<img src="{{ yt.image }}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
-							<img src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" />
-							<em class="views">{{ yt.views}} views</em>
+							<img src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
+							<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} views</em>
 						</a>
 					</li>
 				</ul>
-				<img src="/img/close.png" alt="Close" class="close" />
+				<img src="/img/close.png" alt="Close" class="close" ng-click="closeSearchResults()"/>
 			</div>
 		</div>
-
-	    <div ng-show="newItemLookup" id="preview" class="clearfix">
-	    	<div class="item">
-		    	<span class="thumb"><img ng-src="{{newItemLookup.image}}" alt="" class="art" /></span>
-		    	<h3 class="title">{{newItemLookup.title}}</h3>
-		    	<p class="desc">{{newItemLookup.description}}</p>		    	
-	    	</div>
-	    	<button ng-click="addItem()" class="btn btn-primary" id="addItem">Add</button>	
-	    </div>
-
-	    <div ng-show="newItemLoading" class="loading">
-	    	Please wait...
-	    </div>
 		
 	</form>
 
