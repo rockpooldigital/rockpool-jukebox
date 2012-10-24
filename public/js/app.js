@@ -95,7 +95,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			$scope.items.push(saved);
 			sortItems();
 			StreamNotification.notifyAdd(streamId, saved._id);
-			if (closeResults) {
+			if (closeResults || $scope.entry.youtubeResults.length <= 1) {
 				$scope.entry.youtubeResults = null;
 				$scope.entry.url = "";
 			}
