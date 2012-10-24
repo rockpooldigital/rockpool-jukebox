@@ -36,10 +36,10 @@
 				<ul>
 					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }" class="clearfix">
 						<a ng-click="addItem(yt, true)" class="clearfix">
-							<img src="{{ yt.image }}" alt="{{yt.title}}" class="thumb" />
+							<img ng-src="{{yt.image}}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
 						</a>
-						<img src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
+						<img ng-src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
 						<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} views</em>
 					</li>
 				</ul>
