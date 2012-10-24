@@ -1,32 +1,32 @@
 <h1 id="streamName">{{ stream.name }}</h1>
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
-<span style="background-color:red;padding:3px; display:none;">Socket: {{ socketStatus }} </span>
 
+<div id="debug" style="display:none;">
+	<span style="background-color:red;padding:3px;">Socket: {{ socketStatus }} </span>
+	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
+</div>
 
 <section id="topRow" class="clearfix">
+	
+	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
+		<h2 id="onNow">Now playing</h2>		
+		<span class="thumb">
+			<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+		</span>
+		<h4 class="title">{{nowPlaying.title}}</h4>
+		<p class="desc">{{nowPlaying.description}}</p>
+		<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
+	</div>
 
-	<div class="clearfix" id="nowPlaying">
-		
-		<div ng-show="nowPlaying">	
-			<h2>Now playing</h2>		
-			<span class="thumb">
-				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
-			</span>
-			<h4 class="title">{{nowPlaying.title}}</h4>
-			<p class="desc">{{nowPlaying.description}}</p>
-			<p class="votes"><em>Votes:</em> {{nowPlaying.totalVotes}}</p>
-		</div>
-
-		<div ng-show="!nowPlaying">
-			<h3>Nothing currently playing</h3>
-		</div>
+	<div class="clearfix" id="nowPlaying" ng-show="!nowPlaying">
+		<h3>Nothing currently playing</h3>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
-		
+		<h2>Add to the playlist</h2>
 		<legend>
-			<span>Add to the playlist - Search YouTube or enter a Vimeo, SoundCloud or YouTube URL</span>
+			<p>Search YouTube or enter a Vimeo, SoundCloud or YouTube URL</p>
 		</legend>
 
 		<div id="resultsWrap">
@@ -51,21 +51,16 @@
 
 </section>
 
-
-<div class="module" style="display:none;">
-	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
-</div> 
-
 <div id="queue" class="clearfix">
 	
 	<section id="playlist">
 		<p ng-show="!items.length">No items yet</p>
-
+		<p id="next">Up next ...</p>
 		<ul id="stream-items" ng-show="items.length">
 			<li ng-repeat="item in items" class="item greyGrad clearfix">
 				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 				<span class="info">
-					<h5>{{item.title}}</h5>
+					<h4 class="title">{{item.title}}</h4>
 					<!--<p>{{item.description}}</p>-->
 					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
 				</span>
@@ -77,7 +72,7 @@
 
 </div>
 
-<div class="module">
+<div id="host" class="clearfix">
 	<h3>Host</h3>
 	<p>Only use if you want to host audio</p>
 	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>

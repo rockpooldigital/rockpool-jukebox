@@ -8,14 +8,13 @@
 
 
 <form name="addStreamForm">
-	<h2>Add Stream</h2>
+	<h2>Start a new stream...</h2>
 	<div ng-class="{error: addStreamForm.name.$invalid}" >
-		<label>Name <input type="text" name="name" ng-model="stream.name" required size="50" ></label>
+		<label>Name <input type="text" class="txt" name="name" ng-model="stream.name" required size="50" placeholder="e.g. 'My Awesome Playlist'" ></label>
 		<span ng-show="addStreamForm.name.$error.required" class="help-inline">
 	        Required
 	    </span>
 	</div>
 
-	<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid"
-          class="btn btn-primary">Add Item</button>
+	<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid" class="btn btn-primary">Add Item</button>
 </form>

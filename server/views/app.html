@@ -21,18 +21,22 @@
     <script src="/js/directives.js"></script>
     <script src="/js/app.js"></script>
     
+    <!-- Google Font pairings - http://bit.ly/qCTNeX -->
+    <!-- Lobster & Cabin -->
+    <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+    
     <link rel="stylesheet" type="text/css" href="/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/css/desktop.css">
 
   </head>
   <body>
-    <header id="header">
+    <header id="header" class="clearfix">
       <img src="/img/radio-icon.jpg" alt="" id="logo" />
-
       <%if (!user) { %>
         <a id="login" href="/auth/facebook">Login with Facebook</a>
-      <% } else { %>Hello <%= user.name %>
-        <a href="/logout">Logout</a>
+      <% } else { %>
+        <p id="loggedIn">Hello <%= user.name %> <a href="/logout" id="logout">Logout</a></p>
       <% } %>
     </header>
     <script>
