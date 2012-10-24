@@ -222,6 +222,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
 				if (item) {
 					$scope.items.push(item);
+					sortItems();
 				}
 			});
 		}
