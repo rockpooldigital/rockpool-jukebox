@@ -484,6 +484,7 @@ textarea {resize: vertical;}
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-shadow:1px 1px 1px #fff;
 }
 #stream-items .thumb,
 #stream-items .info,
