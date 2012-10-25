@@ -266,6 +266,7 @@ textarea {resize: vertical;}
 	color: white;
 	font-family: 'Lobster', Georgia, Times, serif;
 	text-shadow: 1px 1px 0px #666;
+	box-shadow: 2px 2px 2px #000;
 }
 
 #nowPlaying .title{
@@ -475,6 +476,7 @@ textarea {resize: vertical;}
 	color: #fff;
 	font-family: 'Lobster', Georgia, Times, serif;
 	text-shadow: 1px 1px 0px #666;
+	box-shadow: 2px 2px 2px #000;
 }
 #stream-items h5{
 	counter-increment: my-awesome-counter;
