@@ -209,7 +209,7 @@ textarea {resize: vertical;}
 #stream-items .thumb img{
 	height: 100%;	
 	position: relative;
-	left: -40; /* not sure how this centres it? should be 50% */
+	left: -40%; /* not sure how this centres it? should be 50% */
 }	
 
 #btStreams {
