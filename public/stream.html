@@ -73,10 +73,10 @@
 </div>
 
 <div id="host" class="clearfix">
-	<h3>Host</h3>
-	<p>Only use if you want to host audio</p>
-	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start</button>
-	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop</button>
+	<h2>Host controls</h2>
+	<p><em>Only use if you want to host the stream (one at a time)</em></p>
+	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start stream</button>
+	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop stream</button>
 
 	<player item="hostItem" on-finish="hostFinishedPlaying()"></player>
 

@@ -508,7 +508,7 @@ textarea {resize: vertical;}
 	right: 5px;
 	margin: 0;
 	z-index: 2;
-	opacity: 0.8;
+	opacity: 0.65;
 	cursor: pointer;
 	-webkit-transition:all 0.2s;
 	-moz-transition:all 0.2s;
@@ -608,7 +608,11 @@ textarea {resize: vertical;}
 
 /** Host / Admin **/
 #host{
-	display: none;
+	/*display: none;*/
+	margin-top: 2em;
+	padding: 10px;
+	border: 2px solid #ccc;
+
 }
 
 /** Media Queries for Responsive Design. Theses examples override the primary ('mobile first') styles. **/
