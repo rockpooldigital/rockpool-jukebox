@@ -277,19 +277,21 @@ textarea {resize: vertical;}
 	float: left;
 	position: relative;
 	width: 41%;
-	padding: 10% 0;
 	margin-right: 10px;
 	overflow: hidden;
-	text-align: center;
-	border-radius: 0;
 	border: 2px solid #000;
+
 }
 #nowPlaying .art{
-	position:absolute;
+	/*position:absolute;
 	top:0;
 	left: 0;
 	height: 100%;
-	width: 100%;	
+	width: 100%;	*/
+
+	position: relative;
+	height: 100%;
+	left: -40%;
 }
 #nowPlaying .votes em{
 	font-style: normal;
@@ -456,7 +458,8 @@ textarea {resize: vertical;}
 }
 
 
-/*scrollable playlist*/
+/*The playlist*/
+
 #playlist {
 	/*height: 50vh;
 	overflow-y: scroll;*/
@@ -465,7 +468,8 @@ textarea {resize: vertical;}
 #playlist #next {
 	position: absolute;
 	left: -4px;
-	top: 6em;
+	top: 3em;
+	top: 6vw; /* if supported, set to 6% of viewport width (vertical middle of cube) */
 	background: #57BAEA;
 	padding: 10px;
 	border-top-right-radius: .5em;
@@ -506,7 +510,8 @@ textarea {resize: vertical;}
 
 
 #stream-items .voteUp {
-	height: 2.7em;
+	height: 20%;
+	min-height: 20px;
 	position: absolute;
 	top: 5px;
 	right: 5px;
@@ -657,10 +662,10 @@ textarea {resize: vertical;}
 	}*/
 
 	#stream-items .item { 
+		position: relative;
 		float: left;
 		width: 12.28125%;
 		padding:6.140625% 0; /*squares*/
-		position: relative;
 		margin: 0 .25% .25% 0;
 	}
 	#stream-items .item:nth-child(1),
@@ -692,6 +697,12 @@ textarea {resize: vertical;}
 	#stream-items .thumb img{
 		width: 100%;	
 	}*/
+	#topRow {
+		margin-bottom: 4.5em;
+	}
+	#playlist #next {
+		top:-2.8em;
+	}
 
 }
 
