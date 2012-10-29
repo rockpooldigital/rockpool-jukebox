@@ -11,12 +11,16 @@
 	
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
 		<h2 id="onNow">Now playing</h2>		
-		<span class="thumb">
-			<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
-		</span>
-		<h4 class="title">{{nowPlaying.title}}</h4>
-		<p class="desc">{{nowPlaying.description}}</p>
-		<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
+		<aside class="thumbWrap">
+			<span class="thumb">
+				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+			</span>
+		</aside>
+		<article class="infoWrap">
+			<h4 class="title">{{nowPlaying.title}}</h4>
+			<p class="desc">{{nowPlaying.description}}</p>
+			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
+		</article>
 	</div>
 
 	<div class="clearfix" id="nowPlaying" ng-show="!nowPlaying">
@@ -79,4 +83,11 @@
 
 	<player item="hostItem" on-finish="hostFinishedPlaying()"></player>
 
+</div>
+
+<a href="#" id="showHideFeedback">Feedback</a>
+<div id="feedback" class="clearfix">
+	<h2>Help improve the Jukebox</h2>
+	<p>Some content here</p>			
+	<a href="#" class="close"><img src="/img/close.png" alt="Close" class="close" ng-click="closeSearchResults()"/></a>
 </div>

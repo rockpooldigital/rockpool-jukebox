@@ -192,7 +192,7 @@ textarea {resize: vertical;}
 	padding:0;
 	border: 2px solid #000;
 	border-radius:3px;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 #stream-items p, 
 #stream-items h5 {
@@ -273,25 +273,34 @@ textarea {resize: vertical;}
 	font-size: 1.3em;
 	margin:0 0 .5em 0;
 }
-#nowPlaying .thumb{
+#nowPlaying .thumbWrap {
 	float: left;
+	display: block;
+	width: 41%; /* try to match the blocks underneath */
+	margin-right: 1%;
+	overflow: hidden;
+}
+#nowPlaying .infoWrap {
+	float: left;
+	width: 58%;
+}
+#nowPlaying .thumb{
 	position: relative;
-	width: 41%;
-	margin-right: 10px;
+	display: block;
+	width: 100%;	
 	overflow: hidden;
 	border: 2px solid #000;
-
 }
 #nowPlaying .art{
+	position: relative;
+	width: 100%;
 	/*position:absolute;
 	top:0;
 	left: 0;
 	height: 100%;
 	width: 100%;	*/
 
-	position: relative;
-	height: 100%;
-	left: -40%;
+	/*height: 100%;*/
 }
 #nowPlaying .votes em{
 	font-style: normal;
