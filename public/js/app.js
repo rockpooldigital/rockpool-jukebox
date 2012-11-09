@@ -45,7 +45,7 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, YouTubeSearch) {
+project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, YouTubeSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
 
 	Socket.setOnStatus(function (eventName) {
@@ -196,10 +196,12 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			//alert("you voted for item " + item.title + "with "  + weight);
 	};
 
+	$scope.enableNotifications = function() {
+		DesktopNotifications.request(); 
+	}
 	//$scope.getCurrentUserVote = function
 
 	StreamNotification.setOnPlay(function(data) {
-		alert('got playing notf');
 		//do not care about other streams
 		if (data.stream != streamId) { return; }
 
@@ -213,6 +215,8 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			var index = $scope.items.indexOf(item);
 			$scope.items.splice(index, 1);
 			$scope.nowPlaying = item;
+
+			DesktopNotifications.showPlaying(item);
 		}		
 	});
 

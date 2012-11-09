@@ -178,4 +178,30 @@ angular.module('jukeboxServices', ['ngResource'])
 			}
 		});
 	}
+})
+.factory('DesktopNotifications', function() {
+	var currentNotifier;
+
+	return {
+		request: function() {
+			if (window.webkitNotifications.checkPermission() !== 0) {
+		 		window.webkitNotifications.requestPermission();
+		 	}
+
+		},
+
+		showPlaying: function(item) {
+			if (currentNotifier) {
+				currentNotifier.cancel();
+			}
+
+			console.log(item);
+
+			currentNotifier =  window.webkitNotifications.createNotification(
+        item.image, 'Jukebox now playing', item.title
+      );
+
+      currentNotifier.show();
+		}
+	};
 });
