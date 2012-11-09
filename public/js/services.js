@@ -180,7 +180,7 @@ angular.module('jukeboxServices', ['ngResource'])
 	}
 })
 .factory('DesktopNotifications', function() {
-	var currentNotifier;
+	
 
 	return {
 		request: function() {
@@ -192,15 +192,13 @@ angular.module('jukeboxServices', ['ngResource'])
 
 		showPlaying: function(item) {
 			if (window.webkitNotifications.checkPermission() === 0) {
-				if (currentNotifier) {
-					currentNotifier.cancel();
-				}
-
-				console.log(item);
-
-				currentNotifier =  window.webkitNotifications.createNotification(
+				var currentNotifier =  window.webkitNotifications.createNotification(
 	        item.image, 'Jukebox now playing', item.title
 	      );
+
+	      window.setTimeout(function() {
+	      	currentNotifier.cancel();
+	      }, 10 * 1000);
 
 	      currentNotifier.show();
     	}
