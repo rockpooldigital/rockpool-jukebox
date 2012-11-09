@@ -56,7 +56,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	function playItem(item) {
 		$scope.hostItem = item; //player (host)
 		$scope.nowPlaying = item; // display
-
+		//alert('notifying');
 		StreamNotification.notifyPlay($scope.stream._id, $scope.hostItem._id);
 		//todo save play directly via post.
 	};
@@ -64,7 +64,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	function playNext() {
 		if ($scope.items.length === 0) {
 				//we ran out of stuff, stop this host
-				$scope.isHostPlaying = false;
+				//$scope.isHostPlaying = false;
 				$scope.hostItem = null;
 				$scope.nowPlaying = null;
 			} else {
@@ -92,9 +92,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		StreamData.addItem(streamId, { url : item.url }, function(saved) {
 			item.added=  true;
 			item.adding = false;
-			$scope.items.push(saved);
-			sortItems();
-			StreamNotification.notifyAdd(streamId, saved._id);
+			//wait for notification instead
+			//$scope.items.push(saved);
+			//sortItems();
 			if (closeResults || $scope.entry.youtubeResults.length <= 1) {
 				$scope.entry.youtubeResults = null;
 				$scope.entry.url = "";
@@ -143,6 +143,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 	$scope.closeSearchResults = function() {
 		$scope.entry.youtubeResults = null;
+		$scope.entry.url = "";
 	}
 
 	$scope.startHostPlaying = function() {
@@ -181,11 +182,10 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		if (item.currentVote == weight) { weight = 0; }
 
 		StreamData.submitVote(item._id, weight, function(result) {
-			item.totalVotes = result.newCount;
-			item.currentVote = weight;
-
-			StreamNotification.notifyVoted(streamId, item._id);
-			sortItems();
+			//not needed as it will notify us now
+			//item.totalVotes = result.newCount;
+			//item.currentVote = weight;
+			//sortItems();
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
@@ -196,6 +196,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	//$scope.getCurrentUserVote = function
 
 	StreamNotification.setOnPlay(function(data) {
+		alert('got playing notf');
 		//do not care about other streams
 		if (data.stream != streamId) { return; }
 
@@ -218,12 +219,12 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		
 		//add to our list if we don't have it
 		if (findStreamItemInSet($scope.items, data.id) === null) {
-			StreamData.getItem({ streamId : streamId, id : data.id}, function(item) {
-				if (item) {
-					$scope.items.push(item);
-					sortItems();
-				}
-			});
+			$scope.items.push(data.item);
+			sortItems();
+
+			if ($scope.isHostPlaying && !$scope.hostItem) {
+				playNext();
+			}
 		}
 	});
 
@@ -252,13 +253,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 		var itemInSet = findStreamItemInSet($scope.items, data.id);
 		if (itemInSet !== null) {
-			StreamData.getItem({ streamId : data.stream, id : data.id}, function(item) {
-				if (item) {
-					itemInSet.totalVotes =  item.totalVotes;
-					itemInSet.currentVote =  item.currentVote;
-					sortItems();
-				}
-			});
+			itemInSet.totalVotes =  data.totalVotes;
+			itemInSet.currentVote =  data.currentVote;
+			sortItems();
 		}
 	});
 });

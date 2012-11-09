@@ -92,11 +92,12 @@ app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 
 io.set('log level', 1); 
-
-require('./server/notification-sockets').setup(io);
+//console.log(io);
+var notifications = require('./server/notification-sockets').create(io);
+//sockets.setup();
 
 var auth_controller = require('./server/controllers/authentication.js').createAuthController(config);
-var streamsCtrl = require('./server/controllers/streams.js')(db);
+var streamsCtrl = require('./server/controllers/streams.js')(db, notifications);
 
 app.get('/auth/facebook', auth_controller.authFacebook);
 app.get('/auth/facebook/callback', auth_controller.authFacebookCallback);

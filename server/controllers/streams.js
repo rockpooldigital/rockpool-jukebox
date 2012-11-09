@@ -4,7 +4,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var entities = require("entities");
 
-var queryMedia = function(url, next) {
+function queryMedia(url, next) {
 	url = url.replace('/#!', '');
 	request(url, function(err, resp, body) {
 		if (err) return next(err);
@@ -34,7 +34,7 @@ var queryMedia = function(url, next) {
 };
 
 
-var processResult = function(item, user) {
+function processResult(item, user) {
 	var result = {
 		_id : item._id,
 		streamId: item.streamId,
@@ -60,7 +60,7 @@ var processResult = function(item, user) {
 	return result;
 };
 
-module.exports = function(db) {
+module.exports = function(db, notifications) {
 	return {
 		stream : function(req,res,next){
 			res.send(req.params.name);
@@ -147,7 +147,9 @@ module.exports = function(db) {
 
 				collection.insert(item, function(err, docs) {
 					if (err) return next(err);
-					res.send(processResult(docs[0], req.user)) ;
+					var toSend = processResult(docs[0], req.user);
+					res.send(toSend);
+					notifications.notifyAdd(toSend);
 				});		
 			});
 		},
@@ -226,6 +228,12 @@ module.exports = function(db) {
 					reason: reason ? reason : null,
 					newCount : item.totalVotes
 				});
+
+				if (success) {
+					notifications.notifyVote(
+						processResult(item, req.user)
+					);
+				}
 			}
 
 			var items = db.collection('items');
