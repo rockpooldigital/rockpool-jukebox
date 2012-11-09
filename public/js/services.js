@@ -191,17 +191,19 @@ angular.module('jukeboxServices', ['ngResource'])
 		},
 
 		showPlaying: function(item) {
-			if (currentNotifier) {
-				currentNotifier.cancel();
-			}
+			if (window.webkitNotifications.checkPermission() === 0) {
+				if (currentNotifier) {
+					currentNotifier.cancel();
+				}
 
-			console.log(item);
+				console.log(item);
 
-			currentNotifier =  window.webkitNotifications.createNotification(
-        item.image, 'Jukebox now playing', item.title
-      );
+				currentNotifier =  window.webkitNotifications.createNotification(
+	        item.image, 'Jukebox now playing', item.title
+	      );
 
-      currentNotifier.show();
+	      currentNotifier.show();
+    	}
 		}
 	};
 });
