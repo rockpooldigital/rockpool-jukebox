@@ -3,12 +3,19 @@
 
 * {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;}/* http://paulirish.com/2012/box-sizing-border-box-ftw/ */
 
-html,button,input,select,textarea {color: #222;}
+html,button,input,select,textarea {color: #222;font-family: 'Cabin', Helvetica, Arial, sans-serif;}
+h1,h2,h3,h4{
+	font-family: 'Lobster', Georgia, Times, serif;
+	font-weight: normal;
+}
+
 body {
     font-size: 1em;
+    font-family: 'Cabin', Helvetica, Arial, sans-serif;
     line-height: 1.4;
     padding:10px 2%;
     background: #efefef;
+    counter-reset: my-awesome-counter; /* add numbers to the play list items */
 }
 /** Remove text-shadow in selection highlight: h5bp.com/i **/
 ::-moz-selection {
@@ -82,6 +89,97 @@ textarea {resize: vertical;}
 
 /** CUSTOM CSS **/
 
+
+
+
+
+/** CHOOSE STREAMS PAGE **/
+#theStreams {
+	float: left;
+	width: 45%;
+	padding-right: 5%;
+}
+#theStreamsList {
+	margin:0;
+	padding: 0;
+}
+#theStreamsList li{
+	clear: both;
+	list-style: none;
+	padding: 0;
+	margin: 0 0 10px 0;
+}
+
+#theStreams a{
+	display: block;
+	padding: 10px 10px;
+	margin-left: -10px;
+	font-size: 1.6em;
+	text-decoration: none;
+	border-radius: 3px;
+}
+#theStreams a:hover,
+#theStreams a:focus{
+	background: #f5f5f5;
+	box-shadow: 2px 2px 2px #ccc;
+}
+
+#theStreams a img{
+	float: left;
+	width: 8%;
+	min-width: 50px;
+}
+#theStreams a em{
+	float: left;
+	width: 88%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: .3em 0 0 4%;
+	font-style: normal;
+}
+#addStreamForm {
+	float: left;
+	width: 50%;
+}
+#addStreamForm .txt {
+	width: 100%;
+	border-radius: .5em;
+	font-size: 1.3em;
+	padding:5px;
+	border:2px solid #000;
+	box-shadow: 2px 2px 2px #eee;
+	margin-bottom: 1em;
+}
+#addStreamForm .btn {
+	float: right;
+	font-weight: bold;
+	font-size: 1.5em;		
+}
+#addStreamForm .btn[disabled] {
+	color: #ccc;
+}
+
+
+
+
+#header {
+	padding-bottom: 10px;
+}
+#logo {
+	float: left;
+	width: 15%;
+	max-width: 120px;
+}
+
+#login,
+#loggedIn {
+	float:right;
+	font-size: 85%;
+	padding-top: .3em;
+	margin-right: 46px;
+}
+
 #topRow {margin-bottom:20px;}
 
 #stream-items {
@@ -92,9 +190,9 @@ textarea {resize: vertical;}
 #stream-items li {
 	margin:0 0 2px 0; 
 	padding:0;
-	border: 2px solid #ddd;
+	border: 2px solid #000;
 	border-radius:3px;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 #stream-items p, 
 #stream-items h5 {
@@ -110,23 +208,18 @@ textarea {resize: vertical;}
 }
 #stream-items .thumb img{
 	height: 100%;	
-}
-
-
-.module {
-	margin:4px 0 0 0;
-	padding: 4px;
-}
-.module h3 {2
-	margin:0;
-	padding: 0;
-}
+	position: relative;
+	left: -40%; /* not sure how this centres it? should be 50% */
+}	
 
 #btStreams {
 	position: absolute;
-	top:10px;
-	right:2%;	
+	top: 10px;
+	right: 2%;
+	width: 10%;
+	max-width: 36px;	
 }
+#btStreams img{width: 100%;}
 
 /** Common **/
 .btn {
@@ -156,37 +249,69 @@ textarea {resize: vertical;}
 /** Currently Playing Info **/
 #nowPlaying { 
 	float: left;
+	position: relative;
 	width: 40%;
-	background: #fff;
-	padding:10px;
-	border-radius: 1em;
-	border: 2px solid #ccc;
 }
+#nowPlaying #onNow{
+	position: absolute;
+	left: -4px;
+	top: 30%;
+	background: #57BAEA;
+	padding: 10px;
+	border-top-right-radius: .5em;
+	border-bottom-right-radius: .5em;
+	z-index: 4;
+	font-size: 1.2em;
+	font-weight: normal;
+	color: white;
+	font-family: 'Lobster', Georgia, Times, serif;
+	text-shadow: 1px 1px 0px #666;
+	box-shadow: 2px 2px 2px #000;
+}
+
 #nowPlaying .title{
 	font-size: 1.3em;
 	margin:0 0 .5em 0;
-
+}
+#nowPlaying .thumbWrap {
+	float: left;
+	display: block;
+	width: 41%; /* try to match the blocks underneath */
+	margin-right: 1%;
+	overflow: hidden;
+}
+#nowPlaying .infoWrap {
+	float: left;
+	width: 58%;
 }
 #nowPlaying .thumb{
-	float:left;
 	position: relative;
-	width:30%;
-	padding: 15% 0;
-	margin-right: 10px;
+	display: block;
+	width: 100%;	
 	overflow: hidden;
-	text-align: center;
-	border-radius: 3px;
-	border: 4px solid #555;
+	border: 2px solid #000;
 }
 #nowPlaying .art{
-	position:absolute;
+	position: relative;
+	width: 100%;
+	/*position:absolute;
 	top:0;
 	left: 0;
 	height: 100%;
-	width: 100%;	
+	width: 100%;	*/
+
+	/*height: 100%;*/
 }
-#nowPlaying .title{
-	
+#nowPlaying .votes em{
+	font-style: normal;
+	width: auto;
+	padding: .125em .5em;
+	font-weight: bold;
+	background: white;
+	border-radius: .75em;
+	opacity: 0.8;
+	min-width: 1.6em;
+	text-align: center;
 }
 #nowPlaying .desc{
 	font-size: 85%;
@@ -197,13 +322,14 @@ textarea {resize: vertical;}
 #addItemForm {
 	/*display: none;*/
 	float: left;
-	width: 50%;
-	margin-left: 10%;
-	padding: 10px;
+	width: 49%;
+	margin-left: 11%;
 }
-#addItemForm legend span {
-	display: block;
-	font-weight: bold;
+#addItemForm h2 {
+	margin-bottom: 0.125em;
+	line-height: 1em;
+}
+#addItemForm legend p {
 	margin-bottom: 1em;
 }
 #addItemForm .txtUrl {
@@ -212,7 +338,7 @@ textarea {resize: vertical;}
 	border-radius: .5em;
 	font-size: 1.3em;
 	padding:5px;
-	border:2px solid #ccc;
+	border:2px solid #000;
 	box-shadow: 2px 2px 2px #eee;
 	margin-bottom: 1em;
 }
@@ -222,7 +348,7 @@ textarea {resize: vertical;}
 #preview {
 	padding:10px;
 	clear: both;
-	border:2px solid #ccc;
+	border:2px solid #000;
 	border-radius: 1em;
 	background: #fff;
 }
@@ -237,7 +363,7 @@ textarea {resize: vertical;}
 	overflow: hidden;
 	text-align: center;
 	border-radius: 3px;
-	border: 4px solid #555;
+	border: 2px solid #000;
 }
 #preview .art{
 	height: 100%;
@@ -261,8 +387,8 @@ textarea {resize: vertical;}
 	left: 2%;
 	top: 2.5em;
 	width: 96%;
-	background: #EBEBEB;
-	border: 2px solid #CCC;
+	background: #fff;
+	border: 2px solid #000;
 	border-bottom-left-radius: 1em;
 	border-bottom-right-radius: 1em;
 	border-top: 0;
@@ -318,7 +444,7 @@ textarea {resize: vertical;}
 	margin-right:10px;
 	border-radius: 3px;
 	overflow: hidden;
-	border:1px solid #ccc;
+	border:1px solid #000;
 }
 #ytResults li .title{
 
@@ -330,6 +456,8 @@ textarea {resize: vertical;}
 	float: right;
 	margin:0 10px;	
 	cursor: pointer;
+	width: 5%;
+	min-width: 30px;
 }
 #ytResults .close {
 	position: absolute;
@@ -339,12 +467,30 @@ textarea {resize: vertical;}
 }
 
 
-/*scrollable playlist*/
+/*The playlist*/
+
 #playlist {
 	/*height: 50vh;
 	overflow-y: scroll;*/
+	position: relative;
 }
-body{counter-reset: my-awesome-counter;}
+#playlist #next {
+	position: absolute;
+	left: -4px;
+	top: 3em;
+	top: 6vw; /* if supported, set to 6% of viewport width (vertical middle of cube) */
+	background: #57BAEA;
+	padding: 10px;
+	border-top-right-radius: .5em;
+	border-bottom-right-radius: .5em;
+	z-index: 4;
+	font-size: 1.2em;
+	font-weight: normal;
+	color: #fff;
+	font-family: 'Lobster', Georgia, Times, serif;
+	text-shadow: 1px 1px 0px #666;
+	box-shadow: 2px 2px 2px #000;
+}
 #stream-items h5{
 	counter-increment: my-awesome-counter;
 }
@@ -373,23 +519,44 @@ body{counter-reset: my-awesome-counter;}
 
 
 #stream-items .voteUp {
-	height: 1.8em;
+	height: 20%;
+	min-height: 20px;
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 5px;
+	right: 5px;
 	margin: 0;
 	z-index: 2;
-	opacity: 0.7;
+	opacity: 0.65;
 	cursor: pointer;
-	-webkit-transition:opacity 0.2s;
-	-moz-transition:opacity 0.2s;
-	-ms-transition:opacity 0.2s;
-	-o-transition:opacity 0.2s;
-	transition:opacity 0.2s;
+	-webkit-transition:all 0.2s;
+	-moz-transition:all 0.2s;
+	-ms-transition:all 0.2s;
+	-o-transition:all 0.2s;
+	transition:all 0.2s;
+
+	-webkit-transform: rotateZ(0deg);
+	-o-transform: rotateZ(0deg);
+	-ms-transform: rotateZ(0deg);
+	-moz-transform: rotateZ(0deg);
+	transform: rotateZ(0deg);
 }
 #stream-items .voteActive.voteUp,
 #stream-items .voteUp:hover {
 	opacity: 1;
+}
+#stream-items .voteActive.voteUp {
+	-webkit-transform: rotateZ(180deg);
+	-o-transform: rotateZ(180deg);
+	-ms-transform: rotateZ(180deg);
+	-moz-transform: rotateZ(180deg);
+	transform: rotateZ(180deg);
+}
+#stream-items .voteActive.voteUp:hover{
+	-webkit-transform: rotateZ(180deg);
+	-o-transform: rotateZ(180deg);
+	-ms-transform: rotateZ(180deg);
+	-moz-transform: rotateZ(180deg);
+	transform: rotateZ(180deg);
 }
 
 /*#stream-items .voteDown {
@@ -399,7 +566,18 @@ body{counter-reset: my-awesome-counter;}
 	font-weight: bold;
 }
 #streamName {
+	position: absolute;
+	width: 50%;
+	top: 10px;
+	left: 50%;
+	margin-left: -25%;
 	padding: 5px 5px 5px 0;
+	text-align: center;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-shadow:1px 1px 1px #fff;
 }
 #stream-items .thumb,
 #stream-items .info,
@@ -419,18 +597,23 @@ body{counter-reset: my-awesome-counter;}
 	left:0;	
 	padding: 10px;
 	color: #eee;
-	background: rgba(0,0,0,0.5);
-	opacity: 0.7;
+	background: rgba(0,0,0,0.7);
 	z-index: 2;
 	/*transition:all 0.5s;*/
 }
-#stream-items .item:hover .info {	
-	opacity: 1;
+#stream-items .info .title{
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	font-family: 'Cabin', Helvetica, Arial, sans-serif;
+	font-size: .75em;
 }
+
 #stream-items .votes {
 	width: auto;
-	top: 10px;
-	right: 10px;
+	top: 5px;
+	left: 5px;
 	z-index: 2;
 	padding: .125em .5em;
 	font-weight: bold;
@@ -441,11 +624,40 @@ body{counter-reset: my-awesome-counter;}
 	text-align: center;
 }
 
+/** Host / Admin **/
+#host{
+	/*display: none;*/
+	margin-top: 2em;
+	padding: 10px;
+	border: 2px solid #ccc;
+
+}
+
 /** Media Queries for Responsive Design. Theses examples override the primary ('mobile first') styles. **/
 
 /** TABLET OVERRIDES **/
-@media only screen and (min-width: 600px) {
+@media only screen and (max-width: 600px) {
     /* Style adjustments for viewports that meet the condition */
+
+    h1 {
+	    font-size: 1.5em;
+	    margin: 0 0 0.4em 0;
+	}
+
+	h2 {
+	    font-size: 1.2em;
+	    margin: 0 0 0.5em 0;
+	}
+
+	h3 {
+	    font-size: 1.1em;
+	    margin: 0 0 .5em 0;
+	}
+
+	h4 {
+	    font-size: 1em;
+	    margin: 0 0 .5em 0;
+	}
 
     /*#stream-items .thumb {
 		float:left;
@@ -458,12 +670,31 @@ body{counter-reset: my-awesome-counter;}
 		width: 100%;	
 	}*/
 
+	#stream-items .item { 
+		position: relative;
+		float: left;
+		width: 12.28125%;
+		padding:6.140625% 0; /*squares*/
+		margin: 0 .25% .25% 0;
+	}
+	#stream-items .item:nth-child(1),
+	#stream-items .item:nth-child(2),
+	#stream-items .item:nth-child(3),
+	#stream-items .item:nth-child(4),
+	#stream-items .item:nth-child(5),
+	#stream-items .item:nth-child(6) {
+		width: 16.25%;
+		margin-right:.5%;
+		padding:8.125% 0;	/*squares*/
+	}
+	#stream-items .item:nth-child(8n+6) {margin-right: 0;}
+
 }
 
 /** DESKTOP OVERRIDES **/
-@media only screen and (min-width: 1000px) {
+@media only screen and (max-width: 1000px) {
     /* Style adjustments for viewports that meet the condition */
-
+    
 
     /*#stream-items .thumb {
 		float:left;
@@ -475,6 +706,12 @@ body{counter-reset: my-awesome-counter;}
 	#stream-items .thumb img{
 		width: 100%;	
 	}*/
+	#topRow {
+		margin-bottom: 4.5em;
+	}
+	#playlist #next {
+		top:-2.8em;
+	}
 
 }
 

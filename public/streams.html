@@ -1,21 +1,32 @@
-<h1>Streams</h1>
+<section id="streams" class="clearfix">
 
-<ul>
-	<li ng-repeat="stream in streams">
-		<a href="#/stream/{{stream._id}}">{{stream.name}}</a>
-	</li>
-</ul>
+	<h1 id="streamName">Jukebox</h1>
+
+	<section id="topRow" class="clearfix">
+
+		<section id="theStreams">
+			<h2>Choose a stream...</h2>
+			<ul id="theStreamsList">
+				<li ng-repeat="stream in streams" class="clearfix">					
+					<a href="#/stream/{{stream._id}}" class="clearfix">
+						<img src="/img/headphones.png" alt="listen" class="" />
+						<em>{{stream.name}}</em>
+					</a>
+				</li>
+			</ul>
+		</section>
 
 
-<form name="addStreamForm">
-	<h2>Add Stream</h2>
-	<div ng-class="{error: addStreamForm.name.$invalid}" >
-		<label>Name <input type="text" name="name" ng-model="stream.name" required size="50" ></label>
-		<span ng-show="addStreamForm.name.$error.required" class="help-inline">
-	        Required
-	    </span>
-	</div>
+		<form name="addStreamForm" id="addStreamForm" class="clearfix">
+			<h2>or create your own...</h2>
+			<div ng-class="{error: addStreamForm.name.$invalid}" >
+				<!-- <label>Name</label>			 -->
+				<input type="text" class="txt" name="name" ng-model="stream.name" required size="50" placeholder="Name your stream. e.g. 'My Awesome Playlist'" />
+			</div>
 
-	<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid"
-          class="btn btn-primary">Add Item</button>
-</form>
+			<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid" class="btn btn-primary">Create stream</button>
+		</form>
+
+	</section>
+
+</section>
