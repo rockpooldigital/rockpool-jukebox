@@ -184,13 +184,20 @@ angular.module('jukeboxServices', ['ngResource'])
 
 	return {
 		request: function() {
+			if (!window.webkitNotifications) {
+				return;
+			}
+
 			if (window.webkitNotifications.checkPermission() !== 0) {
 		 		window.webkitNotifications.requestPermission();
 		 	}
-
 		},
 
 		showPlaying: function(item) {
+			if (!window.webkitNotifications) {
+				return;
+			}
+
 			if (window.webkitNotifications.checkPermission() === 0) {
 				var currentNotifier =  window.webkitNotifications.createNotification(
 	        item.image, 'Jukebox now playing', item.title
