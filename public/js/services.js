@@ -148,13 +148,26 @@ angular.module('jukeboxServices', ['ngResource'])
 	return function(q, success, fail) {
 		var url = 'https://gdata.youtube.com/feeds/api/videos?alt=json-in-script&callback=JSON_CALLBACK'
 							+ '&q=' + encodeURIComponent(q)
-							+ '&max-results=10';
+							+ '&max-results=10'
+							+ '&format=5' //only embeddable
+							+ '&category=music' ; 
+
+		console.log(url);
 		$http.jsonp(url)
 		.success(function(data) {
 			if (success) {
-				//$rootScope.$apply(function() {
-					success(data);
-				//});
+				var filtered = data.feed.entry.map(function(e) {
+					return { 
+						title : e.title['$t'], 
+						url : e.link.filter(function(url) {
+							return url.type == "text/html"
+						})[0].href,
+						image : e['media$group']['media$thumbnail'][0].url,
+						views : e['yt$statistics'] ? e['yt$statistics'].viewCount : "?"
+					};
+				});
+
+				success(filtered);
 			}
 		})
 		.error(function() {

@@ -108,7 +108,24 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 				return ; 
 			}
 
+			function searchYouTube(q) {
+				YouTubeSearch(q, function(result) {
+					if (!result) { return; }
+					//console.log(result.feed);
+					
+					$scope.entry.youtubeResults = result;
+				});
+			}
+
 			if ($scope.entry.url.indexOf('http') === 0) {
+				//route all youtube urls through api so we can filter non-embeddable and non-music
+				var re = /youtube\.com.*v=([^&]+)/i;
+				var res = re.exec($scope.entry.url);
+				if (res && res.length === 2) {
+					return searchYouTube(res[1]);
+				}
+
+				//fall back to opengraph
 				StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
 					$scope.entry.youtubeResults=[data];
 					//hide spinner
@@ -120,23 +137,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 					//show spinner
 				});
 			} else  {
-				YouTubeSearch($scope.entry.url, function(result) {
-					if (!result) { return; }
-					//console.log(result.feed);
-					var filtered = result.feed.entry.map(function(e) {
-						//console.log(e);
-						return { 
-							title : e.title['$t'], 
-							url : e.link.filter(function(url) {
-								return url.type == "text/html"
-							})[0].href,
-							image : e['media$group']['media$thumbnail'][0].url,
-							views : e['yt$statistics'] ? e['yt$statistics'].viewCount : "?"
-						};
-					});
-
-					$scope.entry.youtubeResults = filtered;
-				});
+				searchYouTube($scope.entry.url);
 			}
 		}, 200);
 	};
@@ -168,13 +169,15 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	};
 
 	$scope.skipCurrent = function() {
-		StreamData.markPlayed($scope.nowPlaying._id);
+		if ($scope.nowPlaying) {
+			StreamData.markPlayed($scope.nowPlaying._id);
 
-		if ($scope.isHostPlaying && $scope.hostItem._id == $scope.nowPlaying._id) {
-			playNext();
+			if ($scope.isHostPlaying && $scope.hostItem._id == $scope.nowPlaying._id) {
+				playNext();
+			}
+
+			StreamNotification.notifySkip(streamId, $scope.nowPlaying._id);
 		}
-
-		StreamNotification.notifySkip(streamId, $scope.nowPlaying._id);
 	};
 
 	$scope.submitVote = function(item, weight) {
