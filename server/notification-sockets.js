@@ -43,8 +43,7 @@ function setup(io) {
 			io.sockets.in(item.stream).emit('stream:itemVoted', {
 			      stream : item.streamId, 
 			      id : item._id, 
-			      totalVotes : item.totalVotes,
-			      currentVote : item.currentVote
+			      totalVotes : item.totalVotes
 			});
 		},
 

@@ -258,10 +258,13 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		//do not care about other streams
 		if (data.stream != streamId) { return; }
 
+		//todo: if you are logged in on two browsers and you vote on one, the other will not 
+		//update the thumb thing
+
 		var itemInSet = findStreamItemInSet($scope.items, data.id);
 		if (itemInSet !== null) {
 			itemInSet.totalVotes =  data.totalVotes;
-			itemInSet.currentVote =  data.currentVote;
+			//itemInSet.currentVote =  data.currentVote;
 			sortItems();
 		}
 	});
