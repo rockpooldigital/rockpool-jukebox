@@ -150,7 +150,7 @@ angular.module('jukeboxServices', ['ngResource'])
 							+ '&q=' + encodeURIComponent(q)
 							+ '&max-results=10'
 							+ '&format=5' //only embeddable
-							+ '&category=music' ; 
+							+ '&category=Music' ; 
 
 		console.log(url);
 		$http.jsonp(url)
