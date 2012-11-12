@@ -185,10 +185,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		if (item.currentVote == weight) { weight = 0; }
 
 		StreamData.submitVote(item._id, weight, function(result) {
-			//not needed as it will notify us now
-			//item.totalVotes = result.newCount;
-			//item.currentVote = weight;
-			//sortItems();
+			item.totalVotes = result.newCount;
+			item.currentVote = weight;
+			sortItems();
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
