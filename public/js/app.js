@@ -57,9 +57,11 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		$scope.hostItem = null;
 
 		StreamData.getNext(streamId, function(item) {
-			$scope.hostItem = item; //player (host)
-			StreamData.notifyPlaying(item._id)
-		}, function() {
+			if (item) {
+				$scope.hostItem = item; //player (host)
+				StreamData.notifyPlaying(item._id)
+			}
+		}, function(r) {
 			alert('Error fetching next item');
 		});
 	};
@@ -180,20 +182,13 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
 		});
-			//alert("you voted for item " + item.title + "with "  + weight);
 	};
 
 	$scope.enableNotifications = function() {
 		DesktopNotifications.request(); 
 	}
-	//$scope.getCurrentUserVote = function
 
 	StreamNotification.setOnPlay(function(data) {
-		
-		//alert('playing');
-		//do not care about other streams
-		if (data.stream != streamId) { return; }
-
 		//load item for displaying
 		var item = findStreamItemInSet($scope.items, data.id);
 				
@@ -207,9 +202,6 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	});
 
 	StreamNotification.setOnItemAdded(function(data) {
-		//do not care about other streams
-		if (data.stream != streamId) { return; }
-		
 		//add to our list if we don't have it
 		if (findStreamItemInSet($scope.items, data.id) === null) {
 			$scope.items.push(data.item);
@@ -222,9 +214,6 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	});
 
 	StreamNotification.setOnItemSkipped(function(data) {
-		//do not care about other streams
-		if (data.stream != streamId) { return; }
-
 		//if we are not playing then the display can wait until we get host:playingItem
 		if (!$scope.isHostPlaying) { return; }
 
@@ -241,9 +230,6 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	});
 
 	StreamNotification.setOnItemVoted(function(data) { 
-		//do not care about other streams
-		if (data.stream != streamId) { return; }
-
 		//todo: if you are logged in on two browsers and you vote on one, the other will not 
 		//update the thumb thing
 

@@ -23,11 +23,6 @@ function setup(io) {
 	    socket.broadcast.to(data.stream).emit('stream:clientJoined');
 	  });
 
-	  socket.on('host:playingItem', function(data) {
-	  	//console.log('received play notf');
-	   
-	  });
-
 	  socket.on('stream:itemSkipped', function(data) {
 	    socket.broadcast.to(data.stream).emit('stream:itemSkipped', {
 	      stream : data.stream, id : data.id

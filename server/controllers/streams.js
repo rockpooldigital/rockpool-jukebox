@@ -234,7 +234,7 @@ module.exports = function(db, notifications) {
 				//console.log(err,result);
 				if (err) return next(err);
 				if (result.length === 0) {
-					res.json(null);
+					res.send("");
 				} else {
 					res.send(processResult(result[0], req.user));
 				}
