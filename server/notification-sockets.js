@@ -25,9 +25,7 @@ function setup(io) {
 
 	  socket.on('host:playingItem', function(data) {
 	  	//console.log('received play notf');
-	    socket.broadcast.to(data.stream).emit('host:playingItem', {
-	      stream : data.stream, id : data.id
-	    });
+	   
 	  });
 
 	  socket.on('stream:itemSkipped', function(data) {
@@ -52,6 +50,14 @@ function setup(io) {
 			      stream : item.streamId, 
 			      id : item._id, 
 			      item : item
+			});
+		},
+
+		notifyPlay: function(item) {
+			io.sockets.in(item.stream).emit('host:playingItem', {
+			      stream : item.streamId, 
+			      id : item._id//, 
+			    //  item : item
 			});
 		}
 	}

@@ -53,23 +53,15 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		$scope.socketStatus = eventName ; 
 	});
 
-	function playItem(item) {
-		$scope.hostItem = item; //player (host)
-		$scope.nowPlaying = item; // display
-		//alert('notifying');
-		StreamNotification.notifyPlay($scope.stream._id, $scope.hostItem._id);
-		//todo save play directly via post.
-	};
-
 	function playNext() {
-		if ($scope.items.length === 0) {
-				//we ran out of stuff, stop this host
-				//$scope.isHostPlaying = false;
-				$scope.hostItem = null;
-				$scope.nowPlaying = null;
-			} else {
-				playItem($scope.items.shift());
-			}		
+		$scope.hostItem = null;
+
+		StreamData.getNext(streamId, function(item) {
+			$scope.hostItem = item; //player (host)
+			StreamData.notifyPlaying(item._id)
+		}, function() {
+			alert('Error fetching next item');
+		});
 	};
 
 	function sortItems() {
@@ -152,7 +144,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		//if we have a track playing elsewhere, play that
 		if ($scope.nowPlaying) {
 			//this won't be in the list of items so don't need to remove it
-			playItem($scope.nowPlaying);
+			alert('Host already running elsewhere');
 		} else {
 			playNext();
 		}
@@ -164,18 +156,14 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	};
 
 	$scope.hostFinishedPlaying = function() {
-		StreamData.markPlayed($scope.hostItem._id);
-		playNext();
+		StreamData.markPlayed($scope.hostItem._id, function() {
+			playNext();
+		});
 	};
 
 	$scope.skipCurrent = function() {
 		if ($scope.nowPlaying) {
 			StreamData.markPlayed($scope.nowPlaying._id);
-
-			if ($scope.isHostPlaying && $scope.hostItem._id == $scope.nowPlaying._id) {
-				playNext();
-			}
-
 			StreamNotification.notifySkip(streamId, $scope.nowPlaying._id);
 		}
 	};
@@ -201,13 +189,12 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	//$scope.getCurrentUserVote = function
 
 	StreamNotification.setOnPlay(function(data) {
+		
+		//alert('playing');
 		//do not care about other streams
 		if (data.stream != streamId) { return; }
 
-		//if we are playing then we don't care
-		if ($scope.isHostPlaying ) { return; }
-
-		//load item for displaying becaquse we are not a host
+		//load item for displaying
 		var item = findStreamItemInSet($scope.items, data.id);
 				
 		if (item !== null) {

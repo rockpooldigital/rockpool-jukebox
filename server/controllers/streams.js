@@ -199,6 +199,22 @@ module.exports = function(db, notifications) {
 			});
 		},
 
+		itemMarkPlaying : function(req, res, next) {
+			if (!req.params.id ) {
+				res.send(400); return;
+			}
+			db.collection('items')
+			.findOne({ 
+				_id : new BSON.ObjectID(req.params.id) 
+			}, function(err, result) {
+				if(err) return next(err);
+				notifications.notifyPlay(
+						processResult(result, null)
+				);
+				res.send(200);
+			});
+		},
+
 		itemGetNext : function(req, res, next) {
 			if (!req.params.streamId) {
 				res.send(400);return;
@@ -257,7 +273,7 @@ module.exports = function(db, notifications) {
 
 				if (success) {
 					notifications.notifyVote(
-						processResult(item, req.user)
+						processResult(item, null)
 					);
 				}
 			}

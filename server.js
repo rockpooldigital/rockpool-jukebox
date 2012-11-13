@@ -113,6 +113,7 @@ app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
+app.post('/data/item/:id/playing', streamsCtrl.itemMarkPlaying);
 
 app.get('/', function(req, res) {
 	res.render('app.html', { user : req.user });

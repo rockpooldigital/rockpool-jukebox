@@ -77,6 +77,11 @@ angular.module('jukeboxServices', ['ngResource'])
 					.success(function() { if(success) success(); })
 					.error(function() { if(fail) fail(); })
 			},
+			notifyPlaying :function(itemId, success, fail) {
+				$http.post('/data/item/' +  itemId + '/playing')
+					.success(function() { if(success) success(); })
+					.error(function() { if(fail) fail(); })
+			},
 			submitVote : function(itemId, weight, success, fail) {
 				$http.post("/data/item/" + itemId + "/vote", { weight : weight })
 				.success(function(data) {
@@ -90,6 +95,12 @@ angular.module('jukeboxServices', ['ngResource'])
 
 					fail();
 				});
+			},
+			getNext : function(streamId, success, fail) {
+				var url = "/data/stream/" + streamId +"/next";
+				var r = $http.get(url);
+				if (success) r.success(success);
+				if (fail) r.error(fail);
 			}
 		};
 	})
