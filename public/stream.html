@@ -59,8 +59,8 @@
 	<p id="next" class="clearfix">Up next ...</p>
 	<section id="queue">
 		<p ng-show="!items.length">No items yet</p>
-		<ul id="stream-items" ng-show="items.length">
-			<li ng-repeat="item in items" class="item greyGrad clearfix">
+		<ul class="clearfix" id="stream-items" ng-show="items.length">
+			<li ng-repeat="item in items" class="item clearfix">
 				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 				<span class="info">
 					<h4 class="title">{{item.title}}</h4>
