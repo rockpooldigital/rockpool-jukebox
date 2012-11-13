@@ -199,6 +199,32 @@ module.exports = function(db, notifications) {
 			});
 		},
 
+		itemGetNext : function(req, res, next) {
+			if (!req.params.streamId) {
+				res.send(400);return;
+			}
+
+			db.collection('items')
+			.find({
+				streamId : new BSON.ObjectID(req.params.streamId),
+				played: false	
+			})
+			.sort({ 
+				totalVotes: -1, 
+				created: 1
+			})
+			.limit(1)
+			.toArray(function(err, result) {
+				//console.log(err,result);
+				if (err) return next(err);
+				if (result.length === 0) {
+					res.json(null);
+				} else {
+					res.send(processResult(result[0], req.user));
+				}
+			});
+		},
+
 		submitVote : function(req, res, next) {
 			if (!req.user) {
 				return res.send(401);

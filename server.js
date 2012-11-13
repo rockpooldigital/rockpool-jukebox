@@ -108,6 +108,7 @@ app.get('/data/stream', streamsCtrl.streams);
 app.post('/data/stream', streamsCtrl.streamAdd);
 app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
+app.get('/data/stream/:streamId/next', streamsCtrl.itemGetNext);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
