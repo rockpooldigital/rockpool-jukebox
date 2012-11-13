@@ -34,7 +34,7 @@
     <header id="header" class="clearfix">
       <img src="/img/radio-icon.jpg" alt="" id="logo" />
       <%if (!user) { %>
-        <a id="login" href="/auth/facebook">Login with Facebook</a>
+        <a id="login" href="/auth/facebook">Login <em>with Facebook</em></a>
       <% } else { %>
         <p id="loggedIn">Hello <%= user.name %> <a href="/logout" id="logout">Logout</a></p>
       <% } %>
