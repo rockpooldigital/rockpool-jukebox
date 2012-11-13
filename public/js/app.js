@@ -236,7 +236,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 	StreamNotification.setOnClientJoined(function(data) {
 		if ($scope.isHostPlaying && $scope.hostItem) {
-			StreamNotification.notifyPlay($scope.stream._id,$scope.hostItem._id);
+			StreamData.notifyPlaying($scope.hostItem._id);
 		}
 	});
 
