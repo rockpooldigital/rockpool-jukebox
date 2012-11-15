@@ -1,25 +1,12 @@
-var mongo = require('mongodb');
-var BSON = mongo.BSONPure;
 var request = require('request');
 var cheerio = require('cheerio');
 var entities = require("entities");
 var config = require('./config');
 
-var server = new  mongo.Server(
-	config.DB_HOST || 'localhost', 
-	config.DB_PORT || 27017, 
-	{ auto_reconnect: true }
-);
-var db = new mongo.Db(
-	config.DB_NAME || 'jukebox', 
-	server, 
-	{ safe : true}
-);
 
 config.URL = "http://wordpress.rockpool.local:8046";
 
-var items = db.collection("item");
-var streams = db.collection("streams");
+
 
 function getJson(url, done) {
 	request(url, function(err, resp, body) {
@@ -27,7 +14,7 @@ function getJson(url, done) {
 		if (resp.statusCode != 200) {
 			return done(new Error("Returned status code" + resp.statusCode));
 		}
-console.log(data);
+//console.log(data);
 		var data = JSON.parse(body);
 		done(null, data);
 	});
@@ -49,11 +36,11 @@ function populateStream(stream, done) {
 		var url = baseUrl + "/oldest";
 		console.log(url);
 		getJson(url, function(err, itemOldest) {
-			console.log("r," , itemOldest);
 			if (!itemOldest) {
 				console.log("no items at all");
 				return done();
 			}
+
 			var then = new Date(itemOldest.created).getTime();
 			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime();
 
@@ -64,7 +51,11 @@ function populateStream(stream, done) {
 			console.log(new Date(age));
 			getJson(baseUrl + "/historic?played=true&age=" + age, function(err, set) {
 				if (err) return done(err);
-				console.log(set);
+				if (set.length === 0) {
+					console.log("nothing to add");
+				} else {
+					console.log(set);
+				}
 				done();
 			});
 			
@@ -72,8 +63,7 @@ function populateStream(stream, done) {
 	});
 }
 
-
-streams.find().toArray(function(err, streams) {
+getJson(config.URL + "/data/stream", function(err, streams) {
 	if (err) {
 		console.log(err);
 		return;

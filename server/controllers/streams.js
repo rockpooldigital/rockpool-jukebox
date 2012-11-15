@@ -79,7 +79,7 @@ function buildItemQuery(req, defaults) {
 	if (typeof(req.query.age) !== "undefined") {
 		var age = parseInt(req.query.age) ;
 		if (!isNaN(age)) {
-			q.lastPlayed = { $lte : new Date(age) };
+			q.lastRequested = { $lte : new Date(age) };
 		}
 	}
 	return q;
