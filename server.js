@@ -103,14 +103,17 @@ app.get('/auth/facebook', auth_controller.authFacebook);
 app.get('/auth/facebook/callback', auth_controller.authFacebookCallback);
 app.get('/logout', auth_controller.logout);
 
-app.get('/data/stream/:id', streamsCtrl.streams);
-app.get('/data/stream', streamsCtrl.streams);
-app.post('/data/stream', streamsCtrl.streamAdd);
+
+app.get('/data/stream/:streamId/item/count', streamsCtrl.itemCount);
+app.get('/data/stream/:streamId/item/historic', streamsCtrl.itemFindHistoric);
 app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/next', streamsCtrl.itemGetNext);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
+app.get('/data/stream/:id', streamsCtrl.streams);
+app.get('/data/stream', streamsCtrl.streams);
+app.post('/data/stream', streamsCtrl.streamAdd);
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 app.post('/data/item/:id/playing', streamsCtrl.itemMarkPlaying);

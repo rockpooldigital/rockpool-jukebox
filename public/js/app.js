@@ -93,6 +93,14 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 				$scope.entry.youtubeResults = null;
 				$scope.entry.url = "";
 			}
+		}, function(err,a,b) {
+			if (err.data === "Duplicate") {
+				alert('This item is already queued');
+			} else {
+				alert('Unknown Error');
+			}
+			
+			item.adding = false;
 		});
 	};
 

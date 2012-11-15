@@ -18,7 +18,7 @@ function queryMedia(url, next) {
 			{
 				var value = entities.decode(elem.attribs.content);
 
-				if (elem.attribs.property && elem.attribs.property.indexOf("og:") == 0) {
+				if (elem.attribs.property && elem.attribs.property.indexOf("og:") === 0) {
 					openGraph[elem.attribs.property.substring(3)] = value;
 				}
 			}
@@ -59,6 +59,30 @@ function processResult(item, user) {
 
 	return result;
 };
+
+function buildItemQuery(req, defaults) {
+	var q = defaults || {};
+	q.streamId = new BSON.ObjectID(req.params.streamId);
+
+	if (typeof(req.query.played) !== "undefined") {
+		q.played = req.query.played === "true";
+	};
+
+	if (typeof(req.query.minVotes) !== "undefined") {
+		var num = parseInt(req.query.minVotes);
+		if (!isNaN(num)) {
+			q.totalVotes = { $gte : num};
+		}
+	};
+
+	if (typeof(req.query.age) !== "undefined") {
+		var age = parseInt(req.query.age) ;
+		if (!isNaN(age)) {
+			q.lastPlayed = { $lte : new Date(age) };
+		}
+	}
+	return q;
+}
 
 module.exports = function(db, notifications) {
 	return {
@@ -128,10 +152,9 @@ module.exports = function(db, notifications) {
 			}
 
 			var collection = db.collection('items');
+			var now = new Date();
 
-			queryMedia(req.body.url, function(err, data) {
-				if (err) return next(err);
-
+			function createNew(data) {
 				var item = {
 					streamId: new BSON.ObjectID(req.params.streamId),
 					title: data.title,
@@ -140,7 +163,8 @@ module.exports = function(db, notifications) {
 					image: data.image,
 					openGraph : data.openGraph,
 					votes : [],
-					created : new Date(),
+					created : now,
+					lastRequested : now,
 					played : false,
 					totalVotes : 0
 				};
@@ -150,7 +174,45 @@ module.exports = function(db, notifications) {
 					var toSend = processResult(docs[0], req.user);
 					res.send(toSend);
 					notifications.notifyAdd(toSend);
-				});		
+				});	
+			}
+
+			function updateExisting(item) {
+				if (!item.played) {
+					return res.send(400, "Duplicate");
+				}
+
+				collection.findAndModify({
+					_id : item._id
+				}, [['_id','desc']], {
+					$set: {
+						played: false,
+						lastRequested : now 
+					}
+				}, function(err, item) {
+					if (err) return next(err);
+					var toSend = processResult(item, req.user);
+					res.send(toSend);
+					notifications.notifyAdd(toSend);
+				});
+			}
+
+			queryMedia(req.body.url, function (err, data) {
+				if (err) return next(err);
+
+				collection.findOne({
+					streamId: new BSON.ObjectID(req.params.streamId),
+					url : data.url
+				}, function(err, item) {
+					//console.log(item);
+					if (item) {
+						//console.log("found");
+						updateExisting(item);
+					} else {
+						//console.log("not found");
+						createNew(data);
+					}
+				});
 			});
 		},
 
@@ -159,15 +221,53 @@ module.exports = function(db, notifications) {
 				res.send(400); return;
 			}
 			
+			var q = buildItemQuery(req, {
+				played:  false
+			});
+
 			db.collection('items')
-			.find({ 
-				streamId : new BSON.ObjectID(req.params.streamId), 
-				played:  false 
-			})
-			.sort({ totalVotes: -1, created: 1})
+			.find(q)
+			.sort({ totalVotes: -1, lastRequested: 1})
 			.toArray(function(err, result) {
 				if (err) return next(err);
 				res.send(result.map(function(i) { return processResult(i, req.user); }));
+			});
+		},
+
+		itemFindHistoric: function(req, res, next) {
+			if (!req.params.streamId) {
+				res.send(400); return;
+			}
+			
+			var q = buildItemQuery(req, {
+				played:  true
+			});
+
+			db.collection('items')
+			.find(q)
+			.sort({ totalVotes: -1, lastRequested: 1})
+			.limit(10)
+			.toArray(function(err, result) {
+				if (err) return next(err);
+				res.send(result.map(function(i) { return processResult(i, req.user); }));
+			});
+		},
+
+		itemCount : function(req, res, next) {
+			if (!req.params.streamId) {
+				res.send(400); return;
+			}
+
+			var q= buildItemQuery(req);
+
+			//console.log(q);
+
+			db.collection('items')
+			.find(q)
+			.count(function(err, count) {
+				//console.log(count);
+				if (err) return next(err);
+				res.json(count);
 			});
 		},
 
@@ -190,12 +290,22 @@ module.exports = function(db, notifications) {
 			if (!req.params.id ) {
 				res.send(400); return;
 			}
-			var items = db.collection('items');
-			items.update({ _id : new BSON.ObjectID(req.params.id) },
-				{ '$set' : { played: true } },
-				function(err, data) {
-					if (err) return next(err);
-					res.send(200);
+			var items = db.collection('items'),
+					now = new Date();
+			items.update({ _id : new BSON.ObjectID(req.params.id) }, { 
+				'$set' : { 
+					played: true,
+					lastPlayed : now
+				},
+				'$push' : {
+					plays : now
+				},
+				'$inc' : {
+					playCount : 1
+				}
+			}, function(err, data) {
+				if (err) return next(err);
+				res.send(200);
 			});
 		},
 
@@ -227,7 +337,7 @@ module.exports = function(db, notifications) {
 			})
 			.sort({ 
 				totalVotes: -1, 
-				created: 1
+				lastRequested: 1
 			})
 			.limit(1)
 			.toArray(function(err, result) {
