@@ -259,9 +259,7 @@ module.exports = function(db, notifications) {
 				res.send(400); return;
 			}
 			
-			var q = buildItemQuery(req, {
-				played:  true
-			});
+			var q = buildItemQuery(req);
 
 			db.collection('items')
 			.find(q)
@@ -269,7 +267,7 @@ module.exports = function(db, notifications) {
 			.limit(1)
 			.toArray(function(err, result) {
 				if (err) return next(err);
-				if (result.length === 0) res.send("");
+				if (result.length === 0) return res.send("");
 				res.send(processResult(result[0], req.user));
 			});
 		},
