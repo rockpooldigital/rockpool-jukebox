@@ -44,7 +44,7 @@ function processResult(item, user) {
 		image: item.image,
 		openGraph : item.openGraph,
 		created : item.created,
-		lastRequested : lastRequested,
+		lastRequested : item.lastRequested,
 		totalVotes : item.totalVotes,
 		currentVote: 0
 	};
