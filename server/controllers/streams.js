@@ -263,7 +263,7 @@ module.exports = function(db, notifications) {
 
 			db.collection('items')
 			.find(q)
-			.sort({ created: 1}) 
+			.sort({ created: 1, lastRequested: 1 }) 
 			.limit(1)
 			.toArray(function(err, result) {
 				if (err) return next(err);
