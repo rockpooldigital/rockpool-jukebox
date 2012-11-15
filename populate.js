@@ -4,7 +4,7 @@ var entities = require("entities");
 var config = require('./config');
 
 
-//config.URL = "http://wordpress.rockpool.local:8046";
+config.URL = "http://wordpress.rockpool.local:8046";
 
 
 
@@ -28,7 +28,7 @@ function populateStream(stream, done) {
 	getJson(baseUrl + "/count?played=false", function(err, count) {
 		if (err) return done(err);
 		console.log(count + " items unplayed");
-		if (count > 10) {
+		if (count > 20) {
 			console.log("skipping");
 			return done();
 		}
@@ -59,7 +59,8 @@ function populateStream(stream, done) {
 					var i = 1;
 					add = function(next) {
 						item = set.pop();
-						if (item && i < 6) {
+						if (item && i < 5) {
+							console.log("adding item with id " + item._id + " title " + item.title);
 								request.post(baseUrl, { form: {
 									streamId : stream._id,
 									url : item.url

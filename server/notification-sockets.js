@@ -33,7 +33,7 @@ function setup(io) {
 	return {
 		notifyVote : function(item) {
 			//console.log('notifying', item);
-			io.sockets.in(item.stream).emit('stream:itemVoted', {
+			io.sockets.in(item.streamId).emit('stream:itemVoted', {
 			      stream : item.streamId, 
 			      id : item._id, 
 			      totalVotes : item.totalVotes
@@ -41,7 +41,7 @@ function setup(io) {
 		},
 
 		notifyAdd : function(item) {
-			io.sockets.in(item.stream).emit('stream:itemAdded', {
+			io.sockets.in(item.streamId).emit('stream:itemAdded', {
 			      stream : item.streamId, 
 			      id : item._id, 
 			      item : item
@@ -49,7 +49,7 @@ function setup(io) {
 		},
 
 		notifyPlay: function(item) {
-			io.sockets.in(item.stream).emit('host:playingItem', {
+			io.sockets.in(item.streamId).emit('host:playingItem', {
 			      stream : item.streamId, 
 			      id : item._id//, 
 			    //  item : item
