@@ -267,7 +267,7 @@ module.exports = function(db, notifications) {
 			.limit(1)
 			.toArray(function(err, result) {
 				if (err) return next(err);
-				if (result.length === 0) return res.send("");
+				if (result.length === 0) return res.send(404);
 				res.send(processResult(result[0], req.user));
 			});
 		},

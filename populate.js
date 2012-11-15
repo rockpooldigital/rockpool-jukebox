@@ -16,6 +16,8 @@ var db = new mongo.Db(
 	{ safe : true}
 );
 
+config.URL = "http://wordpress.rockpool.local:8046";
+
 var items = db.collection("item");
 var streams = db.collection("streams");
 
@@ -25,7 +27,7 @@ function getJson(url, done) {
 		if (resp.statusCode != 200) {
 			return done(new Error("Returned status code" + resp.statusCode));
 		}
-
+console.log(data);
 		var data = JSON.parse(body);
 		done(null, data);
 	});
@@ -45,8 +47,13 @@ function populateStream(stream, done) {
 		}
 
 		var url = baseUrl + "/oldest";
-		//console.log(url);
+		console.log(url);
 		getJson(url, function(err, itemOldest) {
+			console.log("r," , itemOldest);
+			if (!itemOldest) {
+				console.log("no items at all");
+				return done();
+			}
 			var then = new Date(itemOldest.created).getTime();
 			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime();
 
