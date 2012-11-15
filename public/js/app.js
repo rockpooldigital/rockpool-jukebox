@@ -24,7 +24,7 @@ function streamItemSorter(a,b) {
 
 	if (a.totalVotes != b.totalVotes) return b.totalVotes > a.totalVotes ? 1 : -1;
 
-	return (new Date(a.created) > new Date(b.created)) ? 1 : -1;
+	return (new Date(a.lastRequested) > new Date(b.lastRequested)) ? 1 : -1;
 }
 
 project.config(function($routeProvider) {
