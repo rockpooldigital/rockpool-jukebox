@@ -4,7 +4,7 @@ var entities = require("entities");
 var config = require('./config');
 
 
-config.URL = "http://wordpress.rockpool.local:8046";
+//config.URL = "http://wordpress.rockpool.local:8046";
 
 
 
@@ -28,7 +28,7 @@ function populateStream(stream, done) {
 	getJson(baseUrl + "/count?played=false", function(err, count) {
 		if (err) return done(err);
 		console.log(count + " items unplayed");
-		if (count > 4) {
+		if (count > 10) {
 			console.log("skipping");
 			return done();
 		}
@@ -53,12 +53,31 @@ function populateStream(stream, done) {
 				if (err) return done(err);
 				if (set.length === 0) {
 					console.log("nothing to add");
+					done();
 				} else {
-					console.log(set);
+					var add;
+					var i = 1;
+					add = function(next) {
+						item = set.pop();
+						if (item && i < 6) {
+								request.post(baseUrl, { form: {
+									streamId : stream._id,
+									url : item.url
+							}}, function(e,r,body) {
+								if (e) return next(e);
+								if (r.statusCode !== 200) {
+									if (r.body==="Duplicate") return next();
+									return next(new Error("add: statuscode " + r.statusCode + " body " + r.body));
+								}
+								add(next);
+							});							
+						} else {
+							next();
+						}
+					}
+					add(done);					
 				}
-				done();
 			});
-			
 		});
 	});
 }
@@ -68,7 +87,7 @@ getJson(config.URL + "/data/stream", function(err, streams) {
 		console.log(err);
 		return;
 	}
-
+//console.log(streams);
 	var next;
 
 	next = function(err) {
@@ -83,7 +102,7 @@ getJson(config.URL + "/data/stream", function(err, streams) {
 			process.exit(code=0);
 		}
 
-		populateStream(stream, next);
+		populateStream(stream, next);//next();
 	}
 
 	next();
