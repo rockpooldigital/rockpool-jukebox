@@ -106,6 +106,7 @@ app.get('/logout', auth_controller.logout);
 
 app.get('/data/stream/:streamId/item/count', streamsCtrl.itemCount);
 app.get('/data/stream/:streamId/item/historic', streamsCtrl.itemFindHistoric);
+app.get('/data/stream/:streamId/item/oldest', streamsCtrl.itemFindOldest);
 app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/next', streamsCtrl.itemGetNext);

@@ -246,11 +246,31 @@ module.exports = function(db, notifications) {
 
 			db.collection('items')
 			.find(q)
-			.sort({ totalVotes: -1, lastRequested: 1})
+			.sort({ totalVotes: -1, lastRequested: -1})
 			.limit(10)
 			.toArray(function(err, result) {
 				if (err) return next(err);
 				res.send(result.map(function(i) { return processResult(i, req.user); }));
+			});
+		},
+
+		itemFindOldest: function(req, res, next) {
+			if (!req.params.streamId) {
+				res.send(400); return;
+			}
+			
+			var q = buildItemQuery(req, {
+				played:  true
+			});
+
+			db.collection('items')
+			.find(q)
+			.sort({ created: 1}) 
+			.limit(1)
+			.toArray(function(err, result) {
+				if (err) return next(err);
+				if (result.length === 0) res.send("");
+				res.send(processResult(result[0], req.user));
 			});
 		},
 

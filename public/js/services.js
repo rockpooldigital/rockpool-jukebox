@@ -13,7 +13,7 @@ angular.module('jukeboxServices', ['ngResource'])
 
 		var statusEvent ;
 
-		var events = ['error','reconnect_failed', 'reconnect', 'reconnecting', 'connect', 'connecting', 'disconnect', 'connect_failed'];
+		/*var events = ['error','reconnect_failed', 'reconnect', 'reconnecting', 'connect', 'connecting', 'disconnect', 'connect_failed'];
 
 		for (var i = 0; i < events.length; i++) {
 			(function(i) {
@@ -25,7 +25,7 @@ angular.module('jukeboxServices', ['ngResource'])
 					}
 				});
 			})(i);
-		}
+		}*/
 
 		return {
 	 		on: function (eventName, callback) {
@@ -113,6 +113,17 @@ angular.module('jukeboxServices', ['ngResource'])
 		Socket.on('stream:clientJoined', function(data) { if (onClientJoined) onClientJoined(data); });
 		Socket.on('stream:itemVoted', function(data) { if (onItemVoted) onItemVoted(data); });
 
+		var streamId ;
+
+		Socket.on('reconnect', function() {
+			if (streamId) {
+				//alert('reconnect');
+				Socket.emit('stream:join', {
+					stream : streamId,
+				});
+			}
+		});
+
 		return {
 			setOnPlay : function(f) { onPlay = f},
 			setOnItemAdded : function(f) { onItemAdded = f},
@@ -128,6 +139,7 @@ angular.module('jukeboxServices', ['ngResource'])
 			},
 
 			notifyJoin : function(stream) {
+				streamId = stream;
 				Socket.emit('stream:join', {
 					stream : stream,
 				});
