@@ -44,8 +44,10 @@ function processResult(item, user) {
 		image: item.image,
 		openGraph : item.openGraph,
 		created : item.created,
-		lastRequested : item.lastRequested,
+		lastRequested : item.lastRequested || item.created,
 		totalVotes : item.totalVotes,
+		historicVotes : item.historicVotes || 0,
+		previousPlays : item.plays ? item.plays.count : 0,
 		currentVote: 0
 	};
 
@@ -192,6 +194,8 @@ module.exports = function(db, notifications) {
 						played: false,
 						lastRequested : now 
 					}
+				},{
+					"new" : true
 				}, function(err, item) {
 					if (err) return next(err);
 					var toSend = processResult(item, req.user);

@@ -67,6 +67,9 @@
 					<!--<p>{{item.description}}</p>-->
 					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
 				</span>
+				<span class="extra">
+					Previous plays {{item.previousPlays}}
+				</span>
 				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
 				<span class="votes">{{item.totalVotes || 0}}</span>
 			</li>
