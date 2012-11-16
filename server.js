@@ -20,7 +20,29 @@ db.open(function(err, db) {
 	if (err) { console.log(err); return; }
 	db.ensureIndex('items', {
 		streamId : 1,
-		played : 0
+		played : -1
+	}, {
+		unique:false,
+		safe : true,
+	}, function(err, result) {
+		console.log(err|| result);
+	});
+
+	db.ensureIndex('items', {
+		streamId : 1,
+		url : 1
+	}, {
+		unique:false,
+		safe : true,
+	}, function(err, result) {
+		console.log(err|| result);
+	});
+
+	db.ensureIndex('items', {
+		streamId : 1,
+		totalVotes: -1, 
+		lastRequested: -1,
+		played: 1
 	}, {
 		unique:false,
 		safe : true,

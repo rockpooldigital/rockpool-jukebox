@@ -167,7 +167,9 @@ module.exports = function(db, notifications) {
 					created : now,
 					lastRequested : now,
 					played : false,
-					totalVotes : 0
+					totalVotes : 0,
+					historicVotes : 0,
+					plays : []
 				};
 
 				collection.insert(item, function(err, docs) {
@@ -246,7 +248,7 @@ module.exports = function(db, notifications) {
 
 			db.collection('items')
 			.find(q)
-			.sort({ totalVotes: -1, lastRequested: -1})
+			.sort({ historicVotes: -1, lastRequested: -1})
 			.limit(10)
 			.toArray(function(err, result) {
 				if (err) return next(err);
@@ -311,20 +313,32 @@ module.exports = function(db, notifications) {
 			}
 			var items = db.collection('items'),
 					now = new Date();
-			items.update({ _id : new BSON.ObjectID(req.params.id) }, { 
-				'$set' : { 
-					played: true,
-					lastPlayed : now
-				},
-				'$push' : {
-					plays : now
-				},
-				'$inc' : {
-					playCount : 1
-				}
-			}, function(err, data) {
+
+			var q = { _id : new BSON.ObjectID(req.params.id) };
+
+			items.findOne(q, function(err, item) {
 				if (err) return next(err);
-				res.send(200);
+				items.update(q, { 
+					'$set' : { 
+						played: true,
+						lastPlayed : now,
+						votes : [],
+						totalVotes : 0
+					},
+					'$push' : {
+						plays : { 
+							when :	now,
+							votes : item.votes
+						}
+					},
+					'$inc' : {
+						playCount : 1,
+						historicVotes : item.totalVotes 
+					}
+				}, function(err, data) {
+					if (err) return next(err);
+					res.send(200);
+				});
 			});
 		},
 

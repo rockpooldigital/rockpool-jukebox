@@ -1,10 +1,6 @@
 var request = require('request');
-var cheerio = require('cheerio');
-var entities = require("entities");
-var config = require('./config');
 
-
-config.URL = "http://wordpress.rockpool.local:8046";
+var serverUrl = "http://wordpress.rockpool.local:8046", THRESHOLD = 5, ADD = 10;
 
 
 
@@ -23,18 +19,18 @@ function getJson(url, done) {
 function populateStream(stream, done) {
 	console.log("==============");
 	console.log("processing stream " + stream.name);
-	var baseUrl = config.URL + "/data/stream/" + stream._id + "/item";
+	var baseUrl = serverUrl + "/data/stream/" + stream._id + "/item";
 
 	getJson(baseUrl + "/count?played=false", function(err, count) {
 		if (err) return done(err);
 		console.log(count + " items unplayed");
-		if (count > 20) {
+		if (count > THRESHOLD) {
 			console.log("skipping");
 			return done();
 		}
 
 		var url = baseUrl + "/oldest";
-		console.log(url);
+		//console.log(url);
 		getJson(url, function(err, itemOldest) {
 			if (!itemOldest) {
 				console.log("no items at all");
@@ -59,7 +55,7 @@ function populateStream(stream, done) {
 					var i = 1;
 					add = function(next) {
 						item = set.pop();
-						if (item && i < 5) {
+						if (item && i < ADD) {
 							console.log("adding item with id " + item._id + " title " + item.title);
 								request.post(baseUrl, { form: {
 									streamId : stream._id,
@@ -83,31 +79,35 @@ function populateStream(stream, done) {
 	});
 }
 
-getJson(config.URL + "/data/stream", function(err, streams) {
-	if (err) {
-		console.log(err);
-		return;
-	}
-//console.log(streams);
-	var next;
-
-	next = function(err) {
+var job = function() {
+	getJson(serverUrl + "/data/stream", function(err, streams) {
 		if (err) {
-			console.log("ERROR: " + err);
-			process.exit(code=1);
+			console.log(err);
+			return;
+		}
+	//console.log(streams);
+		var next;
+
+		next = function(err) {
+			if (err) {
+				console.log("ERROR: " + err);
+				process.exit(code=1);
+			}
+
+			var stream = streams.pop();
+			if (!stream) {
+				console.log("Done");
+				process.exit(code=0);
+			}
+
+			populateStream(stream, next);//next();
 		}
 
-		var stream = streams.pop();
-		if (!stream) {
-			console.log("Done");
-			process.exit(code=0);
-		}
+		next();
+		
+		
+	});
+};
 
-		populateStream(stream, next);//next();
-	}
-
-	next();
-	
-	
-});
+job();
 
