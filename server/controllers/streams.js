@@ -35,7 +35,8 @@ function queryMedia(url, next) {
 
 
 function processResult(item, user) {
-	console.log(item.plays );
+	//console.log(item.plays );
+	var playCount =  item.plays ? item.plays.length : 0;
 
 	var lastPlayed = item.plays && item.plays.length > 0 ?
 									item.plays.pop() : null;
@@ -57,9 +58,7 @@ function processResult(item, user) {
 		lastRequested : item.lastRequested || item.created,
 		totalVotes : item.totalVotes,
 		historicVotes : item.historicVotes || 0,
-		previousPlays : item.plays 
-												? item.plays.length 
-												: 0,
+		previousPlays : playCount,
 		currentVote: 0,
 		lastPlayed : lastPlayed
 	};
