@@ -35,6 +35,16 @@ function queryMedia(url, next) {
 
 
 function processResult(item, user) {
+	console.log(item.plays );
+
+	var lastPlayed = item.plays && item.plays.length > 0 ?
+									item.plays.pop() : null;
+
+	//check whether date vs object
+	if (lastPlayed && !lastPlayed.getMonth) {
+		lastPlayed = lastPlayed.when;
+	}
+
 	var result = {
 		_id : item._id,
 		streamId: item.streamId,
@@ -47,8 +57,11 @@ function processResult(item, user) {
 		lastRequested : item.lastRequested || item.created,
 		totalVotes : item.totalVotes,
 		historicVotes : item.historicVotes || 0,
-		previousPlays : item.plays ? item.plays.count : 0,
-		currentVote: 0
+		previousPlays : item.plays 
+												? item.plays.length 
+												: 0,
+		currentVote: 0,
+		lastPlayed : lastPlayed
 	};
 
   if (item.votes && user) {

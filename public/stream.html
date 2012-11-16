@@ -69,6 +69,12 @@
 				</span>
 				<span class="extra">
 					Previous plays {{item.previousPlays}}
+					Previous votes {{item.historicVotes}}
+					Total votes all time {{item.historicVotes + item.totalVotes}}
+					First added {{item.created | date:'dd/MM/yyyy'}}
+					<span ng-show="item.lastPlayed">
+						Last played  {{item.lastPlayed | date:'dd/MM/yyyy'}}
+					</span>
 				</span>
 				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
 				<span class="votes">{{item.totalVotes || 0}}</span>
