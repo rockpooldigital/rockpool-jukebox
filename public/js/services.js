@@ -105,13 +105,14 @@ angular.module('jukeboxServices', ['ngResource'])
 		};
 	})
 	.factory('StreamNotification', function(Socket) {
-		var onPlay, onItemAdded, onItemSkipped, onClientJoined, onItemVoted;
+		var onPlay, onItemAdded, onItemSkipped, onClientJoined, onItemVoted, onItemRemoved;
 
 		Socket.on('host:playingItem', function(data) { if (onPlay) onPlay(data); });
 		Socket.on('stream:itemAdded', function(data) { if (onItemAdded) onItemAdded(data); });
 		Socket.on('stream:itemSkipped', function(data) { if (onItemSkipped) onItemSkipped(data); });
 		Socket.on('stream:clientJoined', function(data) { if (onClientJoined) onClientJoined(data); });
 		Socket.on('stream:itemVoted', function(data) { if (onItemVoted) onItemVoted(data); });
+		Socket.on('stream:itemRemoved', function(data) { if (onItemRemoved) onItemRemoved(data); });
 
 		var streamId ;
 
@@ -130,6 +131,7 @@ angular.module('jukeboxServices', ['ngResource'])
 			setOnItemSkipped : function(f) { onItemSkipped = f},
 			setOnClientJoined : function(f) { onClientJoined = f},
 			setOnItemVoted : function(f) { onItemVoted = f},
+			setOnItemRemoved : function(f) { onItemRemoved = f; },
 
 			notifyPlay : function(stream, id) {
 				Socket.emit('host:playingItem', {

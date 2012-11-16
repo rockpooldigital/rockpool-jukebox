@@ -221,6 +221,16 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		}
 	});
 
+	StreamNotification.setOnItemRemoved(function(data) {
+		//remove from our list if we have it
+		for (var i =0; i < $scope.items.length; i++) {
+			if ($scope.items[i]._id === data.id) {
+				$scope.items.splice(i, 1);
+				return;
+			}
+		}
+	});
+
 	StreamNotification.setOnItemSkipped(function(data) {
 		//if we are not playing then the display can wait until we get host:playingItem
 		if (!$scope.isHostPlaying) { return; }

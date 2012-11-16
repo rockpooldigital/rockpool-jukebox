@@ -54,6 +54,14 @@ function setup(io) {
 			      id : item._id//, 
 			    //  item : item
 			});
+		},
+
+		notifyRemove :function(item) {
+			io.sockets.in(item.streamId).emit('stream:itemRemoved', {
+			      stream : item.streamId, 
+			      id : item._id//, 
+			    //  item : item
+			});
 		}
 	}
 }

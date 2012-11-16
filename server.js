@@ -133,6 +133,7 @@ app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
 app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/next', streamsCtrl.itemGetNext);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
+app.delete('/data/stream/:streamId/item/:id', streamsCtrl.itemRemove);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 app.get('/data/stream/:id', streamsCtrl.streams);
 app.get('/data/stream', streamsCtrl.streams);

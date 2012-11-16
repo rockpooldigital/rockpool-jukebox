@@ -235,6 +235,27 @@ module.exports = function(db, notifications) {
 			});
 		},
 
+		itemRemove: function(req, res, next) {
+			if (!req.params.id || !req.params.streamId) {
+				res.send(400); return;
+			}
+
+			db.collection('items')
+			.findAndModify({ 
+				streamId : new BSON.ObjectID(req.params.streamId), 
+				_id : new BSON.ObjectID(req.params.id) 
+			}, [['_id','asc']], {}, {
+				remove: true
+			}, function(err, result) {
+				if(err) return next(err);
+				if (!result) return res.send(404);
+				//todo
+				//console.log(result);
+				notifications.notifyRemove(result);
+				res.send(200);
+			});
+		},
+
 		itemFindActiveByStream: function(req, res, next) {
 			if (!req.params.streamId) {
 				res.send(400); return;
