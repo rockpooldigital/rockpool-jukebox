@@ -1,6 +1,6 @@
 var request = require('request');
-
-var serverUrl = "http://wordpress.rockpool.local:8046", THRESHOLD = 5, ADD = 10;
+var config = require('./config');
+var serverUrl =  config.URL, THRESHOLD = 15, ADD = 10;
 
 
 
@@ -51,6 +51,7 @@ function populateStream(stream, done) {
 					console.log("nothing to add");
 					done();
 				} else {
+					console.log("search found " + set.length);
 					var add;
 					var i = 1;
 					add = function(next) {
@@ -85,19 +86,21 @@ var job = function() {
 			console.log(err);
 			return;
 		}
-	//console.log(streams);
+
 		var next;
 
 		next = function(err) {
 			if (err) {
 				console.log("ERROR: " + err);
-				process.exit(code=1);
+				//process.exit(code=1);
+				return;
 			}
 
 			var stream = streams.pop();
 			if (!stream) {
 				console.log("Done");
-				process.exit(code=0);
+				//process.exit(code=0);
+				return;
 			}
 
 			populateStream(stream, next);//next();
@@ -108,6 +111,8 @@ var job = function() {
 		
 	});
 };
-
 job();
+setInterval(job, 1000 * 60 * 4);
+
+
 

@@ -60,7 +60,7 @@
 	<section id="queue">
 		<p ng-show="!items.length">No items yet</p>
 		<ul class="clearfix" id="stream-items" ng-show="items.length">
-			<li ng-repeat="item in items" class="item clearfix">
+			<li ng-repeat="item in items" class="item clearfix" id="item-{{item._id}}">
 				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 				<span class="info">
 					<h4 class="title">{{item.title}}</h4>
