@@ -141,6 +141,7 @@ app.post('/data/stream', streamsCtrl.streamAdd);
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 app.post('/data/item/:id/playing', streamsCtrl.itemMarkPlaying);
+app.post('/data/item/:id/flag', streamsCtrl.itemFlag);
 
 app.get('/', function(req, res) {
 	res.render('app.html', { user : req.user });

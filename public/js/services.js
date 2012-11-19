@@ -77,6 +77,11 @@ angular.module('jukeboxServices', ['ngResource'])
 					.success(function() { if(success) success(); })
 					.error(function() { if(fail) fail(); })
 			},
+			flagItem: function(itemId, reason, success, fail) {
+				$http.post('/data/item/' +  itemId + '/flag', { reason : reason})
+					.success(function() { if(success) success(); })
+					.error(function() { if(fail) fail(); })
+			},
 			notifyPlaying :function(itemId, success, fail) {
 				$http.post('/data/item/' +  itemId + '/playing')
 					.success(function() { if(success) success(); })

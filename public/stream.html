@@ -90,7 +90,7 @@
 	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start stream</button>
 	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop stream</button>
 
-	<player item="hostItem" on-finish="hostFinishedPlaying()"></player>
+	<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 
 </div>
 

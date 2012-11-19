@@ -17,8 +17,8 @@ function getJson(url, done) {
 }
 
 function populateStream(stream, done) {
-	console.log("==============");
-	console.log("processing stream " + stream.name);
+	//console.log("==============");
+	console.log("==processing stream " + stream.name);
 	var baseUrl = serverUrl + "/data/stream/" + stream._id + "/item";
 
 	getJson(baseUrl + "/count?played=false", function(err, count) {
@@ -38,7 +38,7 @@ function populateStream(stream, done) {
 			}
 
 			var then = new Date(itemOldest.created).getTime();
-			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24).getTime();
+			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 3).getTime();
 
 			var age = Math.floor(
 					(Math.random() * (yesterday - then)) + then

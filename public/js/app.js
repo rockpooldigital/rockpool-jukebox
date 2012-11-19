@@ -165,9 +165,27 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		$scope.isHostPlaying = false;
 	};
 
+	$scope.hostErrorCount = 0;
+
 	$scope.hostFinishedPlaying = function() {
 		StreamData.markPlayed($scope.hostItem._id, function() {
 			playNext();
+		});
+
+		$scope.hostErrorCount = 0;
+	};
+
+	$scope.hostPlaybackError = function() {
+		++$scope.hostErrorCount;
+
+		StreamData.flagItem($scope.hostItem._id, "error", function() {
+			if ($scope.hostErrorCount < 3) {
+				playNext();
+			} else {
+				alert('Too many errors have occured');
+			}
+		}, function() {
+			alert('Error flagging item')
 		});
 	};
 

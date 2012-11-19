@@ -73,6 +73,12 @@ MegaPlayer = function($) {
 		          			}
 		          		}
 		          	});
+
+		          	youtubePlayer.addEventListener("onError", function(e) {
+		          		notificationEventHandler({
+		          			status : 'error'
+		          		});
+		          	});
 		          	task(evt.target);
 		          	console.log(youtubePlayer);
 		         	}
@@ -195,7 +201,7 @@ MegaPlayer = function($) {
 			  youtube : null,
 			  flowplayer : null
 			}, activePlayer=null, eventListeners = {
-				'finish' : []
+				'finish' : [], 'error' : []
 			}, factories = {
 				youtube : createYoutubeWrapper,
 				soundcloud : createSoundCloudWrapper,
@@ -245,8 +251,12 @@ MegaPlayer = function($) {
 							player.show();
 						}
 						activePlayer = player;
-						player.play(item.url, function() { 
-							fireEvent("finish");
+						player.play(item.url, function(notification) { 
+							if (notification.status === "finished") {
+								fireEvent("finish");	
+							} else if (notification.status === "error") {
+								fireEvent("error");
+							}							
 						});
 					} else {
 						alert('Unsupported item type');

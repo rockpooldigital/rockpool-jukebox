@@ -285,7 +285,7 @@ module.exports = function(db, notifications) {
 
 			db.collection('items')
 			.find(q)
-			.sort({ historicVotes: -1, lastRequested: -1})
+			.sort({ lastPlayVotes: -1, lastRequested: -1})
 			.limit(10)
 			.toArray(function(err, result) {
 				if (err) return next(err);
@@ -360,7 +360,8 @@ module.exports = function(db, notifications) {
 						played: true,
 						lastPlayed : now,
 						votes : [],
-						totalVotes : 0
+						totalVotes : 0,
+						lastPlayVotes : item.totalVotes
 					},
 					'$push' : {
 						plays : { 
@@ -376,6 +377,26 @@ module.exports = function(db, notifications) {
 					if (err) return next(err);
 					res.send(200);
 				});
+			});
+		},
+
+		itemFlag : function(req, res, next) {
+			if (!req.params.id || !req.body.reason) {
+				res.send(400); return;
+			}
+			var items = db.collection('items'),
+					now = new Date();
+
+			var q = { _id : new BSON.ObjectID(req.params.id) };
+
+			items.update(q, {  
+				'$set' : { 
+					played: true,
+					flagged: req.body.reason
+				},
+			}, function(err, data) {
+				if (err) return next(err);
+				res.send(200);
 			});
 		},
 

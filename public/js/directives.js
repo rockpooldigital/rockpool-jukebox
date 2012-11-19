@@ -10,6 +10,12 @@ angular.module('jukeboxDirectives', [])
 					});
 				});
 
+				megaPlayer.bind('error', function() {
+					scope.$apply(function() {
+						scope.onError();
+					});
+				});
+
 				var playVideo = function(item) {
 					if (!item) {
 						megaPlayer.stop();
@@ -42,6 +48,7 @@ angular.module('jukeboxDirectives', [])
 			scope : {
 				item : '=',
 				onFinish : '&',
+				onError : '&'
 			},
 
 			restrict : 'E',
