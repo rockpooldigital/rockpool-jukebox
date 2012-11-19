@@ -23,9 +23,9 @@ function populateStream(stream, done) {
 
 	getJson(baseUrl + "/count?played=false", function(err, count) {
 		if (err) return done(err);
-		console.log(count + " items unplayed");
+		//console.log(count + " items unplayed");
 		if (count > THRESHOLD) {
-			console.log("skipping");
+			//console.log("skipping");
 			return done();
 		}
 
@@ -33,7 +33,7 @@ function populateStream(stream, done) {
 		//console.log(url);
 		getJson(url, function(err, itemOldest) {
 			if (!itemOldest) {
-				console.log("no items at all");
+				//console.log("no items at all");
 				return done();
 			}
 
@@ -48,10 +48,10 @@ function populateStream(stream, done) {
 			getJson(baseUrl + "/historic?played=true&age=" + age, function(err, set) {
 				if (err) return done(err);
 				if (set.length === 0) {
-					console.log("nothing to add");
+					//console.log("nothing to add");
 					done();
 				} else {
-					console.log("search found " + set.length);
+					//console.log("search found " + set.length);
 					var add;
 					var i = 1;
 					add = function(next) {
