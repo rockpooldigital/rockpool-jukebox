@@ -1,6 +1,6 @@
 var request = require('request');
 var config = require('./config');
-var serverUrl =  config.URL, THRESHOLD = 15, ADD = 10;
+var serverUrl =  config.URL, THRESHOLD = 5, ADD = 5;
 
 
 
@@ -44,7 +44,7 @@ function populateStream(stream, done) {
 					(Math.random() * (yesterday - then)) + then
 			);
 
-			console.log(new Date(age));
+			//console.log(new Date(age));
 			getJson(baseUrl + "/historic?played=true&age=" + age, function(err, set) {
 				if (err) return done(err);
 				if (set.length === 0) {
