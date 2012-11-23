@@ -177,15 +177,16 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 	$scope.hostPlaybackError = function() {
 		++$scope.hostErrorCount;
-
-		StreamData.flagItem($scope.hostItem._id, "error", function() {
-			if ($scope.hostErrorCount < 3) {
-				playNext();
-			} else {
-				alert('Too many errors have occured');
-			}
-		}, function() {
-			alert('Error flagging item')
+		StreamData.markPlayed($scope.nowPlaying._id, function() {
+			StreamData.flagItem($scope.hostItem._id, "error", function() {
+				if ($scope.hostErrorCount < 3) {
+					playNext();
+				} else {
+					alert('Too many errors have occured');
+				}
+			}, function() {
+				alert('Error flagging item')
+			});
 		});
 	};
 
@@ -207,6 +208,14 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		}, function(reason) {
 			if (reason === "unauthorised") { return alert('You need to be logged in to vote'); }
 			alert('Unknown error');
+		});
+	};
+
+	$scope.flagItem = function(item) {
+		StreamData.flagItem(item._id, "user", function() {
+			alert("Item flagged. It will not be removed until somebody looks at the flagged list.");
+		}, function() {
+			alert('Error submitting flag!');
 		});
 	};
 

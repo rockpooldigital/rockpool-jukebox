@@ -68,15 +68,14 @@
 					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
 				<span class="extra">
 					<ul class="trackInfo">
-						<li>Previous plays {{item.previousPlays}}</li>
-						<li>Previous votes {{item.historicVotes}}</li>
-						<li>Total votes all time {{item.historicVotes + item.totalVotes}}</li>
+						<li>Previously played {{item.previousPlays}} time(s)</li>
+						<li>{{item.historicVotes + item.totalVotes}} total vote(s)</li>
 						<li>First added {{item.created | date:'dd/MM/yyyy'}}</li>
 						<li ng-show="item.lastPlayed">Last played  {{item.lastPlayed | date:'dd/MM/yyyy'}}</li>
 					</ul>
 					<ul class="icons clearfix">
-						<li><button class="trash">Trash</button></li>
-						<li><button class="flag">Flag</button></li>
+						<li style="display:none;"><button class="trash">Trash</button></li> 
+						<li><button class="flag" ng-click="flagItem(item)" title="Flag this item">Flag</button></li>
 					</ul>
 					
 					

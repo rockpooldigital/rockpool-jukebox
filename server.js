@@ -40,7 +40,7 @@ db.open(function(err, db) {
 
 	db.ensureIndex('items', {
 		streamId : 1,
-		totalVotes: -1, 
+		lastPlayVotes: -1, 
 		lastRequested: -1,
 		played: 1
 	}, {

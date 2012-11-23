@@ -391,7 +391,7 @@ module.exports = function(db, notifications) {
 
 			items.update(q, {  
 				'$set' : { 
-					played: true,
+			//		played: true,
 					flagged: req.body.reason
 				},
 			}, function(err, data) {
