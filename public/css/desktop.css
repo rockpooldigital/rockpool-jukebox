@@ -504,6 +504,7 @@ textarea {resize: vertical;}
 	padding:6.140625% 0; /*squares*/
 	position: relative;
 	margin: 0 .25% .25% 0;
+	overflow: hidden;
 }
 #stream-items .item:nth-child(1),
 #stream-items .item:nth-child(2),
@@ -519,6 +520,7 @@ textarea {resize: vertical;}
 
 
 #stream-items .voteUp {
+	padding: 0;
 	height: 20%;
 	min-height: 20px;
 	position: absolute;
@@ -528,6 +530,8 @@ textarea {resize: vertical;}
 	z-index: 2;
 	opacity: 0.65;
 	cursor: pointer;
+	border: 0;
+	text-indent: -9000px;
 	-webkit-transition:all 0.2s;
 	-moz-transition:all 0.2s;
 	-ms-transition:all 0.2s;
@@ -599,7 +603,17 @@ textarea {resize: vertical;}
 	color: #eee;
 	background: rgba(0,0,0,0.7);
 	z-index: 2;
-	/*transition:all 0.5s;*/
+	height: 140px;
+	position: absolute;
+	bottom: -107px;
+	transition: all 0.1s ease;
+	-moz-transition:  all 0.1s ease;
+	-webkit-transition:  all 0.1s ease;
+	-o-transition: all 0.1s ease;
+	transition-delay: 0.3s;
+	-moz-transition-delay: 0.3s;
+	-webkit-transition-delay: 0.3s;
+	-o-transition-delay: 0.3s;
 }
 #stream-items .info .title{
 	width: 100%;
@@ -609,6 +623,46 @@ textarea {resize: vertical;}
 	font-family: 'Cabin', Helvetica, Arial, sans-serif;
 	font-size: .75em;	
 }
+#stream-items .info .extra
+{
+	font-size: 0.7em;
+}
+#stream-items .info .extra ul
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#stream-items .info .extra ul li
+{
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+#stream-items .info .extra button
+{
+	
+	border: 0;
+	text-indent: -9000px;
+	width: 11px;
+	height: 13px;
+	transition: all 0.3s ease;
+	-moz-transition:  all 0.3s ease;
+	-webkit-transition:  all 0.3s ease;
+	-o-transition: all 0.3s ease;
+}
+
+#stream-items .info .extra button:hover { opacity: 0.5;}
+
+#stream-items .info .extra ul.trackInfo { margin: 0 0 10px 0; }
+
+#stream-items .info .extra .trash { background: url(../img/trash-icon.png) no-repeat 0 0; }
+#stream-items .info .extra .flag { background: url(../img/flag-icon.png) no-repeat 0 0; }
+
+#stream-items .info .extra .icons li { margin: 0 10px 0 0; float: left; }
+
+#stream-items li.item:hover span.info { bottom: 0;}
 
 #stream-items .votes {
 	width: auto;
