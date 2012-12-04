@@ -218,7 +218,7 @@ module.exports = function(db, notifications) {
 
 			queryMedia(req.body.url, function (err, data) {
 				if (err) return next(err);
-				if (typeof(data.opengraph.title) === "undefined") {
+				if (typeof(data.openGraph.title) === "undefined") {
 					return res.send(404, "Opengraph data not returned");
 				}
 				collection.findOne({
