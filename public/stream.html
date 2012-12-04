@@ -19,6 +19,13 @@
 		<article class="infoWrap">
 			<h4 class="title">{{nowPlaying.title}}</h4>
 			<p class="desc">{{nowPlaying.description}}</p>
+			<ul>
+						<li>Previously played {{nowPlaying.previousPlays}} time(s)</li>
+						<li>{{nowPlaying.historicVotes + nowPlaying.totalVotes}} total vote(s)</li>
+						<li>First added {{nowPlaying.created | date:'dd/MM/yyyy'}}</li>
+						<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
+		</ul>
+
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
 		</article>
 	</div>

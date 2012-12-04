@@ -218,7 +218,9 @@ module.exports = function(db, notifications) {
 
 			queryMedia(req.body.url, function (err, data) {
 				if (err) return next(err);
-
+				if (typeof(data.opengraph.title) === "undefined") {
+					return res.send(404, "Opengraph data not returned");
+				}
 				collection.findOne({
 					streamId: new BSON.ObjectID(req.params.streamId),
 					url : data.url
