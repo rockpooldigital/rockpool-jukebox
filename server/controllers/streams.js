@@ -287,7 +287,7 @@ module.exports = function(db, notifications) {
 
 			db.collection('items')
 			.find(q)
-			.sort({ lastPlayVotes: -1, lastRequested: -1})
+			.sort({ lastPlayVotes: -1, lastRequested: 1 })
 			.limit(10)
 			.toArray(function(err, result) {
 				if (err) return next(err);
