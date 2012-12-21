@@ -4,7 +4,39 @@ var request = require('request');
 var cheerio = require('cheerio');
 var entities = require("entities");
 
+
+//todo : pull this out into a shared library used by search.js also
+function querySpotify(uri, next) {
+	var apiUrl = 'http://ws.spotify.com/lookup/1/.json?uri=' + encodeURIComponent(uri);
+	console.log(apiUrl);
+	request(apiUrl, function(err, resp, body) {
+		if (err) return next(err);
+		if (resp.statusCode !== 200) {
+			return next(new Error("Spotify service returned " + resp.statusCode));
+		}
+
+		var data = {},  openGraph = {};
+
+		try {
+			var track = JSON.parse(body).track;
+			data.artists = track.artists.map(function(a) { return a.name; });
+			data.title = track.name + ' - ' + data.artists.join(', ');
+			data.image = '/img/spotify-logo-450-square.jpg';
+			data.views = track.popularity;
+			data.url = track.href;
+			data.openGraph = openGraph;
+			next(null, data);
+		} catch (e) {
+			next(e);
+		}
+	});
+}
+
 function queryMedia(url, next) {
+	if (url.indexOf('spotify:track') === 0) {
+		return querySpotify(url, next);
+	}
+
 	url = url.replace('/#!', '');
 	request(url, function(err, resp, body) {
 		if (err) return next(err);
@@ -218,8 +250,8 @@ module.exports = function(db, notifications) {
 
 			queryMedia(req.body.url, function (err, data) {
 				if (err) return next(err);
-				if (typeof(data.openGraph.title) === "undefined") {
-					return res.send(404, "Opengraph data not returned");
+				if (typeof(data.url) === "undefined") {
+					return res.send(404, "URL not returned");
 				}
 				collection.findOne({
 					streamId: new BSON.ObjectID(req.params.streamId),

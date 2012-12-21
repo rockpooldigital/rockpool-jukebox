@@ -28,6 +28,22 @@ function setup(io) {
 	      stream : data.stream, id : data.id
 	    });
 	  });
+
+	  socket.on('player:requestRemotePlay', function(data) {
+	  	console.log("spot play");
+	  	socket.broadcast.to(data.stream).emit('player:requestRemotePlay', {
+	      stream : data.stream, item : data.item
+	    });
+	  });
+
+	  socket.on('player:requestRemoteStop', function(data) {
+	  	console.log("spot stop");
+	  	socket.broadcast.to(data.stream).emit('player:requestRemotePlay');
+	  });
+
+	  socket.on('player:remoteItemStopped', function(data) {
+	  	socket.broadcast.to(data.stream).emit('player:remoteItemStopped');
+	  });
 	});
 
 	return {

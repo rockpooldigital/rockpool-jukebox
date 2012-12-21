@@ -1,40 +1,82 @@
 angular.module('jukeboxDirectives', [])
-	.directive('player', function() {
+	.directive('player', function(StreamNotification) {
 		return { 
 			link	: function(scope, element, attrs) {
+				var activePlayer = null;
+				var map = {
+					'YouTube' : 'youtube',
+					'SoundCloud' : 'soundcloud',
+					'Vimeo' : 'vimeo'
+				};
 
 				var megaPlayer = MegaPlayer.create(element);
+
+				var players = {
+					local : {
+						play: function() {
+							var type = map[item.openGraph.site_name];
+							megaPlayer.play({
+								type: type,
+								url : item.url
+							});
+						},
+						stop : megaPlayer.stop
+					},
+					remote : {
+						play: function(item) {
+							StreamNotification.requestRemotePlay(item);
+						},
+						stop : StreamNotification.requestRemoteStop
+					}
+				};
+
 				megaPlayer.bind('finish', function() {
-					scope.$apply(function() {
-						scope.onFinish();
-					});
+					if (activePlayer === players.local) {
+						scope.$apply(function() {
+							scope.onFinish();
+						});
+					}
 				});
 
 				megaPlayer.bind('error', function() {
-					scope.$apply(function() {
-						scope.onError();
-					});
+					if (activePlayer === players.local) {
+						scope.$apply(function() {
+							scope.onError();
+						});
+					}
 				});
+
+				StreamNotification.setOnRemoteItemStopped(function() {
+					if (activePlayer === players.remote) {
+						scope.$apply(function() {
+							scope.onFinish();
+						});
+					}
+				});
+
 
 				var playVideo = function(item) {
 					if (!item) {
-						megaPlayer.stop();
+						if (activePlayer) { activePlayer.stop(); }
 						return;
 					}
-					var player = null;
 
-					var map = {
-						'YouTube' : 'youtube',
-						'SoundCloud' : 'soundcloud',
-						'Vimeo' : 'vimeo'
-					};
+					var newPlayer;
 
-					var type = map[item.openGraph.site_name];
+					if (item.url.indexOf('spotify:track') === 0) {
+						newPlayer = players.remote;
+					} else {
+						newPlayer = players.local;
+					}		
 
-					megaPlayer.play({
-						type: type,
-						url : item.url
-					});					
+					if (activePlayer && activePlayer !== newPlayer) {
+						activePlayer.stop();
+						return;
+					}
+
+					newPlayer.play(item);			
+
+					activePlayer = newPlayer;
 				};
 
 				//watch for change in currently playing item.

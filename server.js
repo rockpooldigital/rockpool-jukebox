@@ -121,10 +121,13 @@ var notifications = require('./server/notification-sockets').create(io);
 var auth_controller = require('./server/controllers/authentication.js').createAuthController(config);
 var streamsCtrl = require('./server/controllers/streams.js')(db, notifications);
 
+var searchCtrl = require('./server/controllers/search.js');
+
 app.get('/auth/facebook', auth_controller.authFacebook);
 app.get('/auth/facebook/callback', auth_controller.authFacebookCallback);
 app.get('/logout', auth_controller.logout);
 
+app.get('/data/search/youTube', searchCtrl.searchYouTube);
 
 app.get('/data/stream/:streamId/item/count', streamsCtrl.itemCount);
 app.get('/data/stream/:streamId/item/historic', streamsCtrl.itemFindHistoric);

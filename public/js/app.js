@@ -45,7 +45,7 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, YouTubeSearch, DesktopNotifications) {
+project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
 
 	Socket.setOnStatus(function (eventName) {
@@ -111,7 +111,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 			}
 
 			function searchYouTube(q) {
-				YouTubeSearch(q, function(result) {
+				ItemSearch(q, function(result) {
 					if (!result) { return; }
 					//console.log(result.feed);
 					

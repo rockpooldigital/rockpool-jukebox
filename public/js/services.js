@@ -109,8 +109,11 @@ angular.module('jukeboxServices', ['ngResource'])
 			}
 		};
 	})
-	.factory('StreamNotification', function(Socket) {
-		var onPlay, onItemAdded, onItemSkipped, onClientJoined, onItemVoted, onItemRemoved;
+	.factory('StreamNotification', function(Socket, $routeParams) {
+		var streamId = $routeParams.streamId;
+		if (!streamId) throw new Error("streamId not provided");
+
+		var onPlay, onItemAdded, onItemSkipped, onClientJoined, onItemVoted, onItemRemoved, onRemoteItemStopped;
 
 		Socket.on('host:playingItem', function(data) { if (onPlay) onPlay(data); });
 		Socket.on('stream:itemAdded', function(data) { if (onItemAdded) onItemAdded(data); });
@@ -119,7 +122,10 @@ angular.module('jukeboxServices', ['ngResource'])
 		Socket.on('stream:itemVoted', function(data) { if (onItemVoted) onItemVoted(data); });
 		Socket.on('stream:itemRemoved', function(data) { if (onItemRemoved) onItemRemoved(data); });
 
-		var streamId ;
+		Socket.on('player:remoteItemStopped', function(data) {
+			if(onRemoteItemStopped) { onRemoteItemStopped(data);}
+		});
+		//var streamId ;
 
 		Socket.on('reconnect', function() {
 			if (streamId) {
@@ -137,7 +143,7 @@ angular.module('jukeboxServices', ['ngResource'])
 			setOnClientJoined : function(f) { onClientJoined = f},
 			setOnItemVoted : function(f) { onItemVoted = f},
 			setOnItemRemoved : function(f) { onItemRemoved = f; },
-
+			setOnRemoteItemStopped : function(f) { onRemoteItemStopped = f; },
 			notifyPlay : function(stream, id) {
 				Socket.emit('host:playingItem', {
 					stream : stream,
@@ -146,7 +152,7 @@ angular.module('jukeboxServices', ['ngResource'])
 			},
 
 			notifyJoin : function(stream) {
-				streamId = stream;
+				//streamId = stream;
 				Socket.emit('stream:join', {
 					stream : stream,
 				});
@@ -171,42 +177,32 @@ angular.module('jukeboxServices', ['ngResource'])
 					id : id,
 					stream :stream
 				});
+			},
+
+			requestRemotePlay : function(item) {
+				console.log("spot start")
+				Socket.emit('player:requestRemotePlay', {
+					stream : streamId,
+					item : item
+				});
+			},
+
+			requestRemoteStop : function() {
+				console.log("spot stop");
+				Socket.emit('player:requestRemoteStop', {
+					stream : streamId
+				});
 			}
 		};
 	})
-.factory('YouTubeSearch', function($http, $rootScope) {
+.factory('ItemSearch', function($http, $rootScope) {
 	return function(q, success, fail) {
-		var url = 'https://gdata.youtube.com/feeds/api/videos?alt=json-in-script&callback=JSON_CALLBACK'
-							+ '&q=' + encodeURIComponent(q)
-							+ '&max-results=10'
-							+ '&format=5' //only embeddable
-							+ '&category=Music' ; 
-
+		var url = '/data/search/youTube?q=' + encodeURIComponent(q);
+							
 		console.log(url);
-		$http.jsonp(url)
-		.success(function(data) {
-			if (success) {
-				var filtered = data.feed.entry.map(function(e) {
-					return { 
-						title : e.title['$t'], 
-						url : e.link.filter(function(url) {
-							return url.type == "text/html"
-						})[0].href,
-						image : e['media$group']['media$thumbnail'][0].url,
-						views : e['yt$statistics'] ? e['yt$statistics'].viewCount : "?"
-					};
-				});
-
-				success(filtered);
-			}
-		})
-		.error(function() {
-			if (fail) {
-				//$rootScope.$apply(function() {
-				 	fail(data);
-				//});
-			}
-		});
+		var promise = $http.get(url)
+		.success(success);
+		if (fail) { promise.fail(promise); }
 	}
 })
 .factory('DesktopNotifications', function() {
