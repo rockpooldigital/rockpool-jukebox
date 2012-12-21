@@ -37,6 +37,8 @@ function populateStream(stream, done) {
 				return done();
 			}
 
+			var DAY_MS =  1000 * 60 * 60 * 24;
+
 			var then = new Date(itemOldest.created).getTime();
 			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 3).getTime();
 
@@ -44,7 +46,7 @@ function populateStream(stream, done) {
 					(Math.random() * (yesterday - then)) + then
 			);
 
-			//console.log(new Date(age));
+			console.log(new Date(age));
 			getJson(baseUrl + "/historic?played=true&age=" + age, function(err, set) {
 				if (err) return done(err);
 				if (set.length === 0) {
