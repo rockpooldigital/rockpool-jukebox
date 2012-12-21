@@ -49,6 +49,7 @@
 						<a ng-click="addItem(yt, true)" class="clearfix">
 							<img ng-src="{{yt.image}}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
+							<p ng-show="yt.album">{{yt.album}}</p>
 						</a>
 						<img ng-src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
 						<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} views</em>

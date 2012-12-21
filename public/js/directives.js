@@ -13,7 +13,7 @@ angular.module('jukeboxDirectives', [])
 
 				var players = {
 					local : {
-						play: function() {
+						play: function(item) {
 							var type = map[item.openGraph.site_name];
 							megaPlayer.play({
 								type: type,
@@ -48,16 +48,17 @@ angular.module('jukeboxDirectives', [])
 
 				StreamNotification.setOnRemoteItemStopped(function() {
 					if (activePlayer === players.remote) {
-						scope.$apply(function() {
-							scope.onFinish();
-						});
+						scope.onFinish();
 					}
 				});
 
 
 				var playVideo = function(item) {
 					if (!item) {
-						if (activePlayer) { activePlayer.stop(); }
+						if (activePlayer) { 
+							activePlayer.stop(); 
+							activePlayer = null;
+						}
 						return;
 					}
 
@@ -71,7 +72,6 @@ angular.module('jukeboxDirectives', [])
 
 					if (activePlayer && activePlayer !== newPlayer) {
 						activePlayer.stop();
-						return;
 					}
 
 					newPlayer.play(item);			

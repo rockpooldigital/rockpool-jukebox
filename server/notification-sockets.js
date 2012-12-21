@@ -32,13 +32,13 @@ function setup(io) {
 	  socket.on('player:requestRemotePlay', function(data) {
 	  	console.log("spot play");
 	  	socket.broadcast.to(data.stream).emit('player:requestRemotePlay', {
-	      stream : data.stream, item : data.item
+	       stream : data.stream, item : data.item
 	    });
 	  });
 
 	  socket.on('player:requestRemoteStop', function(data) {
-	  	console.log("spot stop");
-	  	socket.broadcast.to(data.stream).emit('player:requestRemotePlay');
+	  	console.log("spot stop", data.stream);
+	  	socket.broadcast.to(data.stream).emit('player:requestRemoteStop', data);
 	  });
 
 	  socket.on('player:remoteItemStopped', function(data) {

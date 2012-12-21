@@ -16,7 +16,7 @@ function queryYoutube(q, next) {
 
 		try {
 			var data = JSON.parse(body);
-			var filtered = data.feed.entry.map(function(e) {
+			var filtered = (data.feed.entry || []).map(function(e) {
 				return { 
 					title : e.title['$t'], 
 					url : e.link.filter(function(url) {
