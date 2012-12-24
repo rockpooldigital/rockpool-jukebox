@@ -17,18 +17,62 @@ function querySpotify(uri, next) {
 
 		var data = {},  openGraph = {};
 
+
 		try {
 			var track = JSON.parse(body).track;
+		
+	
 			data.artists = track.artists.map(function(a) { return a.name; });
 			data.title = track.name + ' - ' + data.artists.join(', ');
 			data.image = '/img/spotify-logo-450-square.jpg';
 			data.views = track.popularity;
 			data.url = track.href;
 			data.openGraph = openGraph;
-			next(null, data);
+
+			var albumUri = track.album.href;
+			if (albumUri) {
+				var ogUrl = "http://open.spotify.com/album/" 
+														+ albumUri.replace(/^spotify:album:/i, '');
+				console.log(ogUrl);
+				fetchOpenGraph(ogUrl, function(err, og) {
+					//console.log("opengrap", og)
+					data.image = og.image;
+					//console.log(data);
+					next(null, data);
+				});
+			} else {
+				next(null, data);
+			}
 		} catch (e) {
 			next(e);
 		}
+	});
+}
+
+function fetchOpenGraph(url, next) {
+	url = url.replace('/#!', '');
+	request(url, function(err, resp, body) {
+		if (err) return next(err);
+
+		var openGraph = {};
+
+		try {
+			var $ = cheerio.load(body);
+			$('meta').each(function(i, elem) {
+				if (typeof(elem.attribs.content) !== "undefined")
+				{
+					var value = entities.decode(elem.attribs.content);
+
+					if (elem.attribs.property && elem.attribs.property.indexOf("og:") === 0) {
+						openGraph[elem.attribs.property.substring(3)] = value;
+					}
+				}
+			});
+		} catch (e) {
+			return next(e);
+		}
+
+		next(null, openGraph);
 	});
 }
 
@@ -37,32 +81,19 @@ function queryMedia(url, next) {
 		return querySpotify(url, next);
 	}
 
-	url = url.replace('/#!', '');
-	request(url, function(err, resp, body) {
+	fetchOpenGraph(url, function(err, openGraph) {
 		if (err) return next(err);
 
-		var data = {},  openGraph = {};
-
-		var $ = cheerio.load(body);
-
-		$('meta').each(function(i, elem) {
-			if (typeof(elem.attribs.content) !== "undefined")
-			{
-				var value = entities.decode(elem.attribs.content);
-
-				if (elem.attribs.property && elem.attribs.property.indexOf("og:") === 0) {
-					openGraph[elem.attribs.property.substring(3)] = value;
-				}
-			}
-		});
-		
+		var data = {};
+	
 		data.title = openGraph.title || "Unknown";
 		data.description = openGraph.description || "";
 		data.image = openGraph.image || "";
 		data.url = openGraph.url || "";
 		data.openGraph = openGraph;
+		//console.log(data);
 		next(null, data);
-	});
+	});		
 };
 
 
@@ -249,6 +280,7 @@ module.exports = function(db, notifications) {
 			}
 
 			queryMedia(req.body.url, function (err, data) {
+				console.log(err,data);
 				if (err) return next(err);
 				if (typeof(data.url) === "undefined") {
 					return res.send(404, "URL not returned");
