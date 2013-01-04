@@ -149,7 +149,7 @@ function buildItemQuery(req, defaults) {
 	if (typeof(req.query.minVotes) !== "undefined") {
 		var num = parseInt(req.query.minVotes);
 		if (!isNaN(num)) {
-			q.totalVotes = { $gte : num};
+			q.totalVotes = { $gte : num };
 		}
 	};
 
@@ -223,8 +223,7 @@ module.exports = function(db, notifications) {
 		},
 
 		itemAdd : function(req, res, next) {
-			if (!req.body.url || !req.params.streamId)
-			{
+			if (!req.body.url || !req.params.streamId) {
 				res.send(400); 
 				return;
 			}
@@ -560,7 +559,7 @@ module.exports = function(db, notifications) {
 							//same vote has already been cast
 							return respond(false, "duplicate", item);
 						} else {
-							//this probably all needs to be done in some sort of transaction or calculated inside mongo
+							//todo: use $inc for this
 							var currentSum = sumVotes(item);
 							currentSum -= vote.weight;
 							currentSum += weight;

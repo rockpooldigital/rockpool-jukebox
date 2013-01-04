@@ -15,16 +15,15 @@ namespace SpotifyLauncher
     static string _currentId = null;
     static int _counter = 0;
     static Timer _timer;
+    static readonly object _sync = new object();
+    static Regex _reTrack = new Regex(@"^spotify:track:", RegexOptions.IgnoreCase);
 
     static void Main(string[] args)
     {
-
-      //frmMain frm = new frmMain();
-      //frm.ShowDialog();
-
       if (args.Length != 2)
       {
-        Console.WriteLine("PLease specify a stream id and url");
+        Console.WriteLine("Please specify a stream id and base url");
+        Console.WriteLine(@"e.g. SpotifyLauncher.exe 5089133484bdc27d64000001 ""http://wordpress.rockpool.local:8046""");
         return;
       }
 
@@ -35,36 +34,44 @@ namespace SpotifyLauncher
 
       socket.On("player:requestRemotePlay", fn =>
       {
-        var trackId = new Regex(@"^spotify:track:", RegexOptions.IgnoreCase).Replace(fn.Json.Args[0].item.url.ToString(), "");
-        Spotify.SpotifyHelpers.PlaySong(trackId);
-        _currentId = trackId;
         Console.WriteLine("player:requestRemotePlay");
-        _counter = 0;
-        _timer.Start();
+        if (fn.Json.Args.Length == 0
+            || fn.Json.Args[0].item == null
+            || fn.Json.Args[0].item.url == null)
+        {
+          return;
+        }
+        
+        string urlParam = fn.Json.Args[0].item.url.ToString();
+        var trackId = _reTrack.Replace(urlParam, "");
+
+        lock (_sync)
+        {
+          Spotify.SpotifyHelpers.PlaySong(trackId);
+          _currentId = trackId;
+          _counter = 0;
+          _timer.Start();
+        }
       });
 
       socket.On("player:requestRemoteStop", fn =>
       {
         Console.WriteLine("player:requestRemoteStop");
-
-        if (!String.IsNullOrEmpty(_currentId))
+        lock (_sync)
         {
-          Spotify.SpotifyHelpers.StopPlayback();
-          _currentId = null;
-          _timer.Stop();
+          if (!String.IsNullOrEmpty(_currentId))
+          {
+            Spotify.SpotifyHelpers.StopPlayback();
+            _currentId = null;
+            _timer.Stop();
+          }
         }
-
       });
 
-      Action join = () =>
-      {
-        socket.Emit("stream:join", new { stream = streamId });
-      };
-
-      socket.Opened += (s, e) => join();
+      socket.Opened += (s, e) => socket.Emit("stream:join", new { stream = streamId });
       socket.Connect();
 
-      _timer = new System.Timers.Timer(500);
+      _timer = new System.Timers.Timer(200);
       _timer.Elapsed += (s, e) =>
       {
         if (_counter++ < 4)
@@ -74,17 +81,22 @@ namespace SpotifyLauncher
 
         if (_currentId != null)
         {
-          var status = Spotify.SpotifyHelpers.GetStatus();
-
-          if (!String.IsNullOrEmpty(_currentId) && !status.TrackID.EndsWith(_currentId))
+          lock (_sync)
           {
-            _timer.Stop();
-            Spotify.SpotifyHelpers.StopPlayback();
-            socket.Emit("player:remoteItemStopped", new { stream = streamId });
-            _currentId = null;
-            Console.WriteLine("player:remoteItemStopped");
-          }
+            if (_currentId != null)
+            {
+              var status = Spotify.SpotifyHelpers.GetStatus();
 
+              if (!String.IsNullOrEmpty(_currentId) && !status.TrackID.EndsWith(_currentId))
+              {
+                _timer.Stop();
+                Spotify.SpotifyHelpers.StopPlayback();
+                socket.Emit("player:remoteItemStopped", new { stream = streamId });
+                _currentId = null;
+                Console.WriteLine("player:remoteItemStopped");
+              }
+            }
+          }
         }
       };
 
