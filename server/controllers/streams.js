@@ -86,7 +86,7 @@ function queryMedia(url, next) {
 
 		var data = {};
 	
-		data.title = openGraph.title || "Unknown";
+		data.title = openGraph.title || "";
 		data.description = openGraph.description || "";
 		data.image = openGraph.image || "";
 		data.url = openGraph.url || "";
@@ -279,10 +279,14 @@ module.exports = function(db, notifications) {
 			}
 
 			queryMedia(req.body.url, function (err, data) {
-				console.log(err,data);
+				//console.log(err,data);
 				if (err) return next(err);
 				if (typeof(data.url) === "undefined") {
 					return res.send(404, "URL not returned");
+				}
+
+				if (!data.title) {
+					return res.send(404, "Title not returned");
 				}
 				collection.findOne({
 					streamId: new BSON.ObjectID(req.params.streamId),
@@ -521,14 +525,14 @@ module.exports = function(db, notifications) {
 			var userId = req.user._id;
 			//var weight = req.body.weight > 0 ? 1 : -1;
 
-			function sumVotes(item) {
+			/*function sumVotes(item) {
 				if (typeof(item.votes) === "undefined" || item.votes.length === 0) { return 0 ;}
 				var sum = 0;
 				for (var i=0;i<item.votes.length;i++) {
 					sum+= item.votes[i].weight;
 				}
 				return sum;
-			}
+			}*/
 
 			function respond(success, reason, item) {
 				res.send({
@@ -560,18 +564,22 @@ module.exports = function(db, notifications) {
 							return respond(false, "duplicate", item);
 						} else {
 							//todo: use $inc for this
-							var currentSum = sumVotes(item);
-							currentSum -= vote.weight;
-							currentSum += weight;
+							//var currentSum = sumVotes(item);
+							var change = -vote.weight + weight;
+							//currentSum -= vote.weight;
+							//currentSum += weight;
 
 							//remove existing
 							items.findAndModify({ 
 									'votes.userId' : userId, 
 									'_id' : item._id 
-								}, [['_id', 'asc']], { '$set' : { 
+								}, [['_id', 'asc']], { 
+									'$set' : { 
 										'votes.$.weight' : weight, 
-										'votes.$.created' : new Date(),
-										'totalVotes' : currentSum
+										'votes.$.created' : new Date()									
+									},
+									'$inc' : {
+										totalVotes : change
 									}
 								}, { 'new' : true }, function (err, saved) {
 									if (err) return next(err);
@@ -583,8 +591,8 @@ module.exports = function(db, notifications) {
 				}
 
 				//create a new vote instead
-				var currentSum = sumVotes(item);
-				currentSum += weight;
+				//var currentSum = sumVotes(item);
+				//currentSum += weight;
 
 				//add vote
 				items.findAndModify({_id : item._id}, [['_id', 'asc']], { 
@@ -594,7 +602,7 @@ module.exports = function(db, notifications) {
 								userId: userId, created : new Date()
 							}
 						},
-						'$set' : { 'totalVotes' : currentSum }
+						'$inc' : { 'totalVotes' : weight }
 					}, { 'new' : true }, function(err, saved) {
 						if (err) return next(err);
 						respond(true, null, saved);
