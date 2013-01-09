@@ -40,7 +40,7 @@ function populateStream(stream, done) {
 			var DAY_MS =  1000 * 60 * 60 * 24;
 
 			var then = new Date(itemOldest.created).getTime();
-			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 3).getTime();
+			var yesterday = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7).getTime();
 
 			var age = Math.floor(
 					(Math.random() * (yesterday - then)) + then
@@ -59,7 +59,7 @@ function populateStream(stream, done) {
 					add = function(next) {
 						item = set.pop();
 						if (item && i < ADD) {
-							console.log("adding item with id " + item._id + " title " + item.title);
+							console.log("adding item with id " + item._id + " title " + item.title, url);
 								request.post(baseUrl, { form: {
 									streamId : stream._id,
 									url : item.url
@@ -95,7 +95,7 @@ var job = function() {
 			if (err) {
 				console.log("ERROR: " + err);
 				//process.exit(code=1);
-				return;
+				//return;
 			}
 
 			var stream = streams.pop();
