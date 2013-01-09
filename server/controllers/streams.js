@@ -2,8 +2,6 @@ var mongo = require('mongodb');//, Server = mongo.Server, Db = mongo.Db;
 var BSON = mongo.BSONPure;
 var request = require('request');
 var cheerio = require('cheerio');
-var entities = require("entities");
-
 
 //todo : pull this out into a shared library used by search.js also
 function querySpotify(uri, next) {
@@ -16,41 +14,37 @@ function querySpotify(uri, next) {
 		}
 
 		var data = {},  openGraph = {};
-
+		var track;
 
 		try {
-			var track = JSON.parse(body).track;
-		
-	
-			data.artists = track.artists.map(function(a) { return a.name; });
-			data.title = track.name + ' - ' + data.artists.join(', ');
-			data.image = '/img/spotify-logo-450-square.jpg';
-			data.views = track.popularity;
-			data.url = track.href;
-			data.openGraph = openGraph;
-
-			var albumUri = track.album.href;
-			if (albumUri) {
-				var ogUrl = "http://open.spotify.com/album/" 
-														+ albumUri.replace(/^spotify:album:/i, '');
-				console.log(ogUrl);
-				fetchOpenGraph(ogUrl, function(err, og) {
-					//console.log("opengrap", og)
-					data.image = og.image;
-					//console.log(data);
-					next(null, data);
-				});
-			} else {
-				next(null, data);
-			}
+			track = JSON.parse(body).track;
 		} catch (e) {
-			next(e);
+			return next(e);
+		}
+
+		data.artists = track.artists.map(function(a) { return a.name; });
+		data.title = track.name + ' - ' + data.artists.join(', ');
+		data.image = '/img/spotify-logo-450-square.jpg';
+		data.views = track.popularity;
+		data.url = track.href;
+		data.openGraph = openGraph;
+
+		var albumUri = track.album.href;
+		if (albumUri) {
+			var ogUrl = "http://open.spotify.com/album/" + albumUri.replace(/^spotify:album:/i, '');
+			console.log(ogUrl);
+			fetchOpenGraph(ogUrl, function(err, og) {
+				if (err) return next(err);
+				data.image = og.image;
+				next(null, data);
+			});
+		} else {
+			next(null, data);
 		}
 	});
 }
 
 function fetchOpenGraph(url, next) {
-	url = url.replace('/#!', '');
 	request(url, function(err, resp, body) {
 		if (err) return next(err);
 
@@ -58,15 +52,10 @@ function fetchOpenGraph(url, next) {
 
 		try {
 			var $ = cheerio.load(body);
-			$('meta').each(function(i, elem) {
-				if (typeof(elem.attribs.content) !== "undefined")
-				{
-					var value = entities.decode(elem.attribs.content);
-
-					if (elem.attribs.property && elem.attribs.property.indexOf("og:") === 0) {
-						openGraph[elem.attribs.property.substring(3)] = value;
-					}
-				}
+			$('meta[property^=og]').each(function(i, elem) {
+				var content = $(elem).attr('content');
+				var propName = $(elem).attr('property');
+				openGraph[propName.substring(3)] = content;
 			});
 		} catch (e) {
 			return next(e);

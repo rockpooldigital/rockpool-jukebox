@@ -41,7 +41,7 @@ namespace SpotifyLauncher
         {
           return;
         }
-        
+
         string urlParam = fn.Json.Args[0].item.url.ToString();
         var trackId = _reTrack.Replace(urlParam, "");
 
@@ -86,9 +86,11 @@ namespace SpotifyLauncher
             if (_currentId != null)
             {
               var status = Spotify.SpotifyHelpers.GetStatus();
+             // Console.WriteLine("{0},{1},{2}", status.Track, status.TrackID, _currentId);
 
-              if (!String.IsNullOrEmpty(_currentId) && !status.TrackID.EndsWith(_currentId))
+              if (String.IsNullOrEmpty(status.TrackID) || !status.TrackID.EndsWith(_currentId))
               {
+                //Console.WriteLine("stop detected");
                 _timer.Stop();
                 Spotify.SpotifyHelpers.StopPlayback();
                 socket.Emit("player:remoteItemStopped", new { stream = streamId });
