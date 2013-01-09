@@ -59,7 +59,7 @@ function populateStream(stream, done) {
 					add = function(next) {
 						item = set.pop();
 						if (item && i < ADD) {
-							console.log("adding item with id " + item._id + " title " + item.title, url);
+							console.log("adding item with id " + item._id + " title " + item.title, item.url);
 								request.post(baseUrl, { form: {
 									streamId : stream._id,
 									url : item.url
