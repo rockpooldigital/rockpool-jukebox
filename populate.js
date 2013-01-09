@@ -46,37 +46,46 @@ function populateStream(stream, done) {
 					(Math.random() * (yesterday - then)) + then
 			);
 
-			console.log(new Date(age));
+			console.log("threshold", new Date(age));
 			getJson(baseUrl + "/historic?played=true&age=" + age, function(err, set) {
 				if (err) return done(err);
 				if (set.length === 0) {
-					//console.log("nothing to add");
-					done();
-				} else {
-					//console.log("search found " + set.length);
-					var add;
-					var i = 1;
-					add = function(next) {
-						item = set.pop();
-						if (item && i < ADD) {
-							console.log("adding item with id " + item._id + " title " + item.title, item.url);
-								request.post(baseUrl, { form: {
-									streamId : stream._id,
-									url : item.url
-							}}, function(e,r,body) {
-								if (e) return next(e);
-								if (r.statusCode !== 200) {
-									if (r.body==="Duplicate") return next();
-									return next(new Error("add: statuscode " + r.statusCode + " body " + r.body));
-								}
-								add(next);
-							});							
-						} else {
-							next();
-						}
+					console.log("nothing to add");
+					return done();
+				} 
+
+				var add;
+				var i = 1;
+
+				var next = done;
+
+				add = function() {
+					item = set.pop();
+					if (!item || i >= ADD) {
+						return done();
 					}
-					add(done);					
+
+					console.log("adding", item._id, item.title, item.url);
+						request.post(baseUrl, { form: {
+							streamId : stream._id,
+							url : item.url
+					}}, function(e,r,body) {
+						if (e) { 
+							--i;
+							console.log("ERROR adding item: " + e);
+						} else if (r.statusCode !== 200) {
+							--i;
+							if (r.body==="Duplicate") { 
+								console.log("Duplicate");
+							} else {
+								console.log("ERROR add: statuscode " + r.statusCode + " body " + r.body);
+							}
+						}
+						add();
+					});							
 				}
+
+				add();
 			});
 		});
 	});
@@ -96,6 +105,7 @@ var job = function() {
 				console.log("ERROR: " + err);
 				//process.exit(code=1);
 				//return;
+				return next(err);
 			}
 
 			var stream = streams.pop();
