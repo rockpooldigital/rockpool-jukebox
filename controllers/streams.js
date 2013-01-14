@@ -34,9 +34,10 @@ function querySpotify(uri, next) {
 			var ogUrl = "http://open.spotify.com/album/" + albumUri.replace(/^spotify:album:/i, '');
 			console.log(ogUrl);
 			fetchOpenGraph(ogUrl, function(err, og) {
-				if (err) return next(err);
-				data.image = og.image;
-				next(null, data);
+				if (!err) {
+					data.image = og.image;
+				}
+				next(err, data);
 			});
 		} else {
 			next(null, data);

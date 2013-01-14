@@ -109,19 +109,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
 app.engine('.html', require('ejs').__express);
-app.set('views', __dirname + '/server/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 app.use(express.static(__dirname + '/public'));
 
 io.set('log level', 1); 
 //console.log(io);
-var notifications = require('./server/notification-sockets').create(io);
+var notifications = require('./notification-sockets').create(io);
 //sockets.setup();
 
-var auth_controller = require('./server/controllers/authentication.js').createAuthController(config);
-var streamsCtrl = require('./server/controllers/streams.js')(db, notifications);
+var auth_controller = require('./controllers/authentication.js').createAuthController(config);
+var streamsCtrl = require('./controllers/streams.js')(db, notifications);
 
-var searchCtrl = require('./server/controllers/search.js');
+var searchCtrl = require('./controllers/search.js');
 
 app.get('/auth/facebook', auth_controller.authFacebook);
 app.get('/auth/facebook/callback', auth_controller.authFacebookCallback);
