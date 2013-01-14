@@ -6,7 +6,7 @@ var search = require('../lib/search.js');
 //todo : pull this out into a shared library used by search.js also
 function querySpotify(uri, next) {
 	var apiUrl = 'http://ws.spotify.com/lookup/1/.json?uri=' + encodeURIComponent(uri);
-	console.log(apiUrl);
+	//console.log(apiUrl);
 	request(apiUrl, function(err, resp, body) {
 		if (err) return next(err);
 		if (resp.statusCode !== 200) {
@@ -28,11 +28,11 @@ function querySpotify(uri, next) {
 		data.views = track.popularity;
 		data.url = track.href;
 		data.openGraph = openGraph;
-		data.type = 'spotify';
+		data.type = 'Spotify';
 		var albumUri = track.album.href;
 		if (albumUri) {
 			var ogUrl = "http://open.spotify.com/album/" + albumUri.replace(/^spotify:album:/i, '');
-			console.log(ogUrl);
+			//console.log(ogUrl);
 			fetchOpenGraph(ogUrl, function(err, og) {
 				if (!err) {
 					data.image = og.image;
@@ -99,7 +99,7 @@ function processResult(item, user) {
 	if (lastPlayed && !lastPlayed.getMonth) {
 		lastPlayed = lastPlayed.when;
 	}
-
+	//console.log(item);
 	var result = {
 		_id : item._id,
 		streamId: item.streamId,
@@ -114,8 +114,13 @@ function processResult(item, user) {
 		historicVotes : item.historicVotes || 0,
 		previousPlays : playCount,
 		currentVote: 0,
-		lastPlayed : lastPlayed
+		lastPlayed : lastPlayed,
+		type: item.type
 	};
+
+	if (!result.type&& result.url.indexOf("spotify:") === 0) {
+		result.type = "Spotify";
+	}
 
   if (item.votes && user) {
   	for (var i=0;i<item.votes.length;i++) {
@@ -283,7 +288,8 @@ module.exports = function(db, notifications) {
 					played : false,
 					totalVotes : 0,
 					historicVotes : 0,
-					plays : []
+					plays : [],
+					type : data.type
 				};
 
 				collection.insert(item, function(err, docs) {

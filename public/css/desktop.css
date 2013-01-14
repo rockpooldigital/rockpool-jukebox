@@ -212,6 +212,12 @@ textarea {resize: vertical;}
 	left: -40%; /* not sure how this centres it? should be 50% */
 }	
 
+#stream-items li.type-Spotify .thumb img{
+  width: 100%;	
+  height: auto;
+	left: 0;
+}	
+
 #btStreams {
 	position: absolute;
 	top: 10px;

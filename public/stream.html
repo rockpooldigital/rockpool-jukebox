@@ -46,7 +46,7 @@
 				
 			<div id="ytResults" ng-show="entry.youtubeResults">
 				<ul>
-					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }" class="clearfix">
+					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }">
 						<a ng-click="addItem(yt, true)" class="clearfix">
 							<img ng-src="{{yt.image}}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
@@ -69,7 +69,7 @@
 	<section id="queue">
 		<p ng-show="!items.length">No items yet</p>
 		<ul class="clearfix" id="stream-items" ng-show="items.length">
-			<li ng-repeat="item in items" class="item clearfix" id="item-{{item._id}}">
+			<li ng-repeat="item in items" class="item clearfix type-{{item.type || 'unknown'}}" id="item-{{item._id}}">
 				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
 				<span class="info">
 					<h4 class="title">{{item.title}}</h4>
