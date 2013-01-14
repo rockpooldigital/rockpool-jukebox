@@ -195,9 +195,10 @@ angular.module('jukeboxServices', ['ngResource'])
 			}
 		};
 	})
-.factory('ItemSearch', function($http, $rootScope) {
+.factory('ItemSearch', function($http, $routeParams, $rootScope) {
 	return function(q, success, fail) {
-		var url = '/data/search/youTube?q=' + encodeURIComponent(q);
+		var url = '/data/stream/' + $routeParams.streamId 
+							+ '/searchMedia?q=' + encodeURIComponent(q);
 							
 		console.log(url);
 		var promise = $http.get(url)

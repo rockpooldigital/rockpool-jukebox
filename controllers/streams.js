@@ -2,7 +2,7 @@ var mongo = require('mongodb');//, Server = mongo.Server, Db = mongo.Db;
 var BSON = mongo.BSONPure;
 var request = require('request');
 var cheerio = require('cheerio');
-
+var search = require('../lib/search.js');
 //todo : pull this out into a shared library used by search.js also
 function querySpotify(uri, next) {
 	var apiUrl = 'http://ws.spotify.com/lookup/1/.json?uri=' + encodeURIComponent(uri);
@@ -211,6 +211,53 @@ module.exports = function(db, notifications) {
 				}
 			});
 		},
+
+		searchMedia: function(req, res, next) {
+			if (!req.query.q) {
+				return res.send(400);
+			}
+			
+			var prefixes = {
+				sp : search.querySpotify,
+				yt : search.queryYoutube
+			};
+
+			function executeSearch(prefix, q) {
+				//console.log("executeSearch", prefix, q);
+				var func;
+				if (prefix && prefixes[prefix]) {
+					//console.log("good");
+					func = prefixes[prefix];
+				} else {
+					func = prefixes.yt;
+				}
+
+				func(q, function(err, data) {
+					if (err) return next(err);
+					res.send(data);
+				})
+			}
+
+			var func;
+			var m = /^([a-z]{2})\s/.exec(req.query.q);
+			if (m) {
+				executeSearch(m[1], req.query.q.slice(3));				
+			} else {
+				if (req.params.streamId) {
+					db.collection('streams')
+					.findOne(
+						{ _id : new BSON.ObjectID(req.params.streamId) },
+					  function(err, result) {
+					  	//console.log(result)
+							if (err) return next(err);
+							executeSearch(result.defaultSearchIdentifier, req.query.q);
+						}
+					);
+				} else {
+					executeSearch(null, req.query.q);
+				}
+			}			
+		}, 
 
 		itemAdd : function(req, res, next) {
 			if (!req.body.url || !req.params.streamId) {
