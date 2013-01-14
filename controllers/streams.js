@@ -6,17 +6,15 @@ var search = require('../lib/search.js');
 
 
 function processResult(item, user) {
-	//console.log(item.plays );
 	var playCount =  item.plays ? item.plays.length : 0;
-
-	var lastPlayed = item.plays && item.plays.length > 0 ?
-									item.plays.pop() : null;
+	var lastPlayed = playCount > 0 ? item.plays.pop() : null;
 
 	//check whether date vs object
+	//we used to just store date here
 	if (lastPlayed && !lastPlayed.getMonth) {
 		lastPlayed = lastPlayed.when;
 	}
-	//console.log(item);
+	
 	var result = {
 		_id : item._id,
 		streamId: item.streamId,
@@ -100,8 +98,7 @@ module.exports = function(db, notifications) {
 
 		streamAdd : function(req, res, next) {
 			var collection = db.collection('streams');
-			if (!req.body.name)
-			{
+			if (!req.body.name) {
 				res.send(400); 
 				return;
 			}
@@ -146,15 +143,8 @@ module.exports = function(db, notifications) {
 			};
 
 			function executeSearch(prefix, q) {
-				//console.log("executeSearch", prefix, q);
-				var func;
-				if (prefix && prefixes[prefix]) {
-					//console.log("good");
-					func = prefixes[prefix];
-				} else {
-					func = prefixes.yt;
-				}
-
+				console.log(prefix,q);
+				var func = prefixes[prefix];
 				func(q, function(err, data) {
 					if (err) return next(err);
 					res.send(data);
@@ -163,7 +153,7 @@ module.exports = function(db, notifications) {
 
 			var func;
 			var m = /^([a-z]{2})\s/.exec(req.query.q);
-			if (m) {
+			if (m && prefixes[m[1]]) {
 				executeSearch(m[1], req.query.q.slice(3));				
 			} else {
 				if (req.params.streamId) {
@@ -171,13 +161,12 @@ module.exports = function(db, notifications) {
 					.findOne(
 						{ _id : new BSON.ObjectID(req.params.streamId) },
 					  function(err, result) {
-					  	//console.log(result)
 							if (err) return next(err);
-							executeSearch(result.defaultSearchIdentifier, req.query.q);
+							executeSearch(result.defaultSearchIdentifier || 'yt', req.query.q);
 						}
 					);
 				} else {
-					executeSearch(null, req.query.q);
+					executeSearch('yt', req.query.q);
 				}
 			}			
 		}, 
@@ -240,7 +229,6 @@ module.exports = function(db, notifications) {
 			}
 
 			search.lookupTrack(req.body.url, function (err, data) {
-				//console.log(err,data);
 				if (err) return next(err);
 				if (typeof(data.url) === "undefined") {
 					return res.send(404, "URL not returned");
@@ -253,12 +241,9 @@ module.exports = function(db, notifications) {
 					streamId: new BSON.ObjectID(req.params.streamId),
 					url : data.url
 				}, function(err, item) {
-					//console.log(item);
 					if (item) {
-						//console.log("found");
 						updateExisting(item);
 					} else {
-						//console.log("not found");
 						createNew(data);
 					}
 				});
@@ -279,8 +264,6 @@ module.exports = function(db, notifications) {
 			}, function(err, result) {
 				if(err) return next(err);
 				if (!result) return res.send(404);
-				//todo
-				//console.log(result);
 				notifications.notifyRemove(result);
 				res.send(200);
 			});
@@ -347,8 +330,6 @@ module.exports = function(db, notifications) {
 			}
 
 			var q= buildItemQuery(req);
-
-			//console.log(q);
 
 			db.collection('items')
 			.find(q)
