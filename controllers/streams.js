@@ -28,7 +28,7 @@ function querySpotify(uri, next) {
 		data.views = track.popularity;
 		data.url = track.href;
 		data.openGraph = openGraph;
-
+		data.type = 'spotify';
 		var albumUri = track.album.href;
 		if (albumUri) {
 			var ogUrl = "http://open.spotify.com/album/" + albumUri.replace(/^spotify:album:/i, '');
@@ -81,6 +81,7 @@ function queryMedia(url, next) {
 		data.image = openGraph.image || "";
 		data.url = openGraph.url || "";
 		data.openGraph = openGraph;
+		data.type = openGraph.site_name || "";
 		//console.log(data);
 		next(null, data);
 	});		
