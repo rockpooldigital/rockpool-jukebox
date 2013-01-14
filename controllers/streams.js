@@ -1,91 +1,8 @@
 var mongo = require('mongodb');//, Server = mongo.Server, Db = mongo.Db;
 var BSON = mongo.BSONPure;
-var request = require('request');
-var cheerio = require('cheerio');
 var search = require('../lib/search.js');
 //todo : pull this out into a shared library used by search.js also
-function querySpotify(uri, next) {
-	var apiUrl = 'http://ws.spotify.com/lookup/1/.json?uri=' + encodeURIComponent(uri);
-	//console.log(apiUrl);
-	request(apiUrl, function(err, resp, body) {
-		if (err) return next(err);
-		if (resp.statusCode !== 200) {
-			return next(new Error("Spotify service returned " + resp.statusCode));
-		}
 
-		var data = {},  openGraph = {};
-		var track;
-
-		try {
-			track = JSON.parse(body).track;
-		} catch (e) {
-			return next(e);
-		}
-
-		data.artists = track.artists.map(function(a) { return a.name; });
-		data.title = track.name + ' - ' + data.artists.join(', ');
-		data.image = '/img/spotify-logo-450-square.jpg';
-		data.views = track.popularity;
-		data.url = track.href;
-		data.openGraph = openGraph;
-		data.type = 'Spotify';
-		var albumUri = track.album.href;
-		if (albumUri) {
-			var ogUrl = "http://open.spotify.com/album/" + albumUri.replace(/^spotify:album:/i, '');
-			//console.log(ogUrl);
-			fetchOpenGraph(ogUrl, function(err, og) {
-				if (!err) {
-					data.image = og.image;
-				}
-				next(err, data);
-			});
-		} else {
-			next(null, data);
-		}
-	});
-}
-
-function fetchOpenGraph(url, next) {
-	request(url, function(err, resp, body) {
-		if (err) return next(err);
-
-		var openGraph = {};
-
-		try {
-			var $ = cheerio.load(body);
-			$('meta[property^=og]').each(function(i, elem) {
-				var content = $(elem).attr('content');
-				var propName = $(elem).attr('property');
-				openGraph[propName.substring(3)] = content;
-			});
-		} catch (e) {
-			return next(e);
-		}
-
-		next(null, openGraph);
-	});
-}
-
-function queryMedia(url, next) {
-	if (url.indexOf('spotify:track') === 0) {
-		return querySpotify(url, next);
-	}
-
-	fetchOpenGraph(url, function(err, openGraph) {
-		if (err) return next(err);
-
-		var data = {};
-	
-		data.title = openGraph.title || "";
-		data.description = openGraph.description || "";
-		data.image = openGraph.image || "";
-		data.url = openGraph.url || "";
-		data.openGraph = openGraph;
-		data.type = openGraph.site_name || "";
-		//console.log(data);
-		next(null, data);
-	});		
-};
 
 
 function processResult(item, user) {
@@ -207,10 +124,10 @@ module.exports = function(db, notifications) {
 				return;
 			}
 			
-			queryMedia(url, function(err, data) {
+			search.lookupTrack(url, function(err, data) {
 				if (err) return next(err);
 
-				if ([ 'YouTube', 'SoundCloud', 'Vimeo' ].indexOf(data.openGraph.site_name) == -1) {
+				if ([ 'YouTube', 'SoundCloud', 'Vimeo' ].indexOf(data.openGraph.site_name) === -1) {
 					res.send(400);
 				} else {
 					res.send(data);
@@ -224,8 +141,8 @@ module.exports = function(db, notifications) {
 			}
 			
 			var prefixes = {
-				sp : search.querySpotify,
-				yt : search.queryYoutube
+				sp : search.searchSpotify,
+				yt : search.searchYoutube
 			};
 
 			function executeSearch(prefix, q) {
@@ -322,7 +239,7 @@ module.exports = function(db, notifications) {
 				});
 			}
 
-			queryMedia(req.body.url, function (err, data) {
+			search.lookupTrack(req.body.url, function (err, data) {
 				//console.log(err,data);
 				if (err) return next(err);
 				if (typeof(data.url) === "undefined") {
