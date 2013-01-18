@@ -35,13 +35,12 @@
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
 		<legend>
-			<h2>Add to the playlist</h2>
-			<p>Search or enter a URL from YouTube, Vimeo or SoundCloud.</p>
-			<p>To force a specific type of search, prefix with 'yt ' or 'sp '.</p>
+			<h2><img src="/img/youtube.png" alt="YouTube" style="display:inline;" /> Add to the playlist</h2>
+			<!-- <p>Search YouTube&trade; or copy &amp; paste a URL.</p> -->
 		</legend>
 
 		<div id="resultsWrap">
-			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'Hello Lazarus' or http://vimeo.com/yourVideo" />	
+			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'The Beatles' or http://vimeo.com/yourVideo" />	
 				
 			<div id="ytResults" ng-show="entry.youtubeResults">
 				<ul>

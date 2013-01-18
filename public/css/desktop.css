@@ -256,7 +256,7 @@ textarea {resize: vertical;}
 #nowPlaying { 
 	float: left;
 	position: relative;
-	width: 40%;
+	width: 60%;
 }
 #nowPlaying #onNow{
 	position: absolute;
@@ -327,9 +327,8 @@ textarea {resize: vertical;}
 /** ADDING **/
 #addItemForm {
 	/*display: none;*/
-	float: left;
-	width: 49%;
-	margin-left: 11%;
+	float: right;
+	width: 33%;
 }
 #addItemForm h2 {
 	margin-bottom: 0.125em;
@@ -343,9 +342,9 @@ textarea {resize: vertical;}
 	width: 100%;
 	border-radius: .5em;
 	font-size: 1.3em;
-	padding:5px;
-	border:2px solid #000;
-	box-shadow: 2px 2px 2px #eee;
+	padding: 15px;
+	border: 2px solid #666;
+	box-shadow: 2px 2px 2px #666;
 	margin-bottom: 1em;
 }
 
