@@ -36,7 +36,7 @@
       <%if (!user) { %>
         <a id="login" href="/auth/facebook">Login <em>with Facebook</em></a>
       <% } else { %>
-        <p id="loggedIn">Hello <%= user.name %> <a href="/logout" id="logout">Logout</a></p>
+        <p id="loggedIn"><em>Hello <%= user.name %> </em><a href="/logout" id="logout">Logout</a></p>
       <% } %>
     </header>
     <script>

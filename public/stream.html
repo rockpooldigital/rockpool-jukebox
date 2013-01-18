@@ -19,13 +19,12 @@
 		<article class="infoWrap">
 			<h4 class="title">{{nowPlaying.title}}</h4>
 			<p class="desc">{{nowPlaying.description}}</p>
-			<ul>
-						<li>Previously played {{nowPlaying.previousPlays}} time(s)</li>
-						<li>{{nowPlaying.historicVotes + nowPlaying.totalVotes}} total vote(s)</li>
-						<li>First added {{nowPlaying.created | date:'dd/MM/yyyy'}}</li>
-						<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
-		</ul>
-
+			<ul class="history">
+				<li>Previously played {{nowPlaying.previousPlays}} time(s)</li>
+				<li>{{nowPlaying.historicVotes + nowPlaying.totalVotes}} total vote(s)</li>
+				<li>First added {{nowPlaying.created | date:'dd/MM/yyyy'}}</li>
+				<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
+			</ul>
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
 		</article>
 	</div>
@@ -35,8 +34,8 @@
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
-		<h2>Add to the playlist</h2>
 		<legend>
+			<h2>Add to the playlist</h2>
 			<p>Search or enter a URL from YouTube, Vimeo or SoundCloud.</p>
 			<p>To force a specific type of search, prefix with 'yt ' or 'sp '.</p>
 		</legend>
@@ -69,26 +68,22 @@
 	<section id="queue">
 		<p ng-show="!items.length">No items yet</p>
 		<ul class="clearfix" id="stream-items" ng-show="items.length">
-			<li ng-repeat="item in items" class="item clearfix type-{{item.type || 'unknown'}}" id="item-{{item._id}}">
-				<span class="thumb"><img ng-src="{{item.image}}" alt="" /></span>
+			<li ng-repeat="item in items" class="item clearfix type-{{item.type || 'unknown'}}" id="item-{{item._id}}"  style="background:#000 url({{item.image}}) 50% 50% no-repeat;">
+				<!-- <span class="thumb"><img ng-src="{{item.image}}" alt="" /></span> -->
 				<span class="info">
-					<h4 class="title">{{item.title}}</h4>
-					<!--<p>{{item.description}}</p>-->
-					<!-- <img src="/img/vDown.png" ng-click="submitVote(item, -1)" ng-class="{ voteActive: item.currentVote == -1}" class="voteDown" /> -->
-				<span class="extra">
-					<ul class="trackInfo">
-						<li>Previously played {{item.previousPlays}} time(s)</li>
-						<li>{{item.historicVotes + item.totalVotes}} total vote(s)</li>
-						<li>First added {{item.created | date:'dd/MM/yyyy'}}</li>
-						<li ng-show="item.lastPlayed">Last played  {{item.lastPlayed | date:'dd/MM/yyyy'}}</li>
-					</ul>
-					<ul class="icons clearfix">
-						<li style="display:none;"><button class="trash">Trash</button></li> 
-						<li><button class="flag" ng-click="flagItem(item)" title="Flag this item">Flag</button></li>
-					</ul>
-					
-					
-				</span>
+					<h4 class="title">{{item.title}}</h4>					
+					<span class="extra">
+						<ul class="trackInfo">
+							<li>Previously played {{item.previousPlays}} time(s)</li>
+							<li>{{item.historicVotes + item.totalVotes}} total vote(s)</li>
+							<li>First added {{item.created | date:'dd/MM/yyyy'}}</li>
+							<li ng-show="item.lastPlayed">Last played  {{item.lastPlayed | date:'dd/MM/yyyy'}}</li>
+						</ul>
+						<ul class="icons clearfix">
+							<li style="display:none;"><button class="trash">Trash</button></li> 
+							<li><button class="flag" ng-click="flagItem(item)" title="Flag this item">Flag</button></li>
+						</ul>
+					</span>
 				</span>
 				
 				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />

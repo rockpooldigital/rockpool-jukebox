@@ -511,6 +511,9 @@ textarea {resize: vertical;}
 	position: relative;
 	margin: 0 .25% .25% 0;
 	overflow: hidden;
+
+	background-size: cover !important;
+
 }
 #stream-items .item:nth-child(1),
 #stream-items .item:nth-child(2),
@@ -589,6 +592,7 @@ textarea {resize: vertical;}
 	text-overflow: ellipsis;
 	text-shadow:1px 1px 1px #fff;
 }
+
 #stream-items .thumb,
 #stream-items .info,
 #stream-items .votes  {
@@ -608,7 +612,7 @@ textarea {resize: vertical;}
 	padding: 10px;
 	color: #eee;
 	background: rgba(0,0,0,0.7);
-	z-index: 2;
+	z-index: 200;
 	height: 140px;
 	position: absolute;
 	bottom: -107px;
@@ -620,6 +624,8 @@ textarea {resize: vertical;}
 	-moz-transition-delay: 0.3s;
 	-webkit-transition-delay: 0.3s;
 	-o-transition-delay: 0.3s;
+
+
 }
 #stream-items .info .title{
 	width: 100%;
@@ -648,7 +654,7 @@ textarea {resize: vertical;}
 
 #stream-items .info .extra button
 {
-	
+
 	border: 0;
 	text-indent: -9000px;
 	width: 11px;
@@ -668,7 +674,9 @@ textarea {resize: vertical;}
 
 #stream-items .info .extra .icons li { margin: 0 10px 0 0; float: left; }
 
-#stream-items li.item:hover span.info { bottom: 0;}
+#stream-items li.item:hover span.info, 
+#stream-items li.item .info:hover 
+{ bottom: 0;}
 
 #stream-items .votes {
 	width: auto;
@@ -718,7 +726,7 @@ textarea {resize: vertical;}
 	    margin: 0 0 .5em 0;
 	}
     
-	#login em{display: none;}
+	#login em, #loggedIn em{display: none;}
 	
 	
 	/* Add or Choose Stream */
@@ -732,27 +740,25 @@ textarea {resize: vertical;}
     	margin: 0 -10px;
     	font-size: 1em;    
     	background: #f5f5f5;
-box-shadow: 2px 2px 2px #ccc;	
+		box-shadow: 2px 2px 2px #ccc;	
     	border-radius: .5em;
-}
+	}
     
     #theStreams a em {
         width: 82%;
-
         padding-top: .75em;
-}
+	}
     
     #addStreamForm {
         float:none;
         width: 100%;
         margin-top: 2em;
-    
         background: #ddd;
         padding: .5em;
-        border-radius: 1em;
-}
+        border-radius: .5em;
+	}
 
-#addStreamForm .txt {font-size: 1em;}
+	#addStreamForm .txt {font-size: 1em;}
     
     
     #addStreamForm .btn {
@@ -766,8 +772,9 @@ box-shadow: 2px 2px 2px #ccc;
 		width: 100%;
 	}
 	#nowPlaying .thumb {
-		max-height: 200px;
-		max-height: 30vh;
+		height: 200px;
+		min-height: 200px; /* protect desktops from small iphone measurements */
+		height: 15vh; /* iphone calcs height weirdly */
 	}
 	#nowPlaying .title {
 		width: 100%;
@@ -791,6 +798,11 @@ box-shadow: 2px 2px 2px #ccc;
 		border-bottom-left-radius: 1em;
 		color: #fff;
 	}
+	
+	#nowPlaying .history {
+	    display:none;    
+	}
+	
 	#nowPlaying .votes em{ 
 		color: #000;		
 	}
@@ -826,18 +838,6 @@ box-shadow: 2px 2px 2px #ccc;
 
 	#ytResults {z-index: 10;}
 
-	/*#stream-items .thumb {
-		float:left;
-		width:30%;
-		margin-right: 5%;
-		overflow: visible;	
-		height: auto;
-	}
-	#stream-items .thumb img{
-		width: 100%;	
-	}*/
-
-	/*Stream items*/
 
 	#stream-items .item { 
 		position: relative;
@@ -845,11 +845,13 @@ box-shadow: 2px 2px 2px #ccc;
 		width: 33%;
 		padding:16.5% 0; /*squares*/
 		margin: 0 .5% .25em 0;
+		background-size: cover !important;
 	}
 	#stream-items .item:nth-child(3n){
 		margin-right: 0;
 	}
 
+	/* TODO Selectors dont feel right? */
 	/*First 6 are bigger*/
 	#stream-items .item:nth-child(1),
 	#stream-items .item:nth-child(2),
@@ -863,6 +865,7 @@ box-shadow: 2px 2px 2px #ccc;
 		margin:0 .5% .25em 0;
 		padding:24.75% 0;	/*squares*/
 		height: inherit;
+		/*bottom: -25%;*/
 	}
 	#stream-items .item:nth-child(2),
 	#stream-items .item:nth-child(4),
@@ -870,10 +873,11 @@ box-shadow: 2px 2px 2px #ccc;
 	
 	#stream-items .thumb {margin: 0;}
 	#stream-items .thumb img{
-		/*width: auto;
 		height: 100%;
-		left: 0;*/
-	}
+		min-width: 100%;
+		left: 0;	
+		/*top: 0;*/
+	}	
 	#stream-items .voteUp {height: 30%;}
 	#stream-items .votes {font-size: .75em;}
 
@@ -918,8 +922,22 @@ box-shadow: 2px 2px 2px #ccc;
 		right: 6%;
 		font-size: .75em;
 	}
-	#stream-items .info {padding:5px;}
-	#stream-items .info .title{margin: 0;}
+
+	#stream-items .item:nth-child(1) .info,
+	#stream-items .item:nth-child(2) .info,
+	#stream-items .item:nth-child(3) .info,
+	#stream-items .item:nth-child(4) .info,
+	#stream-items .item:nth-child(5) .info,
+	#stream-items .item:nth-child(6) .info{
+		bottom: -45%;
+	}
+
+	#stream-items .info {
+	    padding:5px;
+	    height: 60%;
+		bottom: -38%;
+	}
+	#stream-items .info .title{margin: 0 0 5% ;}
 	/*BOOM*/
 	/*#addItemForm .txtUrl:focus {
 		position: fixed;
