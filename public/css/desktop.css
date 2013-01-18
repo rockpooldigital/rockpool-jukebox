@@ -282,13 +282,13 @@ textarea {resize: vertical;}
 #nowPlaying .thumbWrap {
 	float: left;
 	display: block;
-	width: 41%; /* try to match the blocks underneath */
+	width: 55%; /* try to match the blocks underneath */
 	margin-right: 1%;
 	overflow: hidden;
 }
 #nowPlaying .infoWrap {
 	float: left;
-	width: 58%;
+	width: 44%;
 }
 #nowPlaying .thumb{
 	position: relative;
@@ -331,7 +331,7 @@ textarea {resize: vertical;}
 	width: 33%;
 }
 #addItemForm h2 {
-	margin-bottom: 0.125em;
+	margin-bottom: 0.25em;
 	line-height: 1em;
 }
 #addItemForm legend p {
