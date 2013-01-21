@@ -160,11 +160,8 @@ textarea {resize: vertical;}
 	color: #ccc;
 }
 
-
-
-
 #header {
-	padding-bottom: 10px;
+	padding: 0 0 10px 0;
 }
 #logo {
 	float: left;
@@ -257,11 +254,22 @@ textarea {resize: vertical;}
 	float: left;
 	position: relative;
 	width: 60%;
+	min-height: 200px;
+	background: #fff;
+	border:10px solid #def2f3;
+	
+}
+#nowPlaying.nothing { 
+	padding: 20px;
+}
+
+#nowPlaying iframe{
+	width: 100%;
 }
 #nowPlaying #onNow{
 	position: absolute;
-	left: -4px;
-	top: 30%;
+	left: -10px;
+	top: -10px;
 	background: #57BAEA;
 	padding: 10px;
 	border-top-right-radius: .5em;
@@ -330,9 +338,16 @@ textarea {resize: vertical;}
 	float: right;
 	width: 33%;
 }
+#addItemForm legend {
+    display: block;
+    width: 100%;
+}
 #addItemForm h2 {
-	margin-bottom: 0.25em;
+	margin: 0.1em 0;
 	line-height: 1em;
+	font-size: 2em;
+	color: #57BAEA;
+	text-align: right;
 }
 #addItemForm legend p {
 	margin-bottom: 1em;
@@ -342,7 +357,7 @@ textarea {resize: vertical;}
 	width: 100%;
 	border-radius: .5em;
 	font-size: 1.3em;
-	padding: 15px;
+	padding: 10px;
 	border: 2px solid #666;
 	box-shadow: 2px 2px 2px #666;
 	margin-bottom: 1em;
@@ -511,7 +526,7 @@ textarea {resize: vertical;}
 	margin: 0 .25% .25% 0;
 	overflow: hidden;
 
-	background-size: cover !important;
+	background-size: contain !important;
 
 }
 #stream-items .item:nth-child(1),
@@ -770,6 +785,7 @@ textarea {resize: vertical;}
 	#nowPlaying .infoWrap {
 		width: 100%;
 	}
+	#nowPlaying.nothing,
 	#nowPlaying .thumb {
 		height: 200px;
 		min-height: 200px; /* protect desktops from small iphone measurements */
