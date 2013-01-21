@@ -9,11 +9,21 @@
 
 <section id="topRow" class="clearfix">
 	
+	<div id="host" class="clearfix">
+		<h2>Host controls</h2>
+		<p><em>Only use if you want to host the stream (one at a time)</em></p>
+		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
+		<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying" class="stop-btn">&#9726; Stop stream</button>
+
+		<button ng-click="enableNotifications()" >Enable webkit notifications</button>
+	</div>
+
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
 		<h2 id="onNow">Now playing</h2>		
 		<aside class="thumbWrap">
+			<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 			<span class="thumb">
-				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" style="display:none;" />
 			</span>
 		</aside>
 		<article class="infoWrap">
@@ -26,21 +36,22 @@
 				<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
 			</ul>
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
+			<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip!</button>
 		</article>
 	</div>
 
-	<div class="clearfix" id="nowPlaying" ng-show="!nowPlaying">
+	<div class="clearfix nothing" id="nowPlaying" ng-show="!nowPlaying">
 		<h3>Nothing currently playing</h3>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
 		<legend>
-			<h2><img src="/img/youtube.png" alt="YouTube" style="display:inline;" /> Add to the playlist</h2>
+			<h2>Find songs on <img src="/img/youtube.png" alt="YouTube" style="display:inline;" /></h2>
 			<!-- <p>Search YouTube&trade; or copy &amp; paste a URL.</p> -->
 		</legend>
 
 		<div id="resultsWrap">
-			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'The Beatles' or http://vimeo.com/yourVideo" />	
+			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'The Beatles' or 'The Stone Roses'" />	
 				
 			<div id="ytResults" ng-show="entry.youtubeResults">
 				<ul>
@@ -94,19 +105,6 @@
 
 </div>
 
-<div id="host" class="clearfix">
-	<h2>Host controls</h2>
-	<p><em>Only use if you want to host the stream (one at a time)</em></p>
-	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start stream</button>
-	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop stream</button>
-
-	<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
-
-</div>
-
-<div>
-	<button ng-click="enableNotifications()" >Enable webkit notifications</button>
-</div>
 <!-- 
 <a href="#" id="showHideFeedback">Feedback</a>
 <div id="feedback" class="clearfix">
