@@ -22,9 +22,9 @@
 		<h2 id="onNow">Now playing</h2>		
 		<aside class="thumbWrap">
 			<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
-			<span class="thumb">
-				<img ng-src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" style="display:none;" />
-			</span>
+			<span class="thumb" ng-show="!isHostPlaying">
+				<img src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" />
+			</span>			
 		</aside>
 		<article class="infoWrap">
 			<h4 class="title">{{nowPlaying.title}}</h4>
@@ -36,7 +36,7 @@
 				<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
 			</ul>
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
-			<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip!</button>
+			<button ng-click="skipCurrent()" ng-show="isHostPlaying" class="btn">Skip!</button>
 		</article>
 	</div>
 
