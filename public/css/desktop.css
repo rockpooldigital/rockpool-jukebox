@@ -179,6 +179,10 @@ textarea {resize: vertical;}
 
 #topRow {margin-bottom:20px;}
 
+.playerHolder {
+	max-height: 304px; /* temporarily match youtube player */
+}
+
 #stream-items {
 	list-style: none;
 	margin:0;padding:0 ;
@@ -254,7 +258,7 @@ textarea {resize: vertical;}
 	float: left;
 	position: relative;
 	width: 60%;
-	min-height: 200px;
+	min-height: 100px;
 	background: #fff;
 	border: 10px solid #49C1C7;
 	
@@ -706,10 +710,11 @@ textarea {resize: vertical;}
 /** Host / Admin **/
 #host{
 	/*display: none;*/
-	margin-top: 2em;
-	padding: 10px;
-	border: 2px solid #ccc;
-
+	/*margin-top: 2em;*/
+	float: right;
+	width: 38%;
+	padding: 0;
+	/*border: 2px solid #ccc;*/
 }
 
 /** Media Queries for Responsive Design. Theses examples override the primary ('mobile first') styles. **/

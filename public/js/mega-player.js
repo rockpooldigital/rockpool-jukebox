@@ -222,7 +222,7 @@ MegaPlayer = function($) {
 						throw new Error("unsupported type");
 					}
 
-					var elem = $('<div id="' + type +  makeId() + '"></div>');
+					var elem = $('<div id="' + type +  makeId() + '" class="playerHolder"></div>');
 					$(element).append(elem);
 
 					players[type] = factories[type].call(this, elem, opts);
