@@ -19,9 +19,9 @@
 	</div>
 
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
-		<h2 id="onNow">Now playing</h2>		
+		<h2 id="onNow">Now playing: {{nowPlaying.title}}</h2>		
 		<aside class="thumbWrap">
-			<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
+			<player id="megaPlayer" item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 			<span class="thumb" ng-show="!isHostPlaying">
 				<img src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" />
 			</span>			
@@ -42,6 +42,7 @@
 
 	<div class="clearfix nothing" id="nowPlaying" ng-show="!nowPlaying">
 		<h3>Nothing currently playing</h3>
+		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
@@ -96,7 +97,7 @@
 					</span>
 				</span>
 				
-				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" />
+				<img src="/img/vUp.png"  ng-click="submitVote(item, 1)" ng-class="{ voteActive: item.currentVote == 1}" class="voteUp" title="Vote up!" alt="Vote up!" />
 
 				<span class="votes">{{item.totalVotes || 0}}</span>
 			</li>
