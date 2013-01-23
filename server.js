@@ -151,7 +151,13 @@ app.post('/data/stream/:streamId/playing', streamsCtrl.itemMarkPlaying);
 app.post('/data/item/:id/flag', streamsCtrl.itemFlag);
 
 app.get('/', function(req, res) {
-	res.render('app.html', { user : req.user });
+	var data = { 
+		user : req.user ,
+		config : {
+			suppressPublicStreams : config.suppressPublicStreams || false
+		}
+	};
+	res.render('app.html', data);
 });
 
 server.listen(config.PORT);
