@@ -82,10 +82,12 @@ angular.module('jukeboxServices', ['ngResource'])
 					.success(function() { if(success) success(); })
 					.error(function() { if(fail) fail(); })
 			},
-			notifyPlaying :function(itemId, success, fail) {
-				$http.post('/data/item/' +  itemId + '/playing')
-					.success(function() { if(success) success(); })
-					.error(function() { if(fail) fail(); })
+			notifyPlaying :function(streamId, itemId, success, fail) {
+				$http.post('/data/stream/' +  streamId + '/playing', {
+					itemId : itemId
+				})
+				.success(success || function() {})
+				.error(fail || function() {});
 			},
 			submitVote : function(itemId, weight, success, fail) {
 				$http.post("/data/item/" + itemId + "/vote", { weight : weight })
