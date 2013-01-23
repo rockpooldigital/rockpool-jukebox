@@ -141,7 +141,9 @@ app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.delete('/data/stream/:streamId/item/:id', streamsCtrl.itemRemove);
 app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
 app.get('/data/stream/:id', streamsCtrl.streams);
-app.get('/data/stream', streamsCtrl.streams);
+if (!config.suppressPublicStreams) {
+	app.get('/data/stream', streamsCtrl.streams);
+}
 app.post('/data/stream', streamsCtrl.streamAdd);
 app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
