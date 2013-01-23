@@ -59,7 +59,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		StreamData.getNext(streamId, function(item) {
 			if (item) {
 				$scope.hostItem = item; //player (host)
-				StreamData.notifyPlaying(item._id)
+				StreamData.notifyPlaying(streamId, item._id)
+			} else {
+				StreamData.notifyPlaying(streamId, null);
 			}
 		}, function(r) {
 			alert('Error fetching next item');
@@ -161,6 +163,9 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	};
 
 	$scope.stopHostPlaying = function() {
+		if ($scope.hostItem) {
+			StreamData.notifyPlaying(streamId, null);
+		}
 		$scope.hostItem = null;
 		$scope.isHostPlaying = false;
 	};
@@ -236,6 +241,11 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	}
 
 	StreamNotification.setOnPlay(function(data) {
+		if (data.id === null) {
+			$scope.nowPlaying = null;
+			return;
+		}
+
 		//load item for displaying
 		var item = findStreamItemInSet($scope.items, data.id);
 				
@@ -282,7 +292,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 	StreamNotification.setOnClientJoined(function(data) {
 		if ($scope.isHostPlaying && $scope.hostItem) {
-			StreamData.notifyPlaying($scope.hostItem._id);
+			StreamData.notifyPlaying(streamId, $scope.hostItem._id);
 		}
 	});
 

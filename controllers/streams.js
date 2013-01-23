@@ -412,19 +412,31 @@ module.exports = function(db, notifications) {
 		},
 
 		itemMarkPlaying : function(req, res, next) {
-			if (!req.params.id ) {
+			if (!req.params.streamId ) {
 				res.send(400); return;
 			}
-			db.collection('items')
-			.findOne({ 
-				_id : new BSON.ObjectID(req.params.id) 
-			}, function(err, result) {
-				if(err) return next(err);
-				notifications.notifyPlay(
-						processResult(result, null)
-				);
-				res.send(200);
-			});
+
+			var itemId = req.body.itemId;
+			if (itemId) {
+				db.collection('items')
+				.findOne({ 
+					_id : new BSON.ObjectID(itemId) 
+				}, function(err, result) {
+					if(err) return next(err);
+					notifications.notifyPlay(
+							processResult(result, null)
+					);
+					res.send(200);
+				});
+			} else {
+				notifications.notifyPlay({
+					streamId: req.params.streamId,
+					_id : null
+				});
+				setTimeout(function() {
+					res.send(200)
+				}, 0);
+			}
 		},
 
 		itemGetNext : function(req, res, next) {
