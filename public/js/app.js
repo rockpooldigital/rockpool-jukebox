@@ -190,9 +190,21 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		});
 	};
 
+	function hostSkipTrack() {
+		StreamData.markPlayed($scope.hostItem._id, function() {
+			playNext();
+		});
+	}
+
+
 	$scope.skipCurrent = function() {
-		if ($scope.nowPlaying) {
-			StreamData.markPlayed($scope.nowPlaying._id);
+		if (!$scope.nowPlaying) { 
+			return;
+		}
+		//if we are the host we can just skip and not bother with notifications
+		if ($scope.isHostPlaying) {
+			hostSkipTrack();
+		} else {
 			StreamNotification.notifySkip(streamId, $scope.nowPlaying._id);
 		}
 	};
@@ -265,7 +277,7 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 		//ignore if not playing this track
 		if ($scope.hostItem && $scope.hostItem._id !== data.id) { return; }
 
-		playNext();
+		hostSkipTrack();
 	});
 
 	StreamNotification.setOnClientJoined(function(data) {
