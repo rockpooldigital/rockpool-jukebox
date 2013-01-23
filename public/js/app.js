@@ -1,4 +1,4 @@
-var project = angular.module('project', ['jukeboxServices', 'jukeboxDirectives']);
+var project = angular.module('project', ['jukeboxServices', 'jukeboxDirectives', 'jukeboxConfiguration']);
 
 var delay = (function(){
   var timer = 0;
@@ -34,12 +34,19 @@ project.config(function($routeProvider) {
 	  .otherwise({redirectTo:'/'});
 });
 
-project.controller('ListStreams', function($scope, $location, StreamData) {
-	var streams = StreamData.getStreams();
+project.controller('ListStreams', function($scope, $location, StreamData, StaticConfiguration) {
+	var existingStreams = !StaticConfiguration.suppressPublicStreams;
+
+	var streams = existingStreams ? StreamData.getStreams() : [];
 	$scope.streams =streams;
 	$scope.addStream = function() {
 		StreamData.addStream({ name : $scope.stream.name }, function(saved) {
 			$scope.streams.push(saved);
+			if (!existingStreams) {
+				$location.path('/stream/' + saved._id);
+				console.log(	$location.path );
+				return;
+			}
 		});
 		$scope.stream.name = "";
 	}
