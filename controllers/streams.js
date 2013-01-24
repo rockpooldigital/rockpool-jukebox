@@ -1,9 +1,7 @@
 var mongo = require('mongodb');//, Server = mongo.Server, Db = mongo.Db;
 var BSON = mongo.BSONPure;
 var search = require('../lib/search.js');
-//todo : pull this out into a shared library used by search.js also
-
-
+var config = require('../config.js');
 
 function processResult(item, user) {
 	var playCount =  item.plays ? item.plays.length : 0;
@@ -73,7 +71,7 @@ function buildItemQuery(req, defaults) {
 	return q;
 }
 
-module.exports = function(db, notifications) {
+module.exports = function(db, notifications, config) {
 	return {
 		stream : function(req,res,next){
 			res.send(req.params.name);
@@ -114,26 +112,9 @@ module.exports = function(db, notifications) {
 			});		
 		},
 
-		itemNewLookup : function(req, res, next) {
-			var url = req.query.url;
-			if (!url) {
-				res.send(400);
-				return;
-			}
-			
-			search.lookupTrack(url, function(err, data) {
-				if (err) return next(err);
-
-				if ([ 'YouTube', 'SoundCloud', 'Vimeo' ].indexOf(data.openGraph.site_name) === -1) {
-					res.send(400);
-				} else {
-					res.send(data);
-				}
-			});
-		},
-
 		searchMedia: function(req, res, next) {
-			if (!req.query.q) {
+			var q = req.query.q;
+			if (!q) {
 				return res.send(400);
 			}
 			
@@ -141,6 +122,7 @@ module.exports = function(db, notifications) {
 				sp : search.searchSpotify,
 				yt : search.searchYoutube
 			};
+
 
 			function executeSearch(prefix, q) {
 				console.log(prefix,q);
@@ -151,24 +133,55 @@ module.exports = function(db, notifications) {
 				})
 			}
 
-			var func;
-			var m = /^([a-z]{2})\s/.exec(req.query.q);
-			if (m && prefixes[m[1]]) {
-				executeSearch(m[1], req.query.q.slice(3));				
-			} else {
-				if (req.params.streamId) {
-					db.collection('streams')
-					.findOne(
-						{ _id : new BSON.ObjectID(req.params.streamId) },
-					  function(err, result) {
-							if (err) return next(err);
-							executeSearch(result.defaultSearchIdentifier || 'yt', req.query.q);
-						}
-					);
+			function searchForUrl(url) {
+				//we want to route YouTube URLs through the search API so we can use filters etc.
+				if (url.indexOf('youtube.com/') !== -1) {
+					console.log("yt url search", url);
+					return search.searchYoutube(url, function(err, results) {
+						if (err) return next(err);
+						res.send(results);
+					});
 				} else {
-					executeSearch('yt', req.query.q);
+					console.log("og search", url);
+					search.lookupTrack(url, function(err, r) {
+						if (err) return next(err);
+						return res.send([{
+							title : r.title,
+							image : r.image,
+							url : r.url,
+							views : r.views || '?' //this will fail for '0'..
+						}]);
+					})
+					return;
 				}
-			}			
+			}
+
+			//if it looks like a URL we can handle differently
+			//this regex is a bit lame
+			if (/^(https?:\/\/|www\.)/i.test(q)) {
+				return searchForUrl(q);
+			} else {
+				console.log("default search", q);
+				var func;
+				var m = /^([a-z]{2})\s/.exec(q);
+
+				if (m && prefixes[m[1]] && config.allowedItemTypes.indexOf(m[1]) !== -1) {
+					executeSearch(m[1], req.query.q.slice(3));				
+				} else {
+					if (req.params.streamId) {
+						db.collection('streams')
+						.findOne(
+							{ _id : new BSON.ObjectID(req.params.streamId) },
+						  function(err, result) {
+								if (err) return next(err);
+								executeSearch(result.defaultSearchIdentifier || 'yt', req.query.q);
+							}
+						);
+					} else {
+						executeSearch('yt', req.query.q);
+					}
+				}			
+			}
 		}, 
 
 		itemAdd : function(req, res, next) {
@@ -477,16 +490,6 @@ module.exports = function(db, notifications) {
 			}
 
 			var userId = req.user._id;
-			//var weight = req.body.weight > 0 ? 1 : -1;
-
-			/*function sumVotes(item) {
-				if (typeof(item.votes) === "undefined" || item.votes.length === 0) { return 0 ;}
-				var sum = 0;
-				for (var i=0;i<item.votes.length;i++) {
-					sum+= item.votes[i].weight;
-				}
-				return sum;
-			}*/
 
 			function respond(success, reason, item) {
 				res.send({
@@ -517,11 +520,7 @@ module.exports = function(db, notifications) {
 							//same vote has already been cast
 							return respond(false, "duplicate", item);
 						} else {
-							//todo: use $inc for this
-							//var currentSum = sumVotes(item);
 							var change = -vote.weight + weight;
-							//currentSum -= vote.weight;
-							//currentSum += weight;
 
 							//remove existing
 							items.findAndModify({ 
@@ -545,10 +544,6 @@ module.exports = function(db, notifications) {
 				}
 
 				//create a new vote instead
-				//var currentSum = sumVotes(item);
-				//currentSum += weight;
-
-				//add vote
 				items.findAndModify({_id : item._id}, [['_id', 'asc']], { 
 						'$push' : { 
 							'votes' : { 

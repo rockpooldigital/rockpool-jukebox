@@ -1,6 +1,9 @@
 var  config = require('./config'),
 	express = require('express'),
 	mongo = require('mongodb');
+
+config.allowedItemTypes = config.allowedItemTypes || ['yt', 'sp', 'sc', 'vm'];
+
 var server = new  mongo.Server(
 	config.DB_HOST || 'localhost', 
 	config.DB_PORT || 27017, 
@@ -119,7 +122,7 @@ var notifications = require('./notification-sockets').create(io);
 //sockets.setup();
 
 var auth_controller = require('./controllers/authentication.js').createAuthController(config);
-var streamsCtrl = require('./controllers/streams.js')(db, notifications);
+var streamsCtrl = require('./controllers/streams.js')(db, notifications, config);
 
 //var searchCtrl = require('./controllers/search.js');
 
@@ -135,7 +138,7 @@ app.get('/data/stream/:streamId/item/count', streamsCtrl.itemCount);
 app.get('/data/stream/:streamId/item/historic', streamsCtrl.itemFindHistoric);
 app.get('/data/stream/:streamId/item/oldest', streamsCtrl.itemFindOldest);
 app.post('/data/stream/:streamId/item', streamsCtrl.itemAdd);
-app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
+//app.get('/data/stream/:streamId/queryMedia', streamsCtrl.itemNewLookup);
 app.get('/data/stream/:streamId/next', streamsCtrl.itemGetNext);
 app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 app.delete('/data/stream/:streamId/item/:id', streamsCtrl.itemRemove);

@@ -11,22 +11,6 @@ angular.module('jukeboxServices', ['ngResource'])
 			alert('Failed to connect socket.io');
 		});
 
-		var statusEvent ;
-
-		/*var events = ['error','reconnect_failed', 'reconnect', 'reconnecting', 'connect', 'connecting', 'disconnect', 'connect_failed'];
-
-		for (var i = 0; i < events.length; i++) {
-			(function(i) {
-				socket.on(events[i], function() {
-					if (statusEvent) {
-						$rootScope.$apply(function(arg) {
-							statusEvent(events[i], arg);
-						});
-					}
-				});
-			})(i);
-		}*/
-
 		return {
 	 		on: function (eventName, callback) {
 	      socket.on(eventName, function () {  
@@ -45,9 +29,6 @@ angular.module('jukeboxServices', ['ngResource'])
 	          }
 	        });
 	      })
-	    },
-	    setOnStatus : function(e) {
-	    	statusEvent = e;
 	    }
 		};
 	})

@@ -55,11 +55,6 @@ project.controller('ListStreams', function($scope, $location, StreamData, Static
 project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
 
-	Socket.setOnStatus(function (eventName) {
-		//console.dir(arg);
-		$scope.socketStatus = eventName ; 
-	});
-
 	function playNext() {
 		$scope.hostItem = null;
 
@@ -115,41 +110,15 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 
 	$scope.lookupItem = function() {
 		delay(function() {
-			if (!$scope.entry.url || $scope.entry.url.length < 4) { 
+			var q = $scope.entry.url;
+
+			if (!q || q.length < 4) { 
 				return ; 
 			}
 
-			function searchYouTube(q) {
-				ItemSearch(q, function(result) {
-					if (!result) { return; }
-					//console.log(result.feed);
-					
-					$scope.entry.youtubeResults = result;
-				});
-			}
-
-			if ($scope.entry.url.indexOf('http') === 0) {
-				//route all youtube urls through api so we can filter non-embeddable and non-music
-				var re = /youtube\.com.*v=([^&]+)/i;
-				var res = re.exec($scope.entry.url);
-				if (res && res.length === 2) {
-					return searchYouTube(res[1]);
-				}
-
-				//fall back to opengraph
-				StreamData.lookupItem(streamId, $scope.entry.url, function(data) {
-					$scope.entry.youtubeResults=[data];
-					//hide spinner
-				}, function() { // (error)
-					//hide spinner
-				});
-
-				$scope.$apply(function() {
-					//show spinner
-				});
-			} else  {
-				searchYouTube($scope.entry.url);
-			}
+			ItemSearch(q, function(result) {
+				$scope.entry.youtubeResults = result || [];
+			});
 		}, 200);
 	};
 
