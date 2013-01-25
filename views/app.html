@@ -3,6 +3,7 @@
   <head>
     <title ng-bind="'Rockpool Jukebox ' + page_title"></title>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<<<<<<< HEAD
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -15,6 +16,12 @@
     <script src="/js/services.js"></script>
     <script src="/js/directives.js"></script>
     <script src="/js/app.js"></script>
+=======
+  
+    
+    <!-- Google Font pairings - http://bit.ly/qCTNeX -->
+    <!-- Lobster & Cabin -->
+>>>>>>> 562b07d31e3a5b3ac27efb7677bff690e62b03fe
     <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/css/normalize.css">
@@ -29,6 +36,27 @@
         <p id="loggedIn"><img src="img/fb.png" alt="Facebook "/><a href="/logout" id="logout">Logout</a></p>
       <% } %>
     </header>
+
+  <div id="app" ng-view></div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="http://connect.soundcloud.com/sdk.js"></script>
+    <script src="http://w.soundcloud.com/player/api.js"></script>
+    <script src="http://a.vimeocdn.com/js/froogaloop2.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
+
+    <script src="/js/mega-player.js"></script>
+    <script src="/js/services.js"></script>
+    <script src="/js/directives.js"></script>
+    <script>
+      var config = <%- JSON.stringify(config) %>;
+      angular.module('jukeboxConfiguration', [])
+            .factory('StaticConfiguration', function() {
+              return config;
+            });
+    </script>
     <script>
       $(function() {
         $('#login').click(function() {
@@ -47,7 +75,7 @@
 
       });
     </script>
-    <div id="app" ng-view></div>
+    <script src="/js/app.js"></script>
 
     <footer>
       <p>Made by your friends at <a href="http://www.rockpooldigital.com" target="_blank"><img src="img/rck-logo.png" alt="Rockpool" /></a> using <a href="http://www.w3.org/html/logo/"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-connectivity-css3-semantics.png" width="197" height="64" alt="HTML5 Powered with Connectivity / Realtime, CSS3 / Styling, and Semantics" title="HTML5 Powered with Connectivity / Realtime, CSS3 / Styling, and Semantics"></a>
