@@ -42,6 +42,7 @@ project.config(function($routeProvider) {
 });
 
 project.controller('ListStreams', function($scope, $location, StreamData, StaticConfiguration) {
+	$rootScope.page_title = 'Home';
 	var existingStreams = !StaticConfiguration.suppressPublicStreams;
 
 	var streams = existingStreams ? StreamData.getStreams() : [];
