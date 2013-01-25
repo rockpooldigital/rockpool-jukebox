@@ -1,5 +1,5 @@
 <h1 id="streamName">{{ stream.name }}</h1>
-<a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
+<!-- <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a> -->
 
 
 <div id="debug" style="display:none;">
@@ -7,42 +7,42 @@
 	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
 </div>
 
-<section id="topRow" class="clearfix">
-	
-	<div id="host" class="clearfix">
-		<h2>Host controls</h2>
-		<p><em>Only use if you want to host the stream (one at a time)</em></p>
-		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
-		<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying" class="stop-btn">&#9726; Stop stream</button>
-
-		<button ng-click="enableNotifications()" >Enable webkit notifications</button>
-	</div>
-
+<section id="topRow" class="clearfix"  ng-class="{ searching : entry.youtubeResults }">
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
-		<h2 id="onNow">Now playing: {{nowPlaying.title}}</h2>		
+		<!-- <h2 id="onNow">Now playing</h2>		 -->
+		<h2 id="onNow">{{nowPlaying.title}}
+			<button id="host-skip" ng-click="skipCurrent()" ng-show="isHostPlaying" class="btn">Skip this &raquo;</button></h2>
 		<aside class="thumbWrap">
 			<player id="megaPlayer" item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 			<span class="thumb" ng-show="!isHostPlaying">
-				<img src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" />
+				<!-- <img src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" /> -->
+				<img src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
 			</span>			
 		</aside>
 		<article class="infoWrap">
-			<h4 class="title">{{nowPlaying.title}}</h4>
 			<p class="desc">{{nowPlaying.description}}</p>
 			<ul class="history">
-				<li>Previously played {{nowPlaying.previousPlays}} time(s)</li>
-				<li>{{nowPlaying.historicVotes + nowPlaying.totalVotes}} total vote(s)</li>
-				<li>First added {{nowPlaying.created | date:'dd/MM/yyyy'}}</li>
-				<li ng-show="nowPlaying.lastPlayed">Last played  {{nowPlaying.lastPlayed | date:'dd/MM/yyyy'}}</li>
+				<li>Played - {{nowPlaying.previousPlays}} time(s)</li>
+				<li>Total vote(s) - {{nowPlaying.historicVotes + nowPlaying.totalVotes}} </li>
+				<li>Added - {{nowPlaying.created | date:'dd/MM'}}</li>
+				<li ng-show="nowPlaying.lastPlayed">Played - {{nowPlaying.lastPlayed | date:'dd/MM'}}</li>
 			</ul>
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
-			<button ng-click="skipCurrent()" ng-show="isHostPlaying" class="btn">Skip!</button>
 		</article>
+	</div>
+	<div id="host" class="clearfix">
+		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
+		<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying" class="stop-btn">&#9726; Stop stream</button>
+		<button ng-click="enableNotifications()" >Enable webkit notifications</button>
 	</div>
 
 	<div class="clearfix nothing" id="nowPlaying" ng-show="!nowPlaying">
 		<h3>Nothing currently playing</h3>
-		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
+		<!-- <button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn btn">&#9656; Start stream</button> -->
+		<a ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn" ><img src="/img/play.png" alt="" /></a>
+		<div ng-show="!items.length">
+			<p ng-hide="!items.length" ng-show="!isHostPlaying">Get started by searching for some great music on <img src="/img/youtube.png" alt="YouTube&trade;" style="display:inline;" /></p>
+		</div>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
@@ -51,24 +51,33 @@
 			<!-- <p>Search YouTube&trade; or copy &amp; paste a URL.</p> -->
 		</legend>
 
-		<div id="resultsWrap">
-			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'The Beatles' or 'The Stone Roses'" />	
+		<section id="resultsWrap">
+			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'Hello Lazarus' or 'Magnus Puto'" onfocus="toggleSearching();" onblur="clearSearching()" />	
 				
-			<div id="ytResults" ng-show="entry.youtubeResults">
+			<section id="ytResults" ng-show="entry.youtubeResults">
 				<ul>
-					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }">
+					<li ng-repeat="yt in entry.youtubeResults" ng-class="{ added : yt.added , adding : yt.adding }" class="clearfix">
 						<a ng-click="addItem(yt, true)" class="clearfix">
 							<img ng-src="{{yt.image}}" alt="{{yt.title}}" class="thumb" />
 							<strong class="title">{{ yt.title }}</strong>
 							<p ng-show="yt.album">{{yt.album}}</p>
 						</a>
 						<img ng-src="/img/addToPlaylist.png" alt="Add to playlist" class="addToPlaylist" ng-click="addItem(yt, false)"  />
-						<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} views</em>
+						<em class="views" ng-show="yt.views > 0 ">{{ yt.views}} <i>views</i></em>
 					</li>
 				</ul>
 				<img src="/img/close.png" alt="Close" class="close" ng-click="closeSearchResults()"/>
-			</div>
-		</div>
+			</section>
+			<!-- <section id="instructions">
+				
+				<h2>What next...</h2>
+				<ol >
+					<li>Search YouTube for amazing (or questionable!) music</li>
+					<li>Vote for your favourite songs</li>
+					<li>See what's Up Next...</li>
+				</ol>
+			</section> -->
+		</section>
 		
 	</form>
 
@@ -77,7 +86,14 @@
 <div id="playlist" class="clearfix">
 	<p id="next" class="clearfix">Up next ...</p>
 	<section id="queue">
-		<p ng-show="!items.length">No items yet</p>
+		<article ng-show="!items.length">
+			<h3 style="padding: 40px 10px;">Hey, the queue is empty! Add some music by searching in the box above.</h3>
+			<!-- <ul id="stream-items">
+				<li class="item clearfix"><img src="/img/1x1.png" alt="" /></li>
+				<li class="item clearfix"><img src="/img/1x1.png" alt="" /></li>
+				<li class="item clearfix"><img src="/img/1x1.png" alt="" /></li>
+			</ul> -->
+		</article>
 		<ul class="clearfix" id="stream-items" ng-show="items.length">
 			<li ng-repeat="item in items" class="item clearfix type-{{item.type || 'unknown'}}" id="item-{{item._id}}"  style="background:#000 url({{item.image}}) 50% 50% no-repeat;">
 				<!-- <span class="thumb"><img ng-src="{{item.image}}" alt="" /></span> -->
@@ -85,15 +101,15 @@
 					<h4 class="title">{{item.title}}</h4>					
 					<span class="extra">
 						<ul class="trackInfo">
-							<li>Previously played {{item.previousPlays}} time(s)</li>
-							<li>{{item.historicVotes + item.totalVotes}} total vote(s)</li>
-							<li>First added {{item.created | date:'dd/MM/yyyy'}}</li>
-							<li ng-show="item.lastPlayed">Last played  {{item.lastPlayed | date:'dd/MM/yyyy'}}</li>
+							<li>Played - {{item.previousPlays}} time(s)</li>
+							<li>Total vote(s) - {{item.historicVotes + item.totalVotes}} </li>
+							<li>Added - {{item.created | date:'dd/MM'}}</li>
+							<li ng-show="item.lastPlayed">Played - {{item.lastPlayed | date:'dd/MM'}}</li>
 						</ul>
-						<ul class="icons clearfix">
+						<!-- <ul class="icons clearfix">
 							<li style="display:none;"><button class="trash">Trash</button></li> 
 							<li><button class="flag" ng-click="flagItem(item)" title="Flag this item">Flag</button></li>
-						</ul>
+						</ul> -->
 					</span>
 				</span>
 				
@@ -105,6 +121,12 @@
 	</section>
 
 </div>
+
+<script>
+	_gaq.push(['_trackPageview',location.pathname + location.search  + location.hash]);
+</script>
+	
+
 
 <!-- 
 <a href="#" id="showHideFeedback">Feedback</a>

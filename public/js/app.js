@@ -26,6 +26,13 @@ function streamItemSorter(a,b) {
 
 	return (new Date(a.lastRequested) > new Date(b.lastRequested)) ? 1 : -1;
 }
+// HACKED
+function clearSearching(){
+	document.getElementById('topRow').classList.remove('searching');
+}
+function toggleSearching(){
+	document.getElementById('topRow').classList.toggle('searching');
+}
 
 project.config(function($routeProvider) {
 	$routeProvider.
@@ -34,7 +41,8 @@ project.config(function($routeProvider) {
 	  .otherwise({redirectTo:'/'});
 });
 
-project.controller('ListStreams', function($scope, $location, StreamData) {
+project.controller('ListStreams', function($rootScope, $scope, $location, StreamData) {
+	$rootScope.page_title = 'Home';
 	var streams = StreamData.getStreams();
 	$scope.streams =streams;
 	$scope.addStream = function() {
@@ -45,7 +53,7 @@ project.controller('ListStreams', function($scope, $location, StreamData) {
 	}
 });
 
-project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
+project.controller('Stream', function($rootScope, $scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
 
 	Socket.setOnStatus(function (eventName) {
@@ -76,7 +84,8 @@ project.controller('Stream', function($scope, $location, $routeParams, Socket, S
 	
 	$scope.items = [];
 
-	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
+	$scope.stream = StreamData.getStream({ streamId : streamId}, function(stream) {
+		$rootScope.page_title = stream.name;
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
 			sortItems();
