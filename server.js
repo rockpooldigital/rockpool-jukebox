@@ -154,11 +154,15 @@ function initialiseApplication(db) {
 	app.get('/data/stream/:streamId/item/:id', streamsCtrl.itemFindById);
 	app.delete('/data/stream/:streamId/item/:id', streamsCtrl.itemRemove);
 	app.get('/data/stream/:streamId/item', streamsCtrl.itemFindActiveByStream);
+	app.post('/data/stream/:streamId/hostIsAlive', streamsCtrl.hostIsAlive);
+	app.get('/data/stream/:streamId/hostIsAlive', streamsCtrl.hostIsActive);
 	app.get('/data/stream/:id', streamsCtrl.streams);
 	if (!config.suppressPublicStreams) {
 		app.get('/data/stream', streamsCtrl.streams);
 	}
-	app.post('/data/stream', streamsCtrl.streamAdd);
+
+	app.get('/', function(req, res) {
+
 	app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 	app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 	app.post('/data/stream/:streamId/playing', streamsCtrl.itemMarkPlaying);

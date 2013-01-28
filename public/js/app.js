@@ -54,7 +54,7 @@ project.controller('ListStreams', function($scope, $rootScope, $location, Stream
 		StreamData.addStream({ name : $scope.stream.name }, function(saved) {
 			$scope.streams.push(saved);
 			if (!existingStreams) {
-				$location.path('/stream/' + saved._id + '/' + encodeURIComponent(saved.name));
+				$location.path('/stream/' + saved._id + '/' + saved.name);
 				console.log(	$location.path );
 				return;
 			}
@@ -65,6 +65,7 @@ project.controller('ListStreams', function($scope, $rootScope, $location, Stream
 
 project.controller('Stream', function($rootScope, $scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
+	var interval;
 
 	function playNext() {
 		$scope.hostItem = null;
@@ -93,6 +94,17 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 		$rootScope.page_title = stream.name;
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
+				interval = setInterval(function (){
+			    $scope.$apply(function() {
+			    	if ($scope.isHostPlaying) {
+			    		StreamData.hostIsAlive(streamId);
+			    	}
+			    });
+			  },5000);
+
+				$scope.$on('$destroy', function() {
+			  	clearTimeout(interval);
+				});
 			sortItems();
 		});		
 	});
@@ -140,13 +152,12 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 	}
 
 	$scope.startHostPlaying = function() {
-		$scope.isHostPlaying = true;
-		//if we have a track playing elsewhere, play that
 		if ($scope.nowPlaying) {
-			//this won't be in the list of items so don't need to remove it
 			alert('Host already running elsewhere');
 		} else {
+			$scope.isHostPlaying = true;
 			playNext();
+			//StreamNotification.startHosting();
 		}
 	};
 
@@ -156,6 +167,7 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 		}
 		$scope.hostItem = null;
 		$scope.isHostPlaying = false;
+		//StreamNotification.stopHosting();
 	};
 
 	$scope.hostErrorCount = 0;
