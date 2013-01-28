@@ -48,17 +48,17 @@ project.config(function($routeProvider) {
 	  .otherwise({redirectTo:'/'});
 });
 
-project.controller('ListStreams', function($scope, $location, StreamData, StaticConfiguration) {
+project.controller('ListStreams', function($scope, $rootScope, $location, StreamData, StaticConfiguration) {
 	$rootScope.page_title = 'Home';
 	var existingStreams = !StaticConfiguration.suppressPublicStreams;
 
 	var streams = existingStreams ? StreamData.getStreams() : [];
 	$scope.streams =streams;
-	$scope.addStream = function() {
+	$scope.addStream = function() { 
 		StreamData.addStream({ name : $scope.stream.name }, function(saved) {
 			$scope.streams.push(saved);
 			if (!existingStreams) {
-				$location.path('/stream/' + saved._id);
+				$location.path('/stream/' + saved._id + '/' + encodeURIComponent(saved.name));
 				console.log(	$location.path );
 				return;
 			}
