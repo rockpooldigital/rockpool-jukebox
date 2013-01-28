@@ -1,17 +1,35 @@
 {
+  "subdomain": "rockpooldigital.rockpool-jukebox",
   "name": "rockpool-jukebox",
   "description": "Rockpool Jukebox",
-  "version": "0.0.1",
+  "version": "0.0.1-6",
   "private": true,
   "dependencies": {
     "express": "3.x",
-    "mongodb" : "",
+    "mongodb": "",
     "passport": "",
     "passport-facebook": "",
     "connect": "",
-    "ejs" : "",
+    "ejs": "",
     "request": "",
-    "cheerio":"",
-    "socket.io" : ""
+    "cheerio": "",
+    "socket.io": ""
+  },
+  "bundledDependencies": [
+    "express",
+    "mongodb",
+    "passport",
+    "passport-facebook",
+    "connect",
+    "ejs",
+    "request",
+    "cheerio",
+    "socket.io"
+  ],
+  "scripts": {
+    "start": "server.js"
+  },
+  "engines": {
+    "node": "0.8.x"
   }
 }
