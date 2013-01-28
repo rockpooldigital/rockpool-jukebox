@@ -13,9 +13,10 @@ body {
     font-size: 1em;
     font-family: 'Cabin', Helvetica, Arial, sans-serif;
     line-height: 1.4;
-    padding:10px 1% 7em 1%;
-    background: #efefef;
+    padding:10px 1% 0 1%;
+    background: #fff;
     counter-reset: my-awesome-counter; /* add numbers to the play list items */
+    overflow-x: hidden;
 }
 /** Remove text-shadow in selection highlight: h5bp.com/i **/
 ::-moz-selection {
@@ -164,11 +165,13 @@ textarea {resize: vertical;}
 }
 
 #header {
-	padding: 0 0 10px 0;
+	background: #efefef;
+	padding: 10px 1%;
+	margin: -10px -1% 0 -1%;
 }
 #logo {
 	float: left;
-	width: 8%;	
+	width: 6%;	
 	max-width: 120px;
 }
 
@@ -379,7 +382,7 @@ textarea {resize: vertical;}
 }
 #nowPlaying .desc{
 	/*font-size: 85%;*/
-	height: 130px;
+	max-height: 120px;
 	overflow: hidden;
 	text-transform: capitalize;
 }
@@ -389,7 +392,14 @@ textarea {resize: vertical;}
 	margin: 0;
 	padding: 0;
 }
-
+#nowPlaying .history li{
+	float: left;
+	width: 48%;
+}
+#nowPlaying .history li:nth-child(odd){
+	margin-right: 2%;
+}
+#nowPlaying .vote{margin: 0;padding: 0;}
 
 /** ADDING **/
 #addItemForm {
@@ -494,10 +504,9 @@ textarea {resize: vertical;}
 	border-bottom-right-radius: 1em;
 	border-top: 0;
 	box-shadow: 2px 2px 15px #CCC;
-	z-index: 3;
+	z-index: 5;
 	padding:10px 0;
 }
-
 .searching #ytResults{ width: 146%; }
 .infoWrap{ 
 	opacity: 1;
@@ -554,7 +563,7 @@ textarea {resize: vertical;}
 }
 
 #ytResults li:hover{
-	background: #fff;
+	background: #eee;
 }
 #ytResults li .thumb{
 	float: left;
@@ -581,7 +590,7 @@ textarea {resize: vertical;}
 }
 #ytResults li .addToPlaylist {
 	float: right;
-	margin:0 10px;	
+	margin:5px 5px 0 10px;	
 	cursor: pointer;
 	width: 5%;
 	min-width: 30px;
@@ -591,6 +600,37 @@ textarea {resize: vertical;}
 	top: -18px;
 	right: -16px;
 	cursor: pointer;
+}
+.poweredByYT{
+	float:right; 
+	margin:-6px 5px 10px 0;
+}
+.shareIt {
+	clear: both;
+}
+.shareIt a{
+	display: block;
+	text-decoration: none;
+	padding: 0 10px; 
+}
+.shareIt img{
+	max-height: 100px;
+	float: left;
+	max-width: 40%;
+	margin-right: 10px;
+}
+.shareIt em{
+	font-style: normal;
+	float: left;
+	width: 40%;
+	font-size: 1.4em;
+	margin-top: 20px;
+	font-family: "Lobster", Georgia, sans-serif;
+}
+.shareIt a:hover,
+.shareIt a:active,
+.shareIt a:focus{
+	background: #efefef;
 }
 
 
@@ -757,18 +797,23 @@ textarea {resize: vertical;}
 	/*text-indent:0;*/
 
 }
-#stream-items li:hover .info .title{
+#stream-items li:hover .info:not(:hover) .title{
 	
-	-webkit-animation:scrollText 4s infinite alternate;
-	-moz-animation:scrollText 4s infinite alternate;
-	-ms-animation:scrollText 4s infinite alternate;
-	-o-animation:scrollText 4s infinite alternate;
-	animation:scrollText 4s infinite alternate;
+	-webkit-animation:scrollText 4s alternate;
+	-moz-animation:scrollText 4s alternate;
+	-ms-animation:scrollText 4s alternate;
+	-o-animation:scrollText 4s alternate;
+	animation:scrollText 4s alternate;
 	-webkit-animation-timing-function:linear;
 	-moz-animation-timing-function:linear;
 	-ms-animation-timing-function:linear;
 	-o-animation-timing-function:linear;
 	animation-timing-function:linear;
+	-webkit-animation-delay:.25s;
+	-moz-animation-delay:.25s;
+	-ms-animation-delay:.25s;
+	-o-animation-delay:.25s;
+	animation-delay:.25s;
 	
 }
 
@@ -886,9 +931,10 @@ textarea {resize: vertical;}
 
 /* Footer */
 footer {
-	position: fixed;
-	bottom: 0;
-	width: 100%; 
+	
+	/*position: absolute;
+	bottom: 0;*/
+	width: 102%; 
 	background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,250,250,1) 28%, rgba(238,238,238,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(28%,rgba(250,250,250,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -900,14 +946,18 @@ footer {
 	margin: 0 -1%;
 }
 footer p{
+	bottom:0;
 	text-align: right;
-	padding: 3em 0 0em 0;
+	padding: 1.5em 0 .5em 0;
+	margin: 0;
 	color: #666;
 	font-family: 'Lobster', Georgia, Times, serif;
 }
 footer a img{
 	display: inline-block;
-	margin: -10px 10px 0 10px;
+	margin: 0 10px 0 10px;
+	height: 35px;
+	width: auto !important;
 }
 
 
