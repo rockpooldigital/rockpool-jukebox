@@ -612,7 +612,7 @@ textarea {resize: vertical;}
 	padding: 10px;
 	color: #eee;
 	background: rgba(0,0,0,0.7);
-	z-index: 200;
+	z-index: 2;
 	height: 140px;
 	position: absolute;
 	bottom: -107px;
