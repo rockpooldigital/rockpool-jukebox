@@ -1,4 +1,11 @@
-var project = angular.module('project', ['jukeboxServices', 'jukeboxDirectives', 'jukeboxConfiguration']);
+angular.module('jukeboxFormatters', []).
+ filter('urlEncode', function() {               // filter is a factory function
+   return function(rawUrl) { // first arg is the input, rest are filter params
+       return encodeURIComponent(rawUrl);
+   }
+ });
+
+var project = angular.module('project', ['jukeboxServices', 'jukeboxDirectives', 'jukeboxConfiguration', 'jukeboxFormatters']);
 
 var delay = (function(){
   var timer = 0;
@@ -30,7 +37,7 @@ function streamItemSorter(a,b) {
 project.config(function($routeProvider) {
 	$routeProvider.
 	  when('/', {controller:'ListStreams', templateUrl:'streams.html'})
-	  .when('/stream/:streamId', { controller : 'Stream', templateUrl:'stream.html'})
+	  .when('/stream/:streamId/:streamName', { controller : 'Stream', templateUrl:'stream.html'})
 	  .otherwise({redirectTo:'/'});
 });
 

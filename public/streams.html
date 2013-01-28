@@ -8,7 +8,7 @@
 			<h2>Choose a stream...</h2>
 			<ul id="theStreamsList">
 				<li ng-repeat="stream in streams" class="clearfix">					
-					<a href="#/stream/{{stream._id}}" class="clearfix">
+					<a href="#/stream/{{stream._id}}/{{stream.name | urlEncode}}" class="clearfix">
 						<img src="/img/headphones.png" alt="listen" class="" />
 						<em>{{stream.name}}</em>
 					</a>
