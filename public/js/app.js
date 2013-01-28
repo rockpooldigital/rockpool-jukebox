@@ -33,10 +33,6 @@ function streamItemSorter(a,b) {
 
 	return (new Date(a.lastRequested) > new Date(b.lastRequested)) ? 1 : -1;
 }
-// HACKED
-function clearSearching(){
-	document.getElementById('topRow').classList.remove('searching');
-}
 function toggleSearching(){
 	document.getElementById('topRow').classList.toggle('searching');
 }
