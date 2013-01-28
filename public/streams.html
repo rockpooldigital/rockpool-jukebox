@@ -1,10 +1,10 @@
 <section id="streams" class="clearfix">
 
-	<h1 id="streamName">Jukebox</h1>
+	<h1 id="streamName">Rockpool's Jukebox</h1>
 
 	<section id="topRow" class="clearfix">
 
-		<section id="theStreams">
+		<section id="theStreams" style="display:none;">
 			<h2>Choose a stream...</h2>
 			<ul id="theStreamsList">
 				<li ng-repeat="stream in streams" class="clearfix">					
@@ -18,13 +18,21 @@
 
 
 		<form name="addStreamForm" id="addStreamForm" class="clearfix">
-			<h2>or create your own...</h2>
-			<div ng-class="{error: addStreamForm.name.$invalid}" >
-				<!-- <label>Name</label>			 -->
+			<h2>Let's get started...</h2>
+			<ol class="instructions">
+				<li>Name your Jukebox stream</li>
+				<li>Start adding songs found on <img src="/img/youtube.png" alt="YouTube&trade;" style="display:inline;" /></li>
+				<li>Hit Play!</li>
+				<li>Vote , Add , Share with your friends &amp; colleagues!</li>
+			</ol>
+			<div ng-class="{error: addStreamForm.name.$invalid}" class="formWrap">
+				<label>Name your Jukebox stream...</label>
 				<input type="text" class="txt" name="name" ng-model="stream.name" required size="50" placeholder="Name your stream. e.g. 'My Awesome Playlist'" />
+				<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid" class="btn btn-primary">Let's go!</button>
+				<img src="/img/poweredbyyoutube.png" alt="YouTube&trade;" style="display:inline;" />
 			</div>
 
-			<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid" class="btn btn-primary">Create stream</button>
+
 		</form>
 
 	</section>

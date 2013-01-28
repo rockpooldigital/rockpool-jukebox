@@ -13,7 +13,7 @@ body {
     font-size: 1em;
     font-family: 'Cabin', Helvetica, Arial, sans-serif;
     line-height: 1.4;
-    padding:10px 1%;
+    padding:10px 1% 7em 1%;
     background: #efefef;
     counter-reset: my-awesome-counter; /* add numbers to the play list items */
 }
@@ -141,8 +141,9 @@ textarea {resize: vertical;}
 	font-style: normal;
 }
 #addStreamForm {
-	float: left;
-	width: 50%;
+	width: 60%;
+	margin-left: 20%;	
+	min-height: 400px;	
 }
 #addStreamForm .txt {
 	width: 100%;
@@ -167,7 +168,7 @@ textarea {resize: vertical;}
 }
 #logo {
 	float: left;
-	width: 15%;	
+	width: 8%;	
 	max-width: 120px;
 }
 
@@ -187,8 +188,8 @@ textarea {resize: vertical;}
 #login img,
 #loggedIn img {display: inline; height: 20px; margin: -3px 5px 0 0;}
 #topRow {
-	margin: 0 -1% 20px -1%;
-	padding: 40px 1%;
+	margin: 0 -1% 0px -1%;
+	padding: 20px 1% 0 1%;
 	background: #fff;
 }
 
@@ -267,21 +268,24 @@ textarea {resize: vertical;}
 	float: left;
 	position: relative;
 	width: 65%;
-	min-height: 300px;
+	min-height: 200px;
 	background: #fff;
 	min-width: 500px;
 }
 #nowPlaying.nothing { 
-	padding: 20px;
-	/*border: 10px solid #57BAEA;*/
+	padding: 10px 20px 20px 20px;
+	border: 10px solid #ddd;
 	background: #fff;
 	width: 50%;
 	min-width: 400px;
 }
 #nowPlaying.nothing .start-btn{
-
+	display: block;
+	text-align: center;
 }
-
+#nowPlaying.nothing .start-btn img{
+	margin:20px auto 0 auto ;
+}
 .playerHolder {
 	/*height: 250px;  temporarily match youtube player */
 }
@@ -346,7 +350,7 @@ textarea {resize: vertical;}
 	font-size: .8em;
 	max-height: 304px;
 	overflow: hidden;
-	display: none;
+	/*display: none;*/
 }
 #nowPlaying .thumb{
 	position: relative;
@@ -402,16 +406,16 @@ textarea {resize: vertical;}
 	width: 33%;
 }
 
-
 #addItemForm legend {
     display: block;
     width: 100%;
+    padding-bottom: 4px;
 }
 #addItemForm h2 {
 	margin: 0.1em 0;
 	line-height: 1em;
 	font-size: 2em;
-	color: #57BAEA;
+	/*color: #57BAEA;*/
 	text-align: right;
 }
 #addItemForm legend p {
@@ -732,23 +736,16 @@ textarea {resize: vertical;}
 	left:0;	
 	padding: 5px 10px;
 	color: #eee;
-	/*background: rgba(0,0,0,0.7);*/
 	background: rgba(87, 186, 234, 0.65);
 	text-shadow:1px 1px 1px #000;
-	z-index:3;
+	z-index:4;
 	height: 105px;
 	position: absolute;
-	/*bottom: -73px;*/
 	-webkit-transform: translate3d(0, 73px, 0);
 	transition: all 0.1s ease;
 	-moz-transition:  all 0.1s ease;
 	-webkit-transition:  all 0.1s ease;
 	-o-transition: all 0.1s ease;
-	/*transition-delay: 0.1s;
-	-moz-transition-delay: 0.1s;
-	-webkit-transition-delay: 0.1s;
-	-o-transition-delay: 0.1s;*/
-	z-index: 1;
 }
 #stream-items .info .title{
 	width: 100%;
@@ -757,7 +754,75 @@ textarea {resize: vertical;}
 	text-overflow:ellipsis;
 	font-family: 'Lobster', Helvetica, Arial, sans-serif;
 	font-size: 1em;	
+	/*text-indent:0;*/
+
 }
+#stream-items li:hover .info .title{
+	
+	-webkit-animation:scrollText 4s infinite alternate;
+	-moz-animation:scrollText 4s infinite alternate;
+	-ms-animation:scrollText 4s infinite alternate;
+	-o-animation:scrollText 4s infinite alternate;
+	animation:scrollText 4s infinite alternate;
+	-webkit-animation-timing-function:linear;
+	-moz-animation-timing-function:linear;
+	-ms-animation-timing-function:linear;
+	-o-animation-timing-function:linear;
+	animation-timing-function:linear;
+	
+}
+
+@keyframes "scrollText" {
+ from {
+    text-indent: 0;
+ }
+ to {
+    text-indent: -200%;
+ }
+
+}
+
+@-moz-keyframes scrollText {
+ from {
+   text-indent: 0;
+ }
+ to {
+   text-indent: -200%;
+ }
+
+}
+
+@-webkit-keyframes "scrollText" {
+ from {
+   text-indent: 0;
+ }
+ to {
+   text-indent: -200%;
+ }
+
+}
+
+@-ms-keyframes "scrollText" {
+ from {
+   text-indent: 0;
+ }
+ to {
+   text-indent: -200%;
+ }
+
+}
+
+@-o-keyframes "scrollText" {
+ from {
+   text-indent: 0;
+ }
+ to {
+   text-indent: -200%;
+ }
+
+}
+
+
 #stream-items .info .extra
 {
 	font-size: 0.7em;
@@ -820,12 +885,29 @@ textarea {resize: vertical;}
 
 
 /* Footer */
+footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%; 
+	background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,250,250,1) 28%, rgba(238,238,238,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(28%,rgba(250,250,250,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+	z-index: 100;
+	margin: 0 -1%;
+}
 footer p{
-	font-family: "Lobster";
+	text-align: right;
+	padding: 3em 0 0em 0;
+	color: #666;
+	font-family: 'Lobster', Georgia, Times, serif;
 }
 footer a img{
 	display: inline-block;
-	margin: 0 10px;
+	margin: -10px 10px 0 10px;
 }
 
 
@@ -1124,9 +1206,7 @@ footer a img{
 	#nowPlaying .infoWrap {
 		display: block;
 	}
-	#topRow {
-		margin-bottom: 4.5em;
-	}
+		}
 	#playlist #next {
 		top: -2.8em;
 	}

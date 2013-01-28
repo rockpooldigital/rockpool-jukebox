@@ -7,7 +7,7 @@
 	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
 </div>
 
-<section id="topRow" class="clearfix"  ng-class="{ searching : entry.youtubeResults }">
+<section id="topRow" class="clearfix"  ng-class="{ searching : entry.youtubeResults , empty : !items.length , hasItems : items.length }">
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
 		<!-- <h2 id="onNow">Now playing</h2>		 -->
 		<h2 id="onNow">{{nowPlaying.title}}
@@ -30,7 +30,7 @@
 			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
 		</article>
 	</div>
-	<div id="host" class="clearfix">
+	<div id="host" class="clearfix" style="display:none;">
 		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
 		<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying" class="stop-btn">&#9726; Stop stream</button>
 		<button ng-click="enableNotifications()" >Enable webkit notifications</button>
@@ -41,13 +41,14 @@
 		<!-- <button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn btn">&#9656; Start stream</button> -->
 		<a ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn" ><img src="/img/play.png" alt="" /></a>
 		<div ng-show="!items.length">
-			<p ng-hide="!items.length" ng-show="!isHostPlaying">Get started by searching for some great music on <img src="/img/youtube.png" alt="YouTube&trade;" style="display:inline;" /></p>
+			<p ng-hide="!items.length" ng-show="!isHostPlaying">Get started by searching for some great music &raquo; </p>
 		</div>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
 		<legend>
-			<h2>Find songs on <img src="/img/youtube.png" alt="YouTube" style="display:inline;" /></h2>
+			<!-- <h2>Find songs on <img src="/img/youtube.png" alt="YouTube" style="display:inline;" /></h2> -->
+			<h2>Search for songs</h2>
 			<!-- <p>Search YouTube&trade; or copy &amp; paste a URL.</p> -->
 		</legend>
 
@@ -77,6 +78,8 @@
 					<li>See what's Up Next...</li>
 				</ol>
 			</section> -->
+			<img src="/img/poweredbyyoutube.png" alt="YouTube&trade;" style="float:right; margin:-6px 5px 0 0;" />
+
 		</section>
 		
 	</form>
