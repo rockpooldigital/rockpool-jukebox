@@ -23,6 +23,10 @@ function setup(io) {
 	    socket.broadcast.to(data.stream).emit('stream:clientJoined');
 	  });
 
+	  /*socket.on('host:start', function(data) {
+
+	  });*/
+
 	  socket.on('stream:itemSkipped', function(data) {
 	    socket.broadcast.to(data.stream).emit('stream:itemSkipped', {
 	      stream : data.stream, id : data.id
@@ -30,14 +34,14 @@ function setup(io) {
 	  });
 
 	  socket.on('player:requestRemotePlay', function(data) {
-	  	console.log("spot play");
+	  	//console.log("spot play");
 	  	socket.broadcast.to(data.stream).emit('player:requestRemotePlay', {
 	       stream : data.stream, item : data.item
 	    });
 	  });
 
 	  socket.on('player:requestRemoteStop', function(data) {
-	  	console.log("spot stop", data.stream);
+	  	//console.log("spot stop", data.stream);
 	  	socket.broadcast.to(data.stream).emit('player:requestRemoteStop', data);
 	  });
 
@@ -78,6 +82,10 @@ function setup(io) {
 			      id : item._id//, 
 			    //  item : item
 			});
+		},
+
+		isStreamHosted : function(streamId) {
+
 		}
 	}
 }
