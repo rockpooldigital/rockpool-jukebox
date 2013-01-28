@@ -112,6 +112,45 @@ module.exports = function(db, notifications, config) {
 			});		
 		},
 
+		hostIsAlive : function(req, res, next) {
+			var streams = db.collection('streams');
+			if (!req.params.streamId) {
+				res.send(400); 
+				return;
+			}
+			
+			streams.update({ _id : new BSON.ObjectID(req.params.streamId)},
+				{ $set : { lastHosted : new Date() }},
+				function(err) {
+					if(err) return next(err);
+					res.send(200);
+				}
+			);
+		},
+
+		hostIsActive : function(req, res, next) {
+			var streams = db.collection('streams');
+			if (!req.params.streamId) {
+				res.send(400); 
+				return;
+			}
+			
+			streams.findOne({ _id : new BSON.ObjectID(req.params.streamId)}, function(err, stream) {
+				if (err) return next(err);
+				if (!stream.lastHosted) {
+					res.send({ alive: false, lastHosted : null });
+				} else {
+					var now = new Date().getTime();
+					var last = stream.lastHosted.getTime();
+
+					res.send({ 
+						alive : (now - last) < 10000, //10 s
+						lastHosted : last 
+					});
+				}
+			});
+		},
+
 		searchMedia: function(req, res, next) {
 			var q = req.query.q;
 			if (!q) {

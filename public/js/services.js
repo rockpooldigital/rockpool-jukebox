@@ -89,11 +89,21 @@ angular.module('jukeboxServices', ['ngResource'])
 				var r = $http.get(url);
 				if (success) r.success(success);
 				if (fail) r.error(fail);
+			},
+			hostIsAlive : function(streamId) {
+				var url = "/data/stream/" + streamId + "/hostIsAlive";
+				var r = $http.post(url);
+			},
+			isHostAlive: function(streamId, success) {
+				var url = "/data/stream/" + streamId + "/hostIsAlive";
+				var r = $http.get(url);
+				r.success(success);
 			}
 		};
 	})
 	.factory('StreamNotification', function(Socket, $routeParams) {
 		var streamId = $routeParams.streamId;
+
 		if (!streamId) throw new Error("streamId not provided");
 
 		var onPlay, onItemAdded, onItemSkipped, onClientJoined, onItemVoted, onItemRemoved, onRemoteItemStopped;
@@ -108,11 +118,9 @@ angular.module('jukeboxServices', ['ngResource'])
 		Socket.on('player:remoteItemStopped', function(data) {
 			if(onRemoteItemStopped) { onRemoteItemStopped(data);}
 		});
-		//var streamId ;
 
 		Socket.on('reconnect', function() {
 			if (streamId) {
-				//alert('reconnect');
 				Socket.emit('stream:join', {
 					stream : streamId,
 				});
