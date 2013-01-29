@@ -97,7 +97,7 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 				interval = setInterval(function (){
 			    $scope.$apply(function() {
 			    	if ($scope.isHostPlaying) {
-			    		StreamData.hostIsAlive(streamId);
+			    		StreamData.hostIsAlive(streamId, true);
 			    	}
 			    });
 			  },5000);
@@ -177,6 +177,7 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 		$scope.hostItem = null;
 		$scope.isHostPlaying = false;
 		//StreamNotification.stopHosting();
+		StreamData.hostIsAlive(streamId, false);
 	};
 
 	$scope.hostErrorCount = 0;
