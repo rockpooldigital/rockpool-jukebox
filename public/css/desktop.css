@@ -97,6 +97,33 @@ textarea {resize: vertical;}
 
 
 /** CHOOSE STREAMS PAGE **/
+#addStreamForm h2{
+	margin: 1em 0 0;
+	text-align: center;
+}
+.instructions {
+	list-style-type: none;
+	margin:0;
+	padding: 0;
+}
+.instructions em {
+	display: inline-block;
+	font-style: normal;
+	font-family: "Lobster";
+	font-size: 3em;
+	position: relative;
+	top: 10px;
+	color: #387998;
+	width: 50px;
+}
+.instructions li{
+	padding: 0;
+	margin: 0;
+	font-family: "Cabin";
+	color: #666;
+	padding-bottom: 10px;
+}
+
 #theStreams {
 	float: left;
 	width: 45%;
@@ -991,7 +1018,7 @@ footer {
 	
 	position: fixed;
 	bottom: 0;
-	width: 102%; 
+	width: 100%; 
 	background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,250,250,1) 28%, rgba(238,238,238,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(28%,rgba(250,250,250,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -1047,6 +1074,10 @@ footer a img{
 	    margin: 0 0 .5em 0;
 	}
     
+	#logo {
+		min-width: 80px;
+	}
+
 	#login em, #loggedIn em{display: none;}
 
 	
@@ -1068,9 +1099,24 @@ footer a img{
 		padding-bottom:20px;
 	}
 
+
+	#addStreamForm {
+		width: 100%;
+		margin: 0;
+	}
 	#addItemForm h2{
 		font-size: 1.5em;
+		margin: 0;
 		text-align: center;
+	}
+	.instructions li{
+		padding: 0 0 .5em 0;
+	}
+
+	.instructions em{
+		left: 10px;
+		top: 5px;
+		font-size: 2em;
 	}
 
 	#addStreamForm .txt {font-size: 1em;}
@@ -1276,6 +1322,37 @@ footer a img{
 /** iPad Portrait OVERRIDES **/
 @media only screen and (min-width: 601px) and (max-width: 768px) {
     /* Style adjustments for viewports that meet the condition */
+	#login , #loggedIn {margin-top: -5px;}
+	
+	#nowPlaying iframe{
+		max-height: 200px;
+	}
+
+	.searching #addItemForm .txtUrl, 
+	#addItemForm .txtUrl:focus {width: 130%;}
+
+	.searching #ytResults {	width: 127%; }
+	#ytResults li a {
+		padding:.5em 5px;
+	}
+	#ytResults li .thumb {
+		height: auto;
+		width: 20%;
+		margin-right: 5px;
+	}
+	#ytResults li .addToPlaylist {
+		display: none;
+	}
+	#ytResults li .views {
+		font-size: .75em;
+		width: 15%;
+		padding-right: 10px;
+	}
+
+
+    .shareIt {
+    	margin-top: -40px;
+    }
     #stream-items .item{
     	width: 24.25% !important;
     	padding: 12.125% !important; 
