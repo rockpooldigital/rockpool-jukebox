@@ -7,44 +7,31 @@
 </div>
 
 <section id="topRow" class="clearfix"  ng-class="{ searching : entry.youtubeResults , empty : !items.length , hasItems : items.length }">
-	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
+	<section class="controls clearfix">
+		<aside class="shareIt">
+			<a href="mailto://yourfriend@email.com&subject={{stream.name | urlEncode}}%20on%20the%20Rockpool%20Jukebox%20&body=http://jukebox.rockpooldigital.com/#/stream/{{stream._id}}" class="clearfix">
+				<img src="/img/email.png" alt="listen" class="" />
+				<em>Share the Jukebox</em>
+			</a>
+		</aside>
+	</section>
+	<div class="clearfix" id="nowPlaying">	
 		<!-- <h2 id="onNow">Now playing</h2>		 -->
-		<h2 id="onNow">{{nowPlaying.title}}
+
+		<h2 id="onNow">
+			<span ng-show="!nowPlaying ">Nothing currently playing</span>
+			<span ng-show="nowPlaying ">{{nowPlaying.title}}</span>
 			<button id="host-skip" ng-click="skipCurrent()" ng-show="isHostPlaying" class="btn">Skip this &raquo;</button>
 		</h2>
+
+		<!-- <h3 id="nowPlaying" ng-show="!nowPlaying">Nothing currently playing</h3> -->
 		<aside class="thumbWrap">
 			<player id="megaPlayer" item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 			<span class="thumb" ng-show="!isHostPlaying">
-				<!-- <img src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" /> -->
-				<img src="{{nowPlaying.image}}" alt="{{nowPlaying.title}}" class="art" />
+				<img ng-show="nowPlaying.image" src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" />
+				<img ng-show="!nowPlaying.image" src="/img/1x1.png" alt="Add some songs, then click play" class="art" />
 			</span>			
 		</aside>
-		<article class="infoWrap">
-			<p class="desc">{{nowPlaying.description}}</p>
-			<ul class="history">
-				<li>Played - {{nowPlaying.previousPlays}} time(s)</li>
-				<li>Total vote(s) - {{nowPlaying.historicVotes + nowPlaying.totalVotes}} </li>
-				<li>Added - {{nowPlaying.created | date:'dd/MM'}}</li>
-				<li ng-show="nowPlaying.lastPlayed">Played - {{nowPlaying.lastPlayed | date:'dd/MM'}}</li>
-			</ul>
-			<p class="votes">Votes: <em>{{nowPlaying.totalVotes}}</em></p>
-		</article>
-	</div>
-	<div id="host" class="clearfix" style="display:none;">
-		<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" class="start-btn">&#9656; Start stream</button>
-		<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying" class="stop-btn">&#9726; Stop stream</button>
-		<button ng-click="enableNotifications()" >Enable webkit notifications</button>
-	</div>
-
-	<div class="clearfix nothing" id="nowPlaying" ng-show="!nowPlaying">
-		<h3>Nothing currently playing</h3>
-		<!-- <button ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn btn">&#9656; Start stream</button> -->
-		<a ng-click="startHostPlaying()" ng-disabled="isHostPlaying" ng-show="items.length" class="start-btn" ><img src="/img/play.png" alt="" /></a>
-		<a ng-click="stopHostPlaying()" ng-show="isHostPlaying" class="stop-btn" ><img src="/img/stop.png" alt="" /></a>
-
-		<div ng-show="!items.length">
-			<p ng-hide="!items.length" ng-show="!isHostPlaying">Get started by searching for some great music &raquo; </p>
-		</div>
 	</div>
 
 	<form name="addItemForm" id="addItemForm" class="clearfix">
@@ -54,7 +41,7 @@
 			<!-- <p>Search YouTube&trade; or copy &amp; paste a URL.</p> -->
 		</legend>
 
-		<section id="resultsWrap">
+		<section id="resultsWrap" class="clearfix">
 			<input class="txtUrl" type="text" name="url" ng-model="entry.url"  ng-change="lookupItem()" placeholder="e.g. 'Hello Lazarus' or 'Magnus Puto'" onfocus="toggleSearching();" />	
 				
 			<section id="ytResults" ng-show="entry.youtubeResults">
@@ -83,15 +70,16 @@
 			<img src="/img/poweredbyyoutube.png" alt="YouTube&trade;" class="poweredByYT" />
 			
 			<!-- <a href="mailto:{{}}"><img src="/img/email.png" alt="Send to a friend"/></a> -->
-			<aside class="shareIt">
-				<a href="mailto://yourfriend@email.com&subject={{stream.name | urlEncode}}%20on%20the%20Rockpool%20Jukebox%20&body=http://jukebox.rockpooldigital.com/#/stream/{{stream._id}}" class="clearfix">
-					<img src="/img/email.png" alt="listen" class="" />
-					<em>Tell someone about {{stream.name}}</em>
-				</a>
-			</aside>
-
+			
 		</section>
 		
+		<div id="host" class="clearfix">
+			<h3>Host this stream</h3>
+			<button ng-click="startHostPlaying()" ng-hide="isHostPlaying" ng-disabled="isHostPlaying" class="start-btn"><img src="/img/play.png" alt="" /> Start stream</button>
+			<button ng-click="stopHostPlaying()" ng-show="isHostPlaying" class="stop-btn"><img src="/img/stop.png" alt="" /> Stop stream</button>
+			<!-- <button ng-click="enableNotifications()" >Enable webkit notifications</button> -->
+		</div>
+
 	</form>
 
 </section>
@@ -100,7 +88,7 @@
 	<p id="next" class="clearfix">Up next ...</p>
 	<section id="queue">
 		<article ng-show="!items.length">
-			<h3 style="padding: 40px 10px;">Hey, the queue is empty! Add some music by searching in the box above.</h3>
+			<h3 style="padding: 40px 10px; color:#666; font-family:'Cabin'; font-size:1em;">Hey, the queue is empty! Add some music by searching in the box above.</h3>
 			<!-- <ul id="stream-items">
 				<li class="item clearfix"><img src="/img/1x1.png" alt="" /></li>
 				<li class="item clearfix"><img src="/img/1x1.png" alt="" /></li>
