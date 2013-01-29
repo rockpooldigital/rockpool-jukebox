@@ -157,12 +157,12 @@ function initialiseApplication(db) {
 	app.post('/data/stream/:streamId/hostIsAlive', streamsCtrl.hostIsAlive);
 	app.get('/data/stream/:streamId/hostIsAlive', streamsCtrl.hostIsActive);
 	app.get('/data/stream/:id', streamsCtrl.streams);
+	
 	if (!config.suppressPublicStreams) {
 		app.get('/data/stream', streamsCtrl.streams);
 	}
 
-	app.get('/', function(req, res) {
-
+	app.post('/data/stream', streamsCtrl.streamAdd);
 	app.post('/data/item/:id/vote', streamsCtrl.submitVote);
 	app.post('/data/item/:id/played', streamsCtrl.itemMarkPlayed);
 	app.post('/data/stream/:streamId/playing', streamsCtrl.itemMarkPlaying);
