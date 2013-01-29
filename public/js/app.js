@@ -152,13 +152,22 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 	}
 
 	$scope.startHostPlaying = function() {
-		if ($scope.nowPlaying) {
+		function fail() {
 			alert('Host already running elsewhere');
-		} else {
-			$scope.isHostPlaying = true;
-			playNext();
-			//StreamNotification.startHosting();
 		}
+
+		if ($scope.nowPlaying) {
+			return fail();	
+		}
+
+		StreamData.isHostAlive(streamId, function(response) {
+			if (response.alive) {
+				return fail();
+			} else {
+				$scope.isHostPlaying = true;
+				playNext();
+			}
+		});
 	};
 
 	$scope.stopHostPlaying = function() {
