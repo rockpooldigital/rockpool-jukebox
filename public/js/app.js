@@ -153,7 +153,7 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 
 	$scope.startHostPlaying = function() {
 		function fail() {
-			alert('Host already running elsewhere - please try again in 30 seconds');
+			alert('Somebody else is already hosting this stream - if this is not the case please try again in 30 seconds');
 		}
 
 		if ($scope.nowPlaying) {
