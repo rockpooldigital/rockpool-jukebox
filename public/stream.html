@@ -26,7 +26,7 @@
 
 		<!-- <h3 id="nowPlaying" ng-show="!nowPlaying">Nothing currently playing</h3> -->
 		<aside class="thumbWrap">
-			<player id="megaPlayer" item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
+			<player class="clearfix" id="megaPlayer" item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 			<span class="thumb" ng-show="!isHostPlaying">
 				<img ng-show="nowPlaying.image" src="/img/1x1.png" style="background:url({{nowPlaying.image}}) 50% 50% no-repeat;" alt="{{nowPlaying.title}}" class="art" />
 				<img ng-show="!nowPlaying.image" src="/img/1x1.png" alt="Add some songs, then click play" class="art" />

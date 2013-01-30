@@ -402,17 +402,17 @@ textarea {resize: vertical;}
 	margin-top:.25em;
 	display: block;
 }
+
 #nowPlaying iframe{
 	height: 100%;
-	min-height: 35%;
-
+	min-height: 304px;
 	width: 100%;
 }
 #onNow{
 	display: inline-block;
 	background: #57BAEA;
 	width: 102.5%;
-	margin: 0 50% -4px -6px;
+	margin: 0 0 -4px -6px;
 	padding:6px 60px 6px 10px;
 	/*border-top-right-radius: .5em;*/
 	/*border-bottom-right-radius: .5em;*/
@@ -444,6 +444,7 @@ textarea {resize: vertical;}
 	display: block;
 	width: 100%; /* try to match the blocks underneath */
 	/*max-height: 304px;*/
+	min-height: 304px;
 	overflow: hidden;
 	z-index: 2;
 	position: relative;
@@ -511,7 +512,8 @@ textarea {resize: vertical;}
 #addItemForm {
 	/*display: none;*/
 	float: right;
-	width: 38%;
+	/*width: 38%;*/
+	width: 47%;
 	-webkit-transition: width .2s linear;
 	-moz-transition: width .2s linear;
 	-o-transition: width .2s linear;
@@ -548,7 +550,7 @@ textarea {resize: vertical;}
 	box-shadow: inset 2px 1px 6px #aaa,  inset -2px -2px 6px #aaa;
 	margin-bottom: 1em;
 }
-.searching #addItemForm .txtUrl,
+/*.searching #addItemForm .txtUrl,
 #addItemForm .txtUrl:focus {
 	width: 120%;
 	-webkit-transition: width .1s linear;
@@ -556,9 +558,7 @@ textarea {resize: vertical;}
 	-o-transition: width .1s linear;
 	-ms-transition: width .1s linear;
 	transition: width .1s linear;
-	/*position: fixed;
-	*/
-}
+}*/
 /* Search results preview */
 
 #preview {
@@ -613,7 +613,7 @@ textarea {resize: vertical;}
 	z-index: 101;
 	padding:10px 0;
 }
-.searching #ytResults{ width: 117%; }
+/*.searching #ytResults{ width: 117%; }*/
 .infoWrap{ 
 	opacity: 1;
 -webkit-transition: opacity .2s linear;
@@ -624,10 +624,9 @@ textarea {resize: vertical;}
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
 	filter: alpha(opacity=30);
 }
-.searching .infoWrap{ 
-	
+/*.searching .infoWrap{ 
 	opacity: 0.3; 
-}
+}*/
 
 #ytResults ul{
 	margin: 0;
@@ -673,17 +672,18 @@ textarea {resize: vertical;}
 }
 #ytResults li .thumb{
 	float: left;
-	height: 50px;
-	margin-right:10px;
+	max-height: 70px;
+	margin-right: 10px;
 	border-radius: 3px;
 	overflow: hidden;
-	border:1px solid #000;
+	border: 1px solid #000;
+	max-width: 22%;
 }
 #ytResults li .title{
 	float: left;
 	font-size: 1em;
 	font-weight: normal;
-	width: 75%;
+	width: 74%;
 	/*white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;*/
@@ -1018,7 +1018,7 @@ footer {
 	
 	position: fixed;
 	bottom: 0;
-	width: 100%; 
+	/*width: 100%; */
 	background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(250,250,250,1) 28%, rgba(238,238,238,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(28%,rgba(250,250,250,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(250,250,250,1) 28%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -1052,6 +1052,9 @@ footer a img{
 	html{
 		width: 100%;
 		overflow: hidden;
+	}
+	body{
+		padding-bottom: 0;
 	}
     /* Style adjustments for viewports that meet the condition */
     h1 {
@@ -1104,26 +1107,62 @@ footer a img{
 		width: 100%;
 		margin: 0;
 	}
-	#addItemForm h2{
+	#addStreamForm h2{
 		font-size: 1.5em;
-		margin: 0;
+		margin: .5em 0 .5em;
 		text-align: center;
 	}
+	#addStreamForm label{
+		display: block;
+		padding-left: 3%;
+	}
+
+
+	.instructions {
+		font-size: .85em;
+		margin: 0 3% 2em; 
+		background-color: #eee;
+		padding: 15px;
+		border-radius: .8em
+	}
 	.instructions li{
+		display: block;
+		clear: both;
+		margin: 0 0 .5em;
 		padding: 0 0 .5em 0;
 	}
-
+	.instructions li:last-child{
+		margin-bottom: 0;
+	}
 	.instructions em{
-		left: 10px;
-		top: 5px;
-		font-size: 2em;
+		float: left;
+		width: 12%;
+		left: 0px;
+		top: -2px;
+		font-size: 1.8em;
+		line-height: 1em;
+	}
+	.instructions span{
+		float: left;
+		width: 88%;
 	}
 
+	#addStreamForm .txt {font-size: 1em; margin: .5em 3%; width: 94%; padding-top:.5em; padding-bottom:.5em;}
 	#addStreamForm .txt {font-size: 1em;}
         
     #addStreamForm .btn {
         font-size: 1em;
+        margin-right: 3%;
     }
+    .formWrap h3{
+    	margin: 1em 0 .2em 3%;
+    }
+    .formWrap .voteUp{
+    	display: inline;
+    	height: 30px;
+    	margin-left: 5px;
+    }
+
 
 	/* now playing */
 	#nowPlaying,
@@ -1179,11 +1218,11 @@ footer a img{
 	.shareIt em {
 		margin-top: .8em;
 	}
-	.searching #addItemForm .txtUrl, 
+	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus{
 		width: 100%;
-	}
-	.searching #ytResults {width: 96%;}
+	}*/
+	/*.searching #ytResults {width: 96%;}*/
 
 	/*Adding items*/
 	#addItemForm {
@@ -1215,6 +1254,13 @@ footer a img{
 
 	footer {
 		position: static !important;
+		text-align: center;
+	}
+	footer p{
+		text-align: center;
+	}
+	footer a img{
+		height: 25px;
 	}
 
 	#stream-items .item { 
@@ -1325,13 +1371,13 @@ footer a img{
 	#login , #loggedIn {margin-top: -5px;}
 	
 	#nowPlaying iframe{
-		max-height: 200px;
+		height: 217px;
 	}
 
-	.searching #addItemForm .txtUrl, 
+	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus {width: 130%;}
 
-	.searching #ytResults {	width: 127%; }
+	.searching #ytResults {	width: 127%; }*/
 	#ytResults li a {
 		padding:.5em 5px;
 	}
@@ -1348,8 +1394,6 @@ footer a img{
 		width: 15%;
 		padding-right: 10px;
 	}
-
-
     .shareIt {
     	margin-top: -40px;
     }
