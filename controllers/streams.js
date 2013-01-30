@@ -146,7 +146,7 @@ module.exports = function(db, notifications, config) {
 					var last = stream.lastHosted.getTime();
 
 					res.send({ 
-						alive : !!stream.lastHostStatus && (now - last) < 10000, //10 s
+						alive : !!stream.lastHostStatus && (now - last) < 6000, //6 s
 						lastHosted : last 
 					});
 				}
