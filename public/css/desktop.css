@@ -105,16 +105,63 @@ textarea {resize: vertical;}
 	list-style-type: none;
 	margin:0;
 	padding: 0;
+
+	float: left;
+	width: 55%;
+	margin-right: 5%;
+	background: #eee;
+	padding:1.5em 2em .75em 2em;
+	border-radius: 1em;
+}
+.tips {
+	float: right;
+	width: 35%;
+	/*font-size: .85em;*/
+	margin-top: -2.6em;
+	clear:right;
+}
+.tips .instructions {
+	width: 100%;
+	font-size: .75em;
+	/*margin-top: -2em;*/
+}
+.tips img {
+	height: 30px;
+}
+.formWrap  {
+	width: 60%;
+	margin:0 20%;
+	clear: both;
+}
+.formWrap input.txt{
+	width: 50%;
+}
+.instructions img{
+	display:inline-block; 
+	/*height: 20px;*/
 }
 .instructions em {
 	display: inline-block;
 	font-style: normal;
 	font-family: "Lobster";
-	font-size: 3em;
+	font-size: 2em;
 	position: relative;
 	top: 10px;
 	color: #387998;
-	width: 50px;
+
+	float: left;
+	width: 12%;
+	left: 0px;
+	top:-5px;
+	line-height: 1em;
+	max-width: 40px;
+}
+.instructions li:last-child{
+	margin-bottom: 0;
+}
+.instructions span{
+	float: left;
+	width: 88%;
 }
 .instructions li{
 	padding: 0;
@@ -124,57 +171,16 @@ textarea {resize: vertical;}
 	padding-bottom: 10px;
 }
 
-#theStreams {
-	float: left;
-	width: 45%;
-	padding-right: 5%;
-}
-#theStreamsList {
-	margin:0;
-	padding: 0;
-}
-#theStreamsList li{
-	clear: both;
-	list-style: none;
-	padding: 0 3%;
-	margin: 0 0 6px 0;
-}
-#theStreams h2{
-    margin-left:3%;
-}
-#theStreams a{
-	display: block;
-	padding: 5px 10px;
-	margin-left: -10px;
-	font-size: 1.6em;
-	text-decoration: none;
-	border-radius: 3px;
-}
-#theStreams a:hover,
-#theStreams a:focus{
-	background: #f5f5f5;
-	box-shadow: 2px 2px 2px #ccc;
-}
-
-#theStreams a img{
-	float: left;
-	width: 8%;
-	min-width: 50px;
-}
-#theStreams a em{
-	float: left;
-	width: 84%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	padding: .5em 0 0 4%;
-	font-style: normal;
-}
 #addStreamForm {
-	width: 60%;
-	margin-left: 20%;	
+	width: 100%;
+	margin-left: 0%;	
 	min-height: 400px;	
 }
+#addStreamForm h2{
+	margin: .5em 0 .25em 2%;
+	text-align: left;
+}
+#addStreamForm label {display: block; margin-bottom: .5em;}
 #addStreamForm .txt {
 	width: 100%;
 	border-radius: .5em;
@@ -192,6 +198,7 @@ textarea {resize: vertical;}
 #addStreamForm .btn[disabled] {
 	color: #ccc;
 }
+
 
 #header {
 	background: #efefef;
@@ -276,8 +283,8 @@ textarea {resize: vertical;}
 }
 .shareIt img{
 	float: right;
-	height: 30px;
-	margin-top: -4px;
+	height: 45px;
+	margin-top: -12px;
 	margin-left: 8px;
 }
 .shareIt em{
@@ -402,17 +409,17 @@ textarea {resize: vertical;}
 	margin-top:.25em;
 	display: block;
 }
+
 #nowPlaying iframe{
 	height: 100%;
-	min-height: 35%;
-
+	min-height: 304px;
 	width: 100%;
 }
 #onNow{
 	display: inline-block;
 	background: #57BAEA;
 	width: 102.5%;
-	margin: 0 50% -4px -6px;
+	margin: 0 0 -4px -6px;
 	padding:6px 60px 6px 10px;
 	/*border-top-right-radius: .5em;*/
 	/*border-bottom-right-radius: .5em;*/
@@ -444,6 +451,7 @@ textarea {resize: vertical;}
 	display: block;
 	width: 100%; /* try to match the blocks underneath */
 	/*max-height: 304px;*/
+	min-height: 304px;
 	overflow: hidden;
 	z-index: 2;
 	position: relative;
@@ -511,7 +519,8 @@ textarea {resize: vertical;}
 #addItemForm {
 	/*display: none;*/
 	float: right;
-	width: 38%;
+	/*width: 38%;*/
+	width: 47%;
 	-webkit-transition: width .2s linear;
 	-moz-transition: width .2s linear;
 	-o-transition: width .2s linear;
@@ -548,7 +557,7 @@ textarea {resize: vertical;}
 	box-shadow: inset 2px 1px 6px #aaa,  inset -2px -2px 6px #aaa;
 	margin-bottom: 1em;
 }
-.searching #addItemForm .txtUrl,
+/*.searching #addItemForm .txtUrl,
 #addItemForm .txtUrl:focus {
 	width: 120%;
 	-webkit-transition: width .1s linear;
@@ -556,9 +565,7 @@ textarea {resize: vertical;}
 	-o-transition: width .1s linear;
 	-ms-transition: width .1s linear;
 	transition: width .1s linear;
-	/*position: fixed;
-	*/
-}
+}*/
 /* Search results preview */
 
 #preview {
@@ -613,7 +620,7 @@ textarea {resize: vertical;}
 	z-index: 101;
 	padding:10px 0;
 }
-.searching #ytResults{ width: 117%; }
+/*.searching #ytResults{ width: 117%; }*/
 .infoWrap{ 
 	opacity: 1;
 -webkit-transition: opacity .2s linear;
@@ -624,10 +631,9 @@ textarea {resize: vertical;}
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
 	filter: alpha(opacity=30);
 }
-.searching .infoWrap{ 
-	
+/*.searching .infoWrap{ 
 	opacity: 0.3; 
-}
+}*/
 
 #ytResults ul{
 	margin: 0;
@@ -673,17 +679,18 @@ textarea {resize: vertical;}
 }
 #ytResults li .thumb{
 	float: left;
-	height: 50px;
-	margin-right:10px;
+	max-height: 70px;
+	margin-right: 10px;
 	border-radius: 3px;
 	overflow: hidden;
-	border:1px solid #000;
+	border: 1px solid #000;
+	max-width: 22%;
 }
 #ytResults li .title{
 	float: left;
 	font-size: 1em;
 	font-weight: normal;
-	width: 75%;
+	width: 74%;
 	/*white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;*/
@@ -866,6 +873,9 @@ textarea {resize: vertical;}
 	height: 105px;
 	position: absolute;
 	-webkit-transform: translate3d(0, 73px, 0);
+	-moz-transform: translate3d(0, 73px, 0);
+	transform: translate3d(0, 73px, 0);
+
 	transition: all 0.1s ease;
 	-moz-transition:  all 0.1s ease;
 	-webkit-transition:  all 0.1s ease;
@@ -996,6 +1006,8 @@ textarea {resize: vertical;}
 	background: rgba(87, 186, 234, .90);
 	/*bottom: 0;*/
 	-webkit-transform: translate3d(0, 0, 0);
+	-moz-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
 }
 
 #stream-items .votes {
@@ -1053,6 +1065,9 @@ footer a img{
 		width: 100%;
 		overflow: hidden;
 	}
+	body{
+		padding-bottom: 0;
+	}
     /* Style adjustments for viewports that meet the condition */
     h1 {
 	    font-size: 1.2em;
@@ -1104,26 +1119,65 @@ footer a img{
 		width: 100%;
 		margin: 0;
 	}
-	#addItemForm h2{
+	#addStreamForm h2{
 		font-size: 1.5em;
-		margin: 0;
+		margin: .5em 0 .5em;
 		text-align: center;
 	}
+	#addStreamForm label{
+		display: block;
+		padding-left: 3%;
+	}
+
+
+	.instructions {
+		font-size: .85em;
+		margin: 0 3% 2em; 
+		background-color: #eee;
+		padding: 15px;
+		border-radius: .8em
+	}
 	.instructions li{
+		display: block;
+		clear: both;
+		margin: 0 0 .5em;
 		padding: 0 0 .5em 0;
 	}
-
+	.instructions li:last-child{
+		margin-bottom: 0;
+	}
 	.instructions em{
-		left: 10px;
-		top: 5px;
-		font-size: 2em;
+		float: left;
+		width: 12%;
+		left: 0px;
+		top: -2px;
+		font-size: 1.8em;
+		line-height: 1em;
+	}
+	.instructions span{
+		float: left;
+		width: 88%;
+	}
+	.instructions img{
+		height: 20px;
 	}
 
+	#addStreamForm .txt {font-size: 1em; margin: .5em 3%; width: 94%; padding-top:.5em; padding-bottom:.5em;}
 	#addStreamForm .txt {font-size: 1em;}
         
     #addStreamForm .btn {
         font-size: 1em;
+        margin-right: 3%;
     }
+    .formWrap h3{
+    	margin: 1em 0 .2em 3%;
+    }
+    .formWrap .voteUp{
+    	display: inline;
+    	height: 30px;
+    	margin-left: 5px;
+    }
+
 
 	/* now playing */
 	#nowPlaying,
@@ -1179,11 +1233,11 @@ footer a img{
 	.shareIt em {
 		margin-top: .8em;
 	}
-	.searching #addItemForm .txtUrl, 
+	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus{
 		width: 100%;
-	}
-	.searching #ytResults {width: 96%;}
+	}*/
+	/*.searching #ytResults {width: 96%;}*/
 
 	/*Adding items*/
 	#addItemForm {
@@ -1215,6 +1269,13 @@ footer a img{
 
 	footer {
 		position: static !important;
+		text-align: center;
+	}
+	footer p{
+		text-align: center;
+	}
+	footer a img{
+		height: 25px;
 	}
 
 	#stream-items .item { 
@@ -1325,13 +1386,13 @@ footer a img{
 	#login , #loggedIn {margin-top: -5px;}
 	
 	#nowPlaying iframe{
-		max-height: 200px;
+		height: 217px;
 	}
 
-	.searching #addItemForm .txtUrl, 
+	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus {width: 130%;}
 
-	.searching #ytResults {	width: 127%; }
+	.searching #ytResults {	width: 127%; }*/
 	#ytResults li a {
 		padding:.5em 5px;
 	}
@@ -1348,8 +1409,6 @@ footer a img{
 		width: 15%;
 		padding-right: 10px;
 	}
-
-
     .shareIt {
     	margin-top: -40px;
     }
