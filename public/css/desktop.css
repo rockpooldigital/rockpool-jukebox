@@ -1095,13 +1095,22 @@ footer a img{
 
 	#login em, #loggedIn em{display: none;}
 
-	
+	.controls  {
+		height: 10px;
+	}
 	.shareIt {
+		display: none;
 		float: none;
 		width: 100%;
 		margin: 0;
 	}
+	#addItemForm h2 {
+		font-size: 1.6em;
+		text-align: center;
+	}
 	#host {
+		display: none !important;
+
 		width: 100%;
 		position: static;
 		float: none;
@@ -1130,7 +1139,9 @@ footer a img{
 	}
 
 
-	.instructions {
+	.instructions {	
+		float: none;
+		width: 94%;
 		font-size: .85em;
 		margin: 0 3% 2em; 
 		background-color: #eee;
@@ -1162,12 +1173,25 @@ footer a img{
 		height: 20px;
 	}
 
+	.tips {
+		float: none;
+		width: 94%;
+		margin: 0;
+	}	
+	.tips h3{text-align: center;}
+	.formWrap {
+		width: 94%;
+		margin: 0;
+	}
+
+
 	#addStreamForm .txt {font-size: 1em; margin: .5em 3%; width: 94%; padding-top:.5em; padding-bottom:.5em;}
 	#addStreamForm .txt {font-size: 1em;}
         
     #addStreamForm .btn {
         font-size: 1em;
         margin-right: 3%;
+        width: 40%;
     }
     .formWrap h3{
     	margin: 1em 0 .2em 3%;
@@ -1185,6 +1209,7 @@ footer a img{
 	#nowPlaying .infoWrap {
 		width: 100%;
 		min-width: 0;
+		min-height: 200px;
 	}
 	
 	#nowPlaying.nothing,
@@ -1388,7 +1413,9 @@ footer a img{
 	#nowPlaying iframe{
 		height: 217px;
 	}
-
+	#host {
+		display: none;
+	}
 	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus {width: 130%;}
 

@@ -49,6 +49,9 @@ MegaPlayer = function($) {
 					player.cueVideoById(match[1]);
 					player.setPlaybackQuality('hd720');
 					player.playVideo();
+					setTimeout(function() {
+						player.playVideo();
+					}, 3000);
 				};
 
 				if (youtubePlayer === null) {
@@ -59,7 +62,7 @@ MegaPlayer = function($) {
 						height: options.height,
 						playerVars: {
 		          start: 0,
-		          controls: '0'
+		          controls: '1'
 		        },
 						events: {
 	          'onReady': function(evt) {  

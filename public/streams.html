@@ -28,14 +28,14 @@
 			<div class="tips">
 				<h3>Top Jukebox tips...</h3>
 				<ul class="instructions">
-					<li>Play the Jukebox on a <strong>single</strong> PC or Laptop (Mac should be ok too) - <strong>speakers help!</strong></li>
+					<li>Host the Jukebox on a <strong>single</strong> PC or Laptop (Mac should be ok too) - <strong>speakers help!</strong></li>
 					<li><strong>Bookmark &amp; Share</strong> the link on the next page with your colleagues - they can add songs too!</li>
 					<li>Get your songs on next by voting <img src="/img/vUp.png" alt="Vote Up" class="voteUp" /></li>
 				</ul>
 			</div>	
 			<div ng-class="{error: addStreamForm.name.$invalid}" class="formWrap clearfix">
 				<h2>Let's get started!</h2>
-				<label>Give your Jukebox a name...</label>
+				<label>Name your Jukebox and let's go...</label>
 				<input type="text" class="txt" name="name" ng-model="stream.name" required size="50" placeholder="e.g. 'Acme Corp Playlist'" />
 				<button ng-click="addStream()" ng-disabled="addStreamForm.$invalid" class="btn btn-primary">Let's go!</button>
 				<!-- <img src="/img/poweredbyyoutube.png" alt="YouTube&trade;" style="display:inline;" class="poweredByYT" /> -->
