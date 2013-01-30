@@ -9,7 +9,7 @@
 <section id="topRow" class="clearfix"  ng-class="{ searching : entry.youtubeResults , empty : !items.length , hasItems : items.length }">
 	<section class="controls clearfix">
 		<aside class="shareIt">
-			<a href="mailto://yourfriend@email.com&subject={{stream.name | urlEncode}}%20on%20the%20Rockpool%20Jukebox%20&body=http://jukebox.rockpooldigital.com/#/stream/{{stream._id}}/{{stream.name | urlEncode}}" class="clearfix">
+			<a href="mailto://yourfriend@email.com&subject={{stream.name | urlEncode}}%20on%20the%20Rockpool%20Jukebox%20&body=http://jukebox.rockpooldigital.com/#/stream/{{stream._id}}/{{stream.name | urlEncode | urlEncode }}" class="clearfix">
 				<img src="/img/email.png" alt="listen" class="" />
 				<em>Share the Jukebox</em>
 			</a>
