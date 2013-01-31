@@ -180,6 +180,10 @@ textarea {resize: vertical;}
 	margin: .5em 0 .25em 2%;
 	text-align: left;
 }
+#addStreamForm .formWrap h2{
+	margin-left: 0;
+}
+
 #addStreamForm label {display: block; margin-bottom: .5em;}
 #addStreamForm .txt {
 	width: 100%;
