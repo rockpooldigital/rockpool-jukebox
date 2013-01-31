@@ -1185,12 +1185,12 @@ footer a img{
 	}
 
 
-	#addStreamForm .txt {font-size: 1em; margin: .5em 3%; width: 94%; padding-top:.5em; padding-bottom:.5em;}
+	#addStreamForm .txt {font-size: 1em; margin: .5em 3%; width: 100%; padding-top:.5em; padding-bottom:.5em;}
 	#addStreamForm .txt {font-size: 1em;}
         
     #addStreamForm .btn {
         font-size: 1em;
-        margin-right: 3%;
+        margin-right: -2%;
         width: 40%;
     }
     .formWrap h3{
@@ -1407,15 +1407,23 @@ footer a img{
 
 /** iPad Portrait OVERRIDES **/
 @media only screen and (min-width: 601px) and (max-width: 768px) {
+
+	html,body{
+		width: 100%;
+		overflow: hidden;
+	}
+	.shareIt{
+		display: none;
+	}
     /* Style adjustments for viewports that meet the condition */
 	#login , #loggedIn {margin-top: -5px;}
 	
 	#nowPlaying iframe{
 		height: 217px;
 	}
-	#host {
+	/*#host {
 		display: none;
-	}
+	}*/
 	/*.searching #addItemForm .txtUrl, 
 	#addItemForm .txtUrl:focus {width: 130%;}
 

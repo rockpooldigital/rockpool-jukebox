@@ -14,6 +14,12 @@
 				<em>Share the Jukebox</em>
 			</a>
 		</aside>
+		<script>
+			// iPad 1 doesnt like hosting
+			if(/mobile/i.test(navigator.userAgent) === true){
+				$('aside.shareIt').hide();
+			}
+		</script>
 	</section>
 	<div class="clearfix" id="nowPlaying">	
 		<!-- <h2 id="onNow">Now playing</h2>		 -->
@@ -79,6 +85,12 @@
 			<button ng-click="stopHostPlaying()" ng-show="isHostPlaying" class="stop-btn"><img src="/img/stop.png" alt="" /> Stop stream</button>
 			<!-- <button ng-click="enableNotifications()" >Enable webkit notifications</button> -->
 		</div>
+		<script>
+			// iPad 1 doesnt like hosting
+			if(/mobile/i.test(navigator.userAgent) === true && jQuery.browser.version.slice(0,3) < 536){
+				$('#host').hide();
+			}
+		</script>
 
 	</form>
 

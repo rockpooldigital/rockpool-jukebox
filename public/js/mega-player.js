@@ -62,7 +62,7 @@ MegaPlayer = function($) {
 						height: options.height,
 						playerVars: {
 		          start: 0,
-		          controls: '1'
+		          controls: '0'
 		        },
 						events: {
 	          'onReady': function(evt) {  
