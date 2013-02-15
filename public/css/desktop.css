@@ -1516,3 +1516,39 @@ footer a img{
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi) {
     /* Style adjustments for high resolution devices */
 }
+
+
+
+
+/*  EXPERIMENTAL */
+.party-mode{
+	-webkit-transition:all 0.3s linear;
+	padding: 0;
+}
+.party-mode #header{
+	padding: 10px 1%;
+	margin: 0;
+}
+
+.party-mode #app{
+	width: 100%;
+	margin: 0 -1%;
+	padding: 0;
+}
+.party-mode .controls{
+	display: none;
+}
+
+.party-mode #topRow{
+	margin: 0;
+}
+.party-mode #nowPlaying {
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    margin: 0;
+
+}
+.party-mode #onNow {
+    width: 100%;
+}
