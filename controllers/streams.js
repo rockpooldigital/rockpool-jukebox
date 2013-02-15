@@ -119,10 +119,8 @@ module.exports = function(db, notifications, config) {
 				return;
 			}
 			
-			var status = !!req.body.status;
-
 			streams.update({ _id : new BSON.ObjectID(req.params.streamId)},
-				{ $set : { lastHosted : new Date(), lastHostStatus : status }},
+				{ $set : { lastHosted : new Date() }},
 				function(err) {
 					if(err) return next(err);
 					res.send(200);
@@ -136,7 +134,7 @@ module.exports = function(db, notifications, config) {
 				res.send(400); 
 				return;
 			}
-
+			
 			streams.findOne({ _id : new BSON.ObjectID(req.params.streamId)}, function(err, stream) {
 				if (err) return next(err);
 				if (!stream.lastHosted) {
@@ -146,7 +144,7 @@ module.exports = function(db, notifications, config) {
 					var last = stream.lastHosted.getTime();
 
 					res.send({ 
-						alive : !!stream.lastHostStatus && (now - last) < 6000, //6 s
+						alive : (now - last) < 10000, //10 s
 						lastHosted : last 
 					});
 				}

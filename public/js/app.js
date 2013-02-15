@@ -33,9 +33,6 @@ function streamItemSorter(a,b) {
 
 	return (new Date(a.lastRequested) > new Date(b.lastRequested)) ? 1 : -1;
 }
-function toggleSearching(){
-	document.getElementById('topRow').classList.toggle('searching');
-}
 
 project.config(function($routeProvider) {
 	$routeProvider.
@@ -44,13 +41,12 @@ project.config(function($routeProvider) {
 	  .otherwise({redirectTo:'/'});
 });
 
-project.controller('ListStreams', function($scope, $rootScope, $location, StreamData, StaticConfiguration) {
-	$rootScope.page_title = 'Home';
+project.controller('ListStreams', function($scope, $location, StreamData, StaticConfiguration) {
 	var existingStreams = !StaticConfiguration.suppressPublicStreams;
 
 	var streams = existingStreams ? StreamData.getStreams() : [];
 	$scope.streams =streams;
-	$scope.addStream = function() { 
+	$scope.addStream = function() {
 		StreamData.addStream({ name : $scope.stream.name }, function(saved) {
 			$scope.streams.push(saved);
 			if (!existingStreams) {
@@ -63,7 +59,7 @@ project.controller('ListStreams', function($scope, $rootScope, $location, Stream
 	}
 });
 
-project.controller('Stream', function($rootScope, $scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
+project.controller('Stream', function($scope, $location, $routeParams, Socket, StreamNotification, StreamData, ItemSearch, DesktopNotifications) {
 	var streamId = $routeParams.streamId;
 	var interval;
 
@@ -90,14 +86,13 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 	
 	$scope.items = [];
 
-	$scope.stream = StreamData.getStream({ streamId : streamId}, function(stream) {
-		$rootScope.page_title = stream.name;
+	$scope.stream = StreamData.getStream({ streamId : streamId}, function() {
 		$scope.items = StreamData.getItems({ streamId : streamId}, function() {
 			StreamNotification.notifyJoin($scope.stream._id);	
 				interval = setInterval(function (){
 			    $scope.$apply(function() {
 			    	if ($scope.isHostPlaying) {
-			    		StreamData.hostIsAlive(streamId, true);
+			    		StreamData.hostIsAlive(streamId);
 			    	}
 			    });
 			  },5000);
@@ -152,22 +147,13 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 	}
 
 	$scope.startHostPlaying = function() {
-		function fail() {
-			alert('Somebody else is already hosting this stream - if this is not the case please try again in 30 seconds');
-		}
-
 		if ($scope.nowPlaying) {
-			return fail();	
+			alert('Host already running elsewhere');
+		} else {
+			$scope.isHostPlaying = true;
+			playNext();
+			//StreamNotification.startHosting();
 		}
-
-		StreamData.isHostAlive(streamId, function(response) {
-			if (response.alive) {
-				return fail();
-			} else {
-				$scope.isHostPlaying = true;
-				playNext();
-			}
-		});
 	};
 
 	$scope.stopHostPlaying = function() {
@@ -177,7 +163,6 @@ project.controller('Stream', function($rootScope, $scope, $location, $routeParam
 		$scope.hostItem = null;
 		$scope.isHostPlaying = false;
 		//StreamNotification.stopHosting();
-		StreamData.hostIsAlive(streamId, false);
 	};
 
 	$scope.hostErrorCount = 0;
