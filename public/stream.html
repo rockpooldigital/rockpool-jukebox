@@ -100,6 +100,7 @@
 	<p><em>Only use if you want to host the stream (one at a time)</em></p>
 	<button ng-click="startHostPlaying()" ng-disabled="isHostPlaying">&#9656; Start stream</button>
 	<button ng-click="stopHostPlaying()" ng-disabled="!isHostPlaying">&#9726; Stop stream</button>
+	<button id="host-skip" ng-click="skipCurrent()" ng-show="isHostPlaying" class="btn">Skip this &raquo;</button>
 
 	<player item="hostItem" on-finish="hostFinishedPlaying()" on-error="hostPlaybackError()"></player>
 
