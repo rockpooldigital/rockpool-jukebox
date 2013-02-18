@@ -1,12 +1,6 @@
 <h1 id="streamName">{{ stream.name }}</h1>
 <a href="#/" class="btn greyGrad" id="btStreams"><img src="img/menu.png" /></a>
 
-
-<div id="debug" style="display:none;">
-	<span style="background-color:red;padding:3px;">Socket: {{ socketStatus }} </span>
-	<button ng-click="skipCurrent()" ng-disabled="!nowPlaying" class="btn">Skip Everywhere</button>
-</div>
-
 <section id="topRow" class="clearfix">
 	
 	<div class="clearfix" id="nowPlaying" ng-show="nowPlaying">	
